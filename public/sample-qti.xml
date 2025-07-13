@@ -89,6 +89,24 @@
       <extendedTextInteraction responseIdentifier="RESPONSE" expectedLength="1000"/>
     </itemBody>
   </assessmentItem>
+
+  <assessmentItem identifier="hottext_1" title="Grammar Exercise: Identifying Parts of Speech" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+      <correctResponse>
+        <value>noun1</value>
+        <value>verb1</value>
+        <value>adjective1</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>In the following sentence, identify the <strong>nouns</strong>, <strong>verbs</strong>, and <strong>adjectives</strong> by clicking on them:</p>
+      <hottextInteraction responseIdentifier="RESPONSE" maxChoices="0">
+        <p>The <hottext identifier="adjective1">beautiful</hottext> <hottext identifier="noun1">garden</hottext> <hottext identifier="verb1">bloomed</hottext> with <hottext identifier="adjective2">colorful</hottext> <hottext identifier="noun2">flowers</hottext> during the <hottext identifier="adjective3">warm</hottext> <hottext identifier="noun3">spring</hottext> <hottext identifier="noun4">season</hottext>.</p>
+      </hottextInteraction>
+    </itemBody>
+  </assessmentItem>
+
   <assessmentItem identifier="choice_item_2" title="Literature Question" adaptive="false" timeDependent="false">
     <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
       <correctResponse>

@@ -262,6 +262,12 @@ const LandingPage = () => {
                        <strong>Extended Text:</strong> Long-form text response questions
                      </Typography>
                    </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">
+                       <strong>Hottext:</strong> Select specific words or phrases in text
+                     </Typography>
+                   </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -292,6 +298,14 @@ const LandingPage = () => {
                    <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
                      <Typography variant="body1">extendedTextInteraction</Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">hottextInteraction</Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">hottext</Typography>
                    </Box>
                    <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
@@ -326,7 +340,6 @@ const LandingPage = () => {
                    'Match Interaction',
                    'Gap Match',
                    'Inline Choice',
-                   'Hottext',
                    'Hotspot',
                    'Graphic Interactions',
                    'Sliders',

@@ -1,4 +1,4 @@
-import { QTIItem, QTIChoice, QTIParseResult, UnsupportedElement } from '@/types/qti';
+import { QTIItem, QTIChoice, QTIHottextChoice, QTIParseResult, UnsupportedElement } from '@/types/qti';
 
 export function parseQTIXML(xmlContent: string): QTIParseResult {
   const errors: string[] = [];
@@ -74,12 +74,13 @@ function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<stri
   const choiceInteraction = itemBody.querySelector('choiceInteraction');
   const textEntryInteraction = itemBody.querySelector('textEntryInteraction');
   const extendedTextInteraction = itemBody.querySelector('extendedTextInteraction');
+  const hottextInteraction = itemBody.querySelector('hottextInteraction');
   
   // Look for unsupported interaction types
   const allInteractions = itemBody.querySelectorAll('[class*="Interaction"], [tagName*="Interaction"]');
   allInteractions.forEach(interaction => {
     const tagName = interaction.tagName.toLowerCase();
-    if (!['choiceinteraction', 'textentryinteraction', 'extendedtextinteraction'].includes(tagName)) {
+    if (!['choiceinteraction', 'textentryinteraction', 'extendedtextinteraction', 'hottextinteraction'].includes(tagName)) {
       addUnsupportedElement(unsupportedElements, tagName, getInteractionDescription(tagName));
     }
   });
@@ -90,6 +91,8 @@ function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<stri
     return parseTextEntryInteraction(id, title, prompt, textEntryInteraction, itemElement);
   } else if (extendedTextInteraction) {
     return parseExtendedTextInteraction(id, title, prompt, extendedTextInteraction, itemElement);
+  } else if (hottextInteraction) {
+    return parseHottextInteraction(id, title, prompt, hottextInteraction, itemElement);
   }
 
   return {
@@ -105,7 +108,7 @@ function extractPromptText(itemBody: Element): string {
   const clone = itemBody.cloneNode(true) as Element;
   
   // Remove interaction elements to get just the prompt
-  const interactions = clone.querySelectorAll('choiceInteraction, textEntryInteraction, extendedTextInteraction');
+  const interactions = clone.querySelectorAll('choiceInteraction, textEntryInteraction, extendedTextInteraction, hottextInteraction');
   interactions.forEach(interaction => interaction.remove());
   
   return clone.textContent?.trim() || '';
@@ -186,6 +189,41 @@ function parseExtendedTextInteraction(
   };
 }
 
+function parseHottextInteraction(
+  id: string,
+  title: string,
+  prompt: string,
+  hottextInteraction: Element,
+  itemElement: Element
+): QTIItem {
+  const responseIdentifier = hottextInteraction.getAttribute('responseIdentifier') || 'RESPONSE';
+  const maxChoices = parseInt(hottextInteraction.getAttribute('maxChoices') || '0');
+  
+  const hottextChoices: QTIHottextChoice[] = [];
+  const hottextElements = hottextInteraction.querySelectorAll('hottext');
+  
+  hottextElements.forEach(hottext => {
+    const identifier = hottext.getAttribute('identifier') || '';
+    const text = hottext.textContent?.trim() || '';
+    if (identifier && text) {
+      hottextChoices.push({ identifier, text });
+    }
+  });
+
+  // Try to find correct response
+  const correctResponse = findCorrectResponse(itemElement, responseIdentifier);
+
+  return {
+    id,
+    title,
+    type: 'hottext',
+    prompt: hottextInteraction.innerHTML, // Keep the full HTML content with hottext elements
+    hottextChoices,
+    correctResponse,
+    responseIdentifier
+  };
+}
+
 function findCorrectResponse(itemElement: Element, responseIdentifier: string): string | string[] | undefined {
   const responseDeclaration = itemElement.querySelector(`responseDeclaration[identifier="${responseIdentifier}"]`);
   if (!responseDeclaration) return undefined;
@@ -213,7 +251,7 @@ function scanForUnsupportedElements(xmlDoc: Document, unsupportedElements: Map<s
     'gapMatchInteraction',
     'inlineChoiceInteraction',
     'textEntryInteraction',
-    'hottextInteraction',
+    // 'hottextInteraction', // Now supported
     'hotspotInteraction',
     'graphicOrderInteraction',
     'graphicAssociateInteraction',

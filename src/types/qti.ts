@@ -1,14 +1,20 @@
 export interface QTIItem {
   id: string;
   title: string;
-  type: 'choice' | 'multipleResponse' | 'textEntry' | 'extendedText' | 'unknown';
+  type: 'choice' | 'multipleResponse' | 'textEntry' | 'extendedText' | 'hottext' | 'unknown';
   prompt: string;
   choices?: QTIChoice[];
+  hottextChoices?: QTIHottextChoice[];
   correctResponse?: string | string[];
   responseIdentifier?: string;
 }
 
 export interface QTIChoice {
+  identifier: string;
+  text: string;
+}
+
+export interface QTIHottextChoice {
   identifier: string;
   text: string;
 }
