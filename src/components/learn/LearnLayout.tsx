@@ -40,11 +40,10 @@ export default function LearnLayout() {
   const nextSection = currentIndex < sections.length - 1 ? sections[currentIndex + 1] : null;
 
   return (
-    <div className="pt-14"> {/* Add padding-top to account for fixed top nav */}
-      <SidebarProvider>
-        <div className="min-h-[calc(100vh-3.5rem)] flex w-full"> {/* Subtract top nav height */}
-          <Sidebar className="w-64 border-r">
-            <SidebarContent>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full pt-14"> {/* Move pt-14 here to push entire layout below nav */}
+        <Sidebar className="w-64 border-r h-[calc(100vh-3.5rem)] sticky top-14"> {/* Make sidebar sticky below nav */}
+          <SidebarContent>
               <SidebarGroup>
                 <SidebarGroupLabel className="flex items-center gap-2">
                   <Book className="h-4 w-4" />
@@ -105,6 +104,5 @@ export default function LearnLayout() {
           </main>
         </div>
       </SidebarProvider>
-    </div>
-  );
-}
+    );
+  }
