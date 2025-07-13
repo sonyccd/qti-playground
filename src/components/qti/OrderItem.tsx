@@ -13,6 +13,7 @@ export function OrderItem({ item }: OrderItemProps) {
   const [orderedChoices, setOrderedChoices] = useState(
     item.orderChoices ? [...item.orderChoices] : []
   );
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const moveItem = (fromIndex: number, toIndex: number) => {
     if (toIndex < 0 || toIndex >= orderedChoices.length) return;
@@ -21,6 +22,30 @@ export function OrderItem({ item }: OrderItemProps) {
     const [movedItem] = newChoices.splice(fromIndex, 1);
     newChoices.splice(toIndex, 0, movedItem);
     setOrderedChoices(newChoices);
+  };
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.currentTarget.outerHTML);
+    (e.currentTarget as HTMLElement).style.opacity = '0.5';
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    (e.currentTarget as HTMLElement).style.opacity = '1';
+    setDraggedIndex(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      moveItem(draggedIndex, dropIndex);
+    }
   };
 
   const shuffleChoices = () => {
@@ -61,13 +86,22 @@ export function OrderItem({ item }: OrderItemProps) {
             {orderedChoices.map((choice, index) => (
               <div
                 key={choice.identifier}
-                className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border hover:bg-muted/70 transition-colors"
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragEnd={handleDragEnd}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, index)}
+                className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 cursor-move ${
+                  draggedIndex === index 
+                    ? 'bg-primary/10 border-primary scale-105 shadow-md' 
+                    : 'bg-muted/50 border-border hover:bg-muted/70 hover:border-primary/50'
+                }`}
               >
                 <div className="flex items-center gap-1">
                   <Badge variant="outline" className="min-w-[2rem] justify-center">
                     {index + 1}
                   </Badge>
-                  <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+                  <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab active:cursor-grabbing" />
                 </div>
                 
                 <div className="flex-1 text-sm font-medium">
