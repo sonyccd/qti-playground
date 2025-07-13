@@ -1,3 +1,5 @@
+import { XmlCodeBlock } from '../XmlCodeBlock';
+
 export default function AssessmentTest() {
   return (
     <div className="prose prose-slate max-w-none">
@@ -7,8 +9,7 @@ export default function AssessmentTest() {
         Once you've authored your individual items, you can assemble them into a test using <code>&lt;assessmentTest&gt;</code>.
       </p>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+      <XmlCodeBlock code={`<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
                 identifier="test1" title="Sample Test">
 
   <testPart identifier="part1" navigationMode="nonlinear" submissionMode="individual">
@@ -17,8 +18,7 @@ export default function AssessmentTest() {
       <assessmentItemRef identifier="item2" href="item2.xml"/>
     </assessmentSection>
   </testPart>
-</assessmentTest>`}</code>
-      </pre>
+</assessmentTest>`} />
       
       <h3 className="text-2xl font-semibold mb-4">Key Concepts:</h3>
       

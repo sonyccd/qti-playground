@@ -1,3 +1,5 @@
+import { XmlCodeBlock } from '../XmlCodeBlock';
+
 export default function Anatomy() {
   return (
     <div className="prose prose-slate max-w-none">
@@ -21,8 +23,7 @@ export default function Anatomy() {
         Here's a complete XML file for a single assessment item:
       </p>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+      <XmlCodeBlock code={`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
                 identifier="item1" title="Example Multiple Choice"
                 adaptive="false" timeDependent="false">
 
@@ -43,8 +44,7 @@ export default function Anatomy() {
   </itemBody>
 
   <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
-</assessmentItem>`}</code>
-      </pre>
+</assessmentItem>`} />
       
       <p className="text-lg leading-relaxed mb-6">
         This is a fully functional assessment item. Let's break it down into its core components and understand their purpose in more detail.

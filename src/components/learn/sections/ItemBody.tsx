@@ -1,3 +1,5 @@
+import { XmlCodeBlock } from '../XmlCodeBlock';
+
 export default function ItemBody() {
   return (
     <div className="prose prose-slate max-w-none">
@@ -17,8 +19,7 @@ export default function ItemBody() {
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🧾 General Structure of &lt;itemBody&gt;</h2>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<itemBody>
+      <XmlCodeBlock code={`<itemBody>
   <p>Your question prompt goes here.</p>
   <choiceInteraction responseIdentifier="RESPONSE" maxChoices="1" shuffle="false">
     <simpleChoice identifier="A">Option A</simpleChoice>
@@ -26,8 +27,7 @@ export default function ItemBody() {
     <simpleChoice identifier="C">Option C</simpleChoice>
     <simpleChoice identifier="D">Option D</simpleChoice>
   </choiceInteraction>
-</itemBody>`}</code>
-      </pre>
+</itemBody>`} />
       
       <p className="text-lg leading-relaxed mb-2">
         The structure typically includes:
@@ -49,39 +49,32 @@ export default function ItemBody() {
         Used for multiple-choice or single-select items.
       </p>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <XmlCodeBlock code={`<choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
   <simpleChoice identifier="A">Apple</simpleChoice>
   <simpleChoice identifier="B">Banana</simpleChoice>
-</choiceInteraction>`}</code>
-      </pre>
+</choiceInteraction>`} />
       
       <h3 className="text-xl font-semibold mt-6 mb-3">2. textEntryInteraction</h3>
       <p className="text-lg leading-relaxed mb-4">
         Used for short answers where learners type a brief response.
       </p>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<p>What is 2 + 2? <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="4"/></p>`}</code>
-      </pre>
+      <XmlCodeBlock code={`<p>What is 2 + 2? <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="4"/></p>`} />
       
       <h3 className="text-xl font-semibold mt-6 mb-3">3. extendedTextInteraction</h3>
       <p className="text-lg leading-relaxed mb-4">
         Used for essays or longer written responses.
       </p>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<p>Explain the difference between weather and climate:</p>
-<extendedTextInteraction responseIdentifier="RESPONSE" expectedLines="5"/>`}</code>
-      </pre>
+      <XmlCodeBlock code={`<p>Explain the difference between weather and climate:</p>
+<extendedTextInteraction responseIdentifier="RESPONSE" expectedLines="5"/>`} />
       
       <h3 className="text-xl font-semibold mt-6 mb-3">4. matchInteraction</h3>
       <p className="text-lg leading-relaxed mb-4">
         Used for drag-and-drop or matching tasks.
       </p>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<matchInteraction responseIdentifier="RESPONSE">
+      <XmlCodeBlock code={`<matchInteraction responseIdentifier="RESPONSE">
   <simpleMatchSet>
     <simpleAssociableChoice identifier="A">Dog</simpleAssociableChoice>
     <simpleAssociableChoice identifier="B">Cat</simpleAssociableChoice>
@@ -90,19 +83,16 @@ export default function ItemBody() {
     <simpleAssociableChoice identifier="1">Barks</simpleAssociableChoice>
     <simpleAssociableChoice identifier="2">Meows</simpleAssociableChoice>
   </simpleMatchSet>
-</matchInteraction>`}</code>
-      </pre>
+</matchInteraction>`} />
       
       <h3 className="text-xl font-semibold mt-6 mb-3">5. hotspotInteraction</h3>
       <p className="text-lg leading-relaxed mb-4">
         Used for image-based selections, such as identifying parts of a diagram.
       </p>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<hotspotInteraction responseIdentifier="RESPONSE" maxChoices="1">
+      <XmlCodeBlock code={`<hotspotInteraction responseIdentifier="RESPONSE" maxChoices="1">
   <hotspotChoice identifier="A" shape="circle" coords="100,150,30"/>
-</hotspotInteraction>`}</code>
-      </pre>
+</hotspotInteraction>`} />
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🖼 Enhancing Questions with Multimedia</h2>
       
@@ -119,8 +109,7 @@ export default function ItemBody() {
       
       <h3 className="text-xl font-semibold mt-6 mb-3">Example:</h3>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<itemBody>
+      <XmlCodeBlock code={`<itemBody>
   <p>Listen to the audio clip and choose the correct answer.</p>
   <audio controls>
     <source src="media/clip.mp3" type="audio/mpeg"/>
@@ -129,8 +118,7 @@ export default function ItemBody() {
     <simpleChoice identifier="A">Option A</simpleChoice>
     <simpleChoice identifier="B">Option B</simpleChoice>
   </choiceInteraction>
-</itemBody>`}</code>
-      </pre>
+</itemBody>`} />
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🧭 Authoring Tips</h2>
       

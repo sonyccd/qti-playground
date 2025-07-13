@@ -1,3 +1,5 @@
+import { XmlCodeBlock } from '../XmlCodeBlock';
+
 export default function ResponseProcessing() {
   return (
     <div className="prose prose-slate max-w-none">
@@ -17,9 +19,7 @@ export default function ResponseProcessing() {
       
       <h3 className="text-2xl font-semibold mb-4">Example:</h3>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>`}</code>
-      </pre>
+      <XmlCodeBlock code={`<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>`} />
       
       <p className="text-lg leading-relaxed">
         More advanced scoring can be handled with custom <code>&lt;responseCondition&gt;</code> blocks that include branching logic, weighted scores, and conditions.

@@ -1,3 +1,5 @@
+import { XmlCodeBlock } from '../XmlCodeBlock';
+
 export default function AssessmentItem() {
   return (
     <div className="prose prose-slate max-w-none">
@@ -74,8 +76,7 @@ export default function AssessmentItem() {
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🧮 Example With Optional Elements</h2>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+      <XmlCodeBlock code={`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
                 identifier="item1" title="Capital Cities Question"
                 adaptive="false" timeDependent="false">
 
@@ -96,8 +97,7 @@ export default function AssessmentItem() {
   </itemBody>
 
   <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
-</assessmentItem>`}</code>
-      </pre>
+</assessmentItem>`} />
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🧭 Authoring Tips</h2>
       

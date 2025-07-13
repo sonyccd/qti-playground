@@ -1,3 +1,5 @@
+import { XmlCodeBlock } from '../XmlCodeBlock';
+
 export default function ResponseDeclaration() {
   return (
     <div className="prose prose-slate max-w-none">
@@ -66,13 +68,11 @@ export default function ResponseDeclaration() {
       
       <h3 className="text-xl font-semibold mt-6 mb-3">Example (Single Correct Answer):</h3>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-4">
-        <code>{`<responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+      <XmlCodeBlock code={`<responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
   <correctResponse>
     <value>choiceA</value>
   </correctResponse>
-</responseDeclaration>`}</code>
-      </pre>
+</responseDeclaration>`} />
       
       <p className="text-lg leading-relaxed mb-6">
         This tells the system to expect one answer (choiceA) and that the interaction is limited to a single response.
@@ -80,14 +80,12 @@ export default function ResponseDeclaration() {
       
       <h3 className="text-xl font-semibold mt-6 mb-3">Example (Multiple Correct Answers):</h3>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-4">
-        <code>{`<responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+      <XmlCodeBlock code={`<responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
   <correctResponse>
     <value>choiceA</value>
     <value>choiceC</value>
   </correctResponse>
-</responseDeclaration>`}</code>
-      </pre>
+</responseDeclaration>`} />
       
       <p className="text-lg leading-relaxed mb-6">
         This setup allows the learner to select more than one answer and marks both choiceA and choiceC as correct.
@@ -101,8 +99,7 @@ export default function ResponseDeclaration() {
       
       <h3 className="text-xl font-semibold mt-6 mb-3">Example With Mapping:</h3>
       
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-4">
-        <code>{`<responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+      <XmlCodeBlock code={`<responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
   <correctResponse>
     <value>choiceA</value>
     <value>choiceC</value>
@@ -111,8 +108,7 @@ export default function ResponseDeclaration() {
     <mapEntry mapKey="choiceA" mappedValue="0.5"/>
     <mapEntry mapKey="choiceC" mappedValue="0.5"/>
   </mapping>
-</responseDeclaration>`}</code>
-      </pre>
+</responseDeclaration>`} />
       
       <p className="text-lg leading-relaxed mb-6">
         Here, each correct choice earns 0.5 points, allowing a total score of 1. Incorrect choices will default to 0, as specified by <code>defaultValue</code>.

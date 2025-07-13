@@ -1,3 +1,5 @@
+import { XmlCodeBlock } from '../XmlCodeBlock';
+
 export default function AnswerChoices() {
   return (
     <div className="prose prose-slate max-w-none">
@@ -17,12 +19,10 @@ export default function AnswerChoices() {
         The <code>&lt;choiceInteraction&gt;</code> element defines a container for a set of choices. It must include a responseIdentifier attribute that matches a <code>&lt;responseDeclaration&gt;</code> and should contain one or more <code>&lt;simpleChoice&gt;</code> elements.
       </p>
 
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <XmlCodeBlock code={`<choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
   <simpleChoice identifier="choiceA">Option A</simpleChoice>
   <simpleChoice identifier="choiceB">Option B</simpleChoice>
-</choiceInteraction>`}</code>
-      </pre>
+</choiceInteraction>`} />
 
       <p className="text-lg leading-relaxed mb-4">
         <strong>Key Attributes:</strong>
@@ -55,21 +55,17 @@ export default function AnswerChoices() {
 
       <h3 className="text-2xl font-semibold mb-4">Example:</h3>
 
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<simpleChoice identifier="choiceA">Paris</simpleChoice>
+      <XmlCodeBlock code={`<simpleChoice identifier="choiceA">Paris</simpleChoice>
 <simpleChoice identifier="choiceB">London</simpleChoice>
 <simpleChoice identifier="choiceC">Berlin</simpleChoice>
-<simpleChoice identifier="choiceD">Rome</simpleChoice>`}</code>
-      </pre>
+<simpleChoice identifier="choiceD">Rome</simpleChoice>`} />
 
       <p className="text-lg leading-relaxed mb-4">You can enhance each choice with media:</p>
 
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<simpleChoice identifier="choiceA">
+      <XmlCodeBlock code={`<simpleChoice identifier="choiceA">
   <img src="img/paris.jpg" alt="Photo of Paris"/>
   Paris
-</simpleChoice>`}</code>
-      </pre>
+</simpleChoice>`} />
 
       <h2 className="text-3xl font-semibold mb-4">🔄 Shuffling Behavior</h2>
 
@@ -77,9 +73,7 @@ export default function AnswerChoices() {
         By default, all <code>&lt;simpleChoice&gt;</code> elements are shuffled if <code>shuffle="true"</code>. However, you can exclude certain options using the <code>fixed="true"</code> attribute. This is useful for placing "None of the above" or "All of the above" consistently at the end.
       </p>
 
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm mb-6">
-        <code>{`<simpleChoice identifier="choiceZ" fixed="true">None of the above</simpleChoice>`}</code>
-      </pre>
+      <XmlCodeBlock code={`<simpleChoice identifier="choiceZ" fixed="true">None of the above</simpleChoice>`} />
 
       <h2 className="text-3xl font-semibold mb-4">🎚 Controlling Number of Choices</h2>
 
