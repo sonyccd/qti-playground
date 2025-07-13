@@ -245,19 +245,6 @@ export function QTIPreview() {
             alignItems: 'center',
             gap: 2
           }}>
-                {/* Layout Controls */}
-                <ToggleButtonGroup value={layoutMode} exclusive onChange={(_, newMode) => newMode && setLayoutMode(newMode)} size="small">
-                  <ToggleButton value="editor-only">
-                    <ViewAgenda />
-                  </ToggleButton>
-                  <ToggleButton value="split">
-                    <ViewColumn />
-                  </ToggleButton>
-                  <ToggleButton value="preview-only">
-                    <ViewStream />
-                  </ToggleButton>
-                </ToggleButtonGroup>
-                
                 <Button variant="outlined" size="small" onClick={handleClearFile} startIcon={<Description />}>
                   New File
                 </Button>
@@ -286,13 +273,27 @@ export function QTIPreview() {
                       <Box sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1,
+                  justifyContent: 'space-between',
                   mb: 1
                 }}>
-                        <Code fontSize="small" />
-                        <Typography variant="h6" component="h3">
-                          QTI XML Editor
-                        </Typography>
+                        <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}>
+                          <Code fontSize="small" />
+                          <Typography variant="h6" component="h3">
+                            QTI XML Editor
+                          </Typography>
+                        </Box>
+                        <Button 
+                          size="small" 
+                          variant={layoutMode === 'editor-only' ? 'contained' : 'outlined'}
+                          onClick={() => setLayoutMode(layoutMode === 'editor-only' ? 'split' : 'editor-only')}
+                          sx={{ minWidth: 'auto', p: 1 }}
+                        >
+                          <ViewAgenda fontSize="small" />
+                        </Button>
                       </Box>
                     </CardContent>
                     <Box sx={{
@@ -330,13 +331,27 @@ export function QTIPreview() {
                       <Box sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1,
+                  justifyContent: 'space-between',
                   mb: 1
                 }}>
-                        <Visibility fontSize="small" />
-                        <Typography variant="h6" component="h3">
-                          Live Preview
-                        </Typography>
+                        <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}>
+                          <Visibility fontSize="small" />
+                          <Typography variant="h6" component="h3">
+                            Live Preview
+                          </Typography>
+                        </Box>
+                        <Button 
+                          size="small" 
+                          variant={layoutMode === 'preview-only' ? 'contained' : 'outlined'}
+                          onClick={() => setLayoutMode(layoutMode === 'preview-only' ? 'split' : 'preview-only')}
+                          sx={{ minWidth: 'auto', p: 1 }}
+                        >
+                          <ViewStream fontSize="small" />
+                        </Button>
                       </Box>
                     </CardContent>
                     <CardContent sx={{
