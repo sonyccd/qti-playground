@@ -70,6 +70,25 @@
     </itemBody>
   </assessmentItem>
 
+  <assessmentItem identifier="extended_text_1" title="Essay Question: Climate Change" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+      <correctResponse>
+        <value>Climate change refers to long-term shifts in global temperatures and weather patterns, primarily caused by human activities such as burning fossil fuels, which increase greenhouse gas concentrations in the atmosphere.</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>Climate change is one of the most pressing issues of our time. In a well-structured essay of at least 200 words, explain what climate change is, identify its primary causes, and discuss at least two potential solutions that individuals or governments can implement to address this challenge.</p>
+      <p><strong>Your response should include:</strong></p>
+      <ul>
+        <li>A clear definition of climate change</li>
+        <li>At least two main causes</li>
+        <li>At least two proposed solutions</li>
+        <li>Supporting details and examples</li>
+      </ul>
+      <extendedTextInteraction responseIdentifier="RESPONSE" expectedLength="1000"/>
+    </itemBody>
+  </assessmentItem>
   <assessmentItem identifier="choice_item_2" title="Literature Question" adaptive="false" timeDependent="false">
     <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
       <correctResponse>
