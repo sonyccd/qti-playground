@@ -449,20 +449,6 @@ export function QTIPreview() {
           </Box>
         )}
 
-        {/* Empty State */}
-        {!hasContent && !isLoading && (
-          <Card sx={{ border: '2px dashed', borderColor: 'grey.300' }}>
-            <CardContent sx={{ textAlign: 'center', py: 8 }}>
-              <Code sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
-              <Typography variant="h5" component="h3" gutterBottom>
-                QTI Live Editor
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Upload a QTI XML file to start editing, or try our example file to see the live editor in action.
-              </Typography>
-            </CardContent>
-          </Card>
-        )}
       </Container>
     </Box>
   );
