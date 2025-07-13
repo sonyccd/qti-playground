@@ -21,38 +21,44 @@ import OrganizingFiles from "./components/learn/sections/OrganizingFiles";
 import Tools from "./components/learn/sections/Tools";
 import BestPractices from "./components/learn/sections/BestPractices";
 import Summary from "./components/learn/sections/Summary";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/playground" element={<Playground />} />
-          <Route path="/learn" element={<LearnLayout />}>
-            <Route index element={<Introduction />} />
-            <Route path="introduction" element={<Introduction />} />
-            <Route path="structure" element={<Structure />} />
-            <Route path="anatomy" element={<Anatomy />} />
-            <Route path="assessment-item" element={<AssessmentItem />} />
-            <Route path="response-declaration" element={<ResponseDeclaration />} />
-            <Route path="item-body" element={<ItemBody />} />
-            <Route path="answer-choices" element={<AnswerChoices />} />
-            <Route path="response-processing" element={<ResponseProcessing />} />
-            <Route path="assessment-test" element={<AssessmentTest />} />
-            <Route path="organizing-files" element={<OrganizingFiles />} />
-            <Route path="tools" element={<Tools />} />
-            <Route path="best-practices" element={<BestPractices />} />
-            <Route path="summary" element={<Summary />} />
-          </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <div className="min-h-screen flex flex-col">
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <div className="flex-1">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/playground" element={<Playground />} />
+              <Route path="/learn" element={<LearnLayout />}>
+                <Route index element={<Introduction />} />
+                <Route path="introduction" element={<Introduction />} />
+                <Route path="structure" element={<Structure />} />
+                <Route path="anatomy" element={<Anatomy />} />
+                <Route path="assessment-item" element={<AssessmentItem />} />
+                <Route path="response-declaration" element={<ResponseDeclaration />} />
+                <Route path="item-body" element={<ItemBody />} />
+                <Route path="answer-choices" element={<AnswerChoices />} />
+                <Route path="response-processing" element={<ResponseProcessing />} />
+                <Route path="assessment-test" element={<AssessmentTest />} />
+                <Route path="organizing-files" element={<OrganizingFiles />} />
+                <Route path="tools" element={<Tools />} />
+                <Route path="best-practices" element={<BestPractices />} />
+                <Route path="summary" element={<Summary />} />
+              </Route>
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          <Footer />
+        </BrowserRouter>
+      </div>
     </TooltipProvider>
   </QueryClientProvider>
 );
