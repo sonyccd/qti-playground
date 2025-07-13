@@ -1,100 +1,122 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Play, FileText, Code, Lightbulb } from "lucide-react";
+import { 
+  Button, 
+  Card, 
+  CardBody, 
+  CardHeader, 
+  CardTitle, 
+  Grid, 
+  GridItem,
+  Title,
+  PageSection
+} from "@patternfly/react-core";
+import { BookOpenIcon, PlayIcon, FileIcon, CodeIcon, LightbulbIcon } from "@patternfly/react-icons";
 import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-16">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
-            <FileText className="w-8 h-8 text-primary" />
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            QTI Playground
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Explore, create, and test QTI (Question & Test Interoperability) content with our interactive playground
-          </p>
+    <PageSection style={{ minHeight: '100vh' }}>
+      <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '64px', height: '64px', marginBottom: '1.5rem' }}>
+          <FileIcon style={{ fontSize: '32px', color: '#0066cc' }} />
         </div>
+        <Title headingLevel="h1" size="4xl" style={{ marginBottom: '1rem' }}>
+          QTI Playground
+        </Title>
+        <p style={{ fontSize: '1.25rem', maxWidth: '48rem', margin: '0 auto', color: '#6c757d' }}>
+          Explore, create, and test QTI (Question & Test Interoperability) content with our interactive playground
+        </p>
+      </div>
 
-        {/* Main CTAs */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
-          <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
-            <CardHeader className="text-center pb-4">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4 group-hover:bg-primary/20 transition-colors">
-                <Play className="w-6 h-6 text-primary" />
+      <Grid hasGutter style={{ marginBottom: '4rem', maxWidth: '64rem', margin: '0 auto 4rem auto' }}>
+        <GridItem md={6}>
+          <Card>
+            <CardHeader>
+              <div style={{ textAlign: 'center', paddingBottom: '1rem' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', marginBottom: '1rem' }}>
+                  <PlayIcon style={{ fontSize: '24px', color: '#0066cc' }} />
+                </div>
+                <CardTitle>
+                  <Title headingLevel="h2" size="xl">Start Playing</Title>
+                </CardTitle>
+                <p style={{ color: '#6c757d' }}>
+                  Jump right into the playground and start experimenting with QTI content
+                </p>
               </div>
-              <CardTitle className="text-2xl">Start Playing</CardTitle>
-              <CardDescription className="text-base">
-                Jump right into the playground and start experimenting with QTI content
-              </CardDescription>
             </CardHeader>
-            <CardContent className="text-center">
+            <CardBody style={{ textAlign: 'center' }}>
               <Link to="/playground">
-                <Button size="lg" className="w-full">
+                <Button variant="primary" size="lg" style={{ width: '100%' }}>
                   Go to Playground
                 </Button>
               </Link>
-            </CardContent>
+            </CardBody>
           </Card>
+        </GridItem>
 
-          <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
-            <CardHeader className="text-center pb-4">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4 group-hover:bg-primary/20 transition-colors">
-                <BookOpen className="w-6 h-6 text-primary" />
+        <GridItem md={6}>
+          <Card>
+            <CardHeader>
+              <div style={{ textAlign: 'center', paddingBottom: '1rem' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', marginBottom: '1rem' }}>
+                  <BookOpenIcon style={{ fontSize: '24px', color: '#0066cc' }} />
+                </div>
+                <CardTitle>
+                  <Title headingLevel="h2" size="xl">Learn QTI</Title>
+                </CardTitle>
+                <p style={{ color: '#6c757d' }}>
+                  New to QTI? Learn the basics and discover what's possible
+                </p>
               </div>
-              <CardTitle className="text-2xl">Learn QTI</CardTitle>
-              <CardDescription className="text-base">
-                New to QTI? Learn the basics and discover what's possible
-              </CardDescription>
             </CardHeader>
-            <CardContent className="text-center">
+            <CardBody style={{ textAlign: 'center' }}>
               <Link to="/learn">
-                <Button variant="outline" size="lg" className="w-full">
+                <Button variant="secondary" size="lg" style={{ width: '100%' }}>
                   Start Learning
                 </Button>
               </Link>
-            </CardContent>
+            </CardBody>
           </Card>
-        </div>
+        </GridItem>
+      </Grid>
 
-        {/* Features */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          <div className="text-center p-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-              <Code className="w-6 h-6 text-primary" />
+      <Grid hasGutter style={{ maxWidth: '80rem', margin: '0 auto' }}>
+        <GridItem md={4}>
+          <div style={{ textAlign: 'center', padding: '1.5rem' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', marginBottom: '1rem' }}>
+              <CodeIcon style={{ fontSize: '24px', color: '#0066cc' }} />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Live Editor</h3>
-            <p className="text-muted-foreground">
+            <Title headingLevel="h3" size="lg" style={{ marginBottom: '0.5rem' }}>Live Editor</Title>
+            <p style={{ color: '#6c757d' }}>
               Write and edit QTI XML with syntax highlighting and real-time preview
             </p>
           </div>
+        </GridItem>
 
-          <div className="text-center p-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-              <FileText className="w-6 h-6 text-primary" />
+        <GridItem md={4}>
+          <div style={{ textAlign: 'center', padding: '1.5rem' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', marginBottom: '1rem' }}>
+              <FileIcon style={{ fontSize: '24px', color: '#0066cc' }} />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Interactive Preview</h3>
-            <p className="text-muted-foreground">
+            <Title headingLevel="h3" size="lg" style={{ marginBottom: '0.5rem' }}>Interactive Preview</Title>
+            <p style={{ color: '#6c757d' }}>
               See how your QTI content will render and behave in real-time
             </p>
           </div>
+        </GridItem>
 
-          <div className="text-center p-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-              <Lightbulb className="w-6 h-6 text-primary" />
+        <GridItem md={4}>
+          <div style={{ textAlign: 'center', padding: '1.5rem' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', marginBottom: '1rem' }}>
+              <LightbulbIcon style={{ fontSize: '24px', color: '#0066cc' }} />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Examples & Samples</h3>
-            <p className="text-muted-foreground">
+            <Title headingLevel="h3" size="lg" style={{ marginBottom: '0.5rem' }}>Examples & Samples</Title>
+            <p style={{ color: '#6c757d' }}>
               Start with built-in examples or upload your own QTI files
             </p>
           </div>
-        </div>
-      </div>
-    </div>
+        </GridItem>
+      </Grid>
+    </PageSection>
   );
 };
 
