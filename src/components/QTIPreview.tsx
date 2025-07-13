@@ -5,7 +5,6 @@ import { parseQTIXML } from '@/utils/qtiParser';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, Typography, Box, Container, Button, Chip, Alert, AlertTitle, Avatar, ToggleButton, ToggleButtonGroup, useTheme, CircularProgress, Grid } from '@mui/material';
 import { Description, Warning, CheckCircle, MenuBook, Download, Code, Visibility, ViewColumn, ViewAgenda, ViewStream, Home, School } from '@mui/icons-material';
-import { Columns2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
@@ -252,7 +251,7 @@ export function QTIPreview() {
                     <ViewAgenda />
                   </ToggleButton>
                   <ToggleButton value="split">
-                    <Columns2 />
+                    <ViewColumn />
                   </ToggleButton>
                   <ToggleButton value="preview-only">
                     <ViewStream />
