@@ -13,7 +13,7 @@ import {
   SidebarTrigger 
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Book, ChevronRight, ChevronLeft } from "lucide-react";
+import { Book, ChevronRight, ChevronLeft } from "lucide-react";
 
 const sections = [
   { id: "introduction", title: "Introduction to QTI", path: "/learn/introduction" },
@@ -44,15 +44,6 @@ export default function LearnLayout() {
       <div className="min-h-screen flex w-full">
         <Sidebar className="w-64 border-r">
           <SidebarContent>
-            <div className="p-4 border-b">
-              <Button variant="ghost" size="sm" asChild className="w-full justify-start">
-                <Link to="/">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Home
-                </Link>
-              </Button>
-            </div>
-            
             <SidebarGroup>
               <SidebarGroupLabel className="flex items-center gap-2">
                 <Book className="h-4 w-4" />
