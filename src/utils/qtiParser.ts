@@ -1,4 +1,4 @@
-import { QTIItem, QTIChoice, QTIHottextChoice, QTISliderConfig, QTIParseResult, UnsupportedElement } from '@/types/qti';
+import { QTIItem, QTIChoice, QTIHottextChoice, QTIOrderChoice, QTISliderConfig, QTIParseResult, UnsupportedElement } from '@/types/qti';
 
 export function parseQTIXML(xmlContent: string): QTIParseResult {
   const errors: string[] = [];
@@ -76,12 +76,13 @@ function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<stri
   const extendedTextInteraction = itemBody.querySelector('extendedTextInteraction');
   const hottextInteraction = itemBody.querySelector('hottextInteraction');
   const sliderInteraction = itemBody.querySelector('sliderInteraction');
+  const orderInteraction = itemBody.querySelector('orderInteraction');
   
   // Look for unsupported interaction types
   const allInteractions = itemBody.querySelectorAll('[class*="Interaction"], [tagName*="Interaction"]');
   allInteractions.forEach(interaction => {
     const tagName = interaction.tagName.toLowerCase();
-    if (!['choiceinteraction', 'textentryinteraction', 'extendedtextinteraction', 'hottextinteraction', 'sliderinteraction'].includes(tagName)) {
+    if (!['choiceinteraction', 'textentryinteraction', 'extendedtextinteraction', 'hottextinteraction', 'sliderinteraction', 'orderinteraction'].includes(tagName)) {
       addUnsupportedElement(unsupportedElements, tagName, getInteractionDescription(tagName));
     }
   });
@@ -96,6 +97,8 @@ function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<stri
     return parseHottextInteraction(id, title, prompt, hottextInteraction, itemElement);
   } else if (sliderInteraction) {
     return parseSliderInteraction(id, title, prompt, sliderInteraction, itemElement);
+  } else if (orderInteraction) {
+    return parseOrderInteraction(id, title, prompt, orderInteraction, itemElement);
   }
 
   return {
@@ -111,7 +114,7 @@ function extractPromptText(itemBody: Element): string {
   const clone = itemBody.cloneNode(true) as Element;
   
   // Remove interaction elements to get just the prompt
-  const interactions = clone.querySelectorAll('choiceInteraction, textEntryInteraction, extendedTextInteraction, hottextInteraction, sliderInteraction');
+  const interactions = clone.querySelectorAll('choiceInteraction, textEntryInteraction, extendedTextInteraction, hottextInteraction, sliderInteraction, orderInteraction');
   interactions.forEach(interaction => interaction.remove());
   
   return clone.textContent?.trim() || '';
@@ -263,6 +266,40 @@ function parseSliderInteraction(
   };
 }
 
+function parseOrderInteraction(
+  id: string,
+  title: string,
+  prompt: string,
+  orderInteraction: Element,
+  itemElement: Element
+): QTIItem {
+  const responseIdentifier = orderInteraction.getAttribute('responseIdentifier') || 'RESPONSE';
+  
+  const orderChoices: QTIOrderChoice[] = [];
+  const simpleChoices = orderInteraction.querySelectorAll('simpleChoice');
+  
+  simpleChoices.forEach(choice => {
+    const identifier = choice.getAttribute('identifier') || '';
+    const text = choice.textContent?.trim() || '';
+    if (identifier && text) {
+      orderChoices.push({ identifier, text });
+    }
+  });
+
+  // Try to find correct response
+  const correctResponse = findCorrectResponse(itemElement, responseIdentifier);
+
+  return {
+    id,
+    title,
+    type: 'order',
+    prompt,
+    orderChoices,
+    correctResponse,
+    responseIdentifier
+  };
+}
+
 function findCorrectResponse(itemElement: Element, responseIdentifier: string): string | string[] | undefined {
   const responseDeclaration = itemElement.querySelector(`responseDeclaration[identifier="${responseIdentifier}"]`);
   if (!responseDeclaration) return undefined;
@@ -284,7 +321,7 @@ function scanForUnsupportedElements(xmlDoc: Document, unsupportedElements: Map<s
   // Common QTI interaction types that are not supported
   const unsupportedInteractions = [
     // 'extendedTextInteraction', // Now supported
-    'orderInteraction', 
+    // 'orderInteraction', // Now supported 
     'associateInteraction',
     'matchInteraction',
     'gapMatchInteraction',

@@ -4,6 +4,7 @@ import { TextEntryItem } from './TextEntryItem';
 import { ExtendedTextItem } from './ExtendedTextItem';
 import { HottextItem } from './HottextItem';
 import { SliderItem } from './SliderItem';
+import { OrderItem } from './OrderItem';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
 
@@ -28,6 +29,9 @@ export function QTIItemRenderer({ item }: QTIItemRendererProps) {
     
     case 'slider':
       return <SliderItem item={item} />;
+    
+    case 'order':
+      return <OrderItem item={item} />;
     
     case 'unknown':
     default:

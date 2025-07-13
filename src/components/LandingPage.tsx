@@ -274,6 +274,12 @@ const LandingPage = () => {
                        <strong>Slider:</strong> Select values on a continuous scale
                      </Typography>
                    </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">
+                       <strong>Order Interaction:</strong> Arrange items in the correct sequence
+                     </Typography>
+                   </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -315,6 +321,10 @@ const LandingPage = () => {
                    </Box>
                    <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">orderInteraction</Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
                      <Typography variant="body1">hottext</Typography>
                    </Box>
                    <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
@@ -345,7 +355,6 @@ const LandingPage = () => {
               </Typography>
                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
                  {[
-                   'Order Interaction',
                    'Associate Interaction',
                    'Match Interaction',
                    'Gap Match',

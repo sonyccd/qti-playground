@@ -121,6 +121,27 @@
     </itemBody>
   </assessmentItem>
 
+  <assessmentItem identifier="order_1" title="Historical Events Sequence" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="ordered" baseType="identifier">
+      <correctResponse>
+        <value>event_a</value>
+        <value>event_b</value>
+        <value>event_c</value>
+        <value>event_d</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>Arrange the following historical events in chronological order (earliest to latest):</p>
+      <orderInteraction responseIdentifier="RESPONSE" shuffle="true">
+        <simpleChoice identifier="event_a">World War I begins (1914)</simpleChoice>
+        <simpleChoice identifier="event_b">Russian Revolution (1917)</simpleChoice>
+        <simpleChoice identifier="event_c">Treaty of Versailles signed (1919)</simpleChoice>
+        <simpleChoice identifier="event_d">League of Nations established (1920)</simpleChoice>
+      </orderInteraction>
+    </itemBody>
+  </assessmentItem>
+
   <assessmentItem identifier="choice_item_2" title="Literature Question" adaptive="false" timeDependent="false">
     <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
       <correctResponse>
