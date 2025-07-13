@@ -120,6 +120,8 @@ export function QTIPreview() {
         return 'Multiple Response';
       case 'textEntry':
         return 'Fill in the Blank';
+      case 'extendedText':
+        return 'Extended Text';
       default:
         return 'Unknown';
     }
@@ -132,6 +134,8 @@ export function QTIPreview() {
         return 'secondary';
       case 'textEntry':
         return 'success';
+      case 'extendedText':
+        return 'info';
       default:
         return 'error';
     }
