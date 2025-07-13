@@ -8,11 +8,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { FileText, AlertTriangle, CheckCircle, BookOpen, Download, Code, Eye } from 'lucide-react';
+import { FileText, AlertTriangle, CheckCircle, BookOpen, Download, Code, Eye, PanelLeft, PanelRight, Columns } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
 import { oneDark } from '@codemirror/theme-one-dark';
+
+type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 
 export function QTIPreview() {
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -21,6 +23,7 @@ export function QTIPreview() {
   const [isLoading, setIsLoading] = useState(false);
   const [xmlContent, setXmlContent] = useState<string>('');
   const [hasContent, setHasContent] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('split');
   const { toast } = useToast();
 
   const handleFileSelect = async (file: File) => {
@@ -208,117 +211,156 @@ export function QTIPreview() {
                   </div>
                 )}
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleClearFile}
-                className="gap-2"
-              >
-                <FileText className="h-4 w-4" />
-                New File
-              </Button>
+              
+              <div className="flex items-center gap-2">
+                {/* Layout Controls */}
+                <div className="flex items-center bg-muted/50 rounded-lg p-1">
+                  <Button
+                    variant={layoutMode === 'editor-only' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setLayoutMode('editor-only')}
+                    className="h-8 px-3"
+                  >
+                    <PanelLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={layoutMode === 'split' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setLayoutMode('split')}
+                    className="h-8 px-3"
+                  >
+                    <Columns className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={layoutMode === 'preview-only' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setLayoutMode('preview-only')}
+                    className="h-8 px-3"
+                  >
+                    <PanelRight className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearFile}
+                  className="gap-2"
+                >
+                  <FileText className="h-4 w-4" />
+                  New File
+                </Button>
+              </div>
             </div>
 
             {/* Editor Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-300px)]">
+            <div className={`grid gap-6 h-[calc(100vh-300px)] ${
+              layoutMode === 'editor-only' ? 'grid-cols-1' :
+              layoutMode === 'preview-only' ? 'grid-cols-1' :
+              'grid-cols-1 lg:grid-cols-2'
+            }`}>
               {/* XML Editor */}
-              <Card className="flex flex-col">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Code className="h-4 w-4" />
-                    QTI XML Editor
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 p-0 overflow-hidden">
-                  <CodeMirror
-                    value={xmlContent}
-                    onChange={handleXmlChange}
-                    extensions={[xml()]}
-                    theme={oneDark}
-                    className="h-full"
-                    basicSetup={{
-                      lineNumbers: true,
-                      foldGutter: true,
-                      dropCursor: false,
-                      allowMultipleSelections: false,
-                      indentOnInput: true,
-                      autocompletion: true,
-                    }}
-                  />
-                </CardContent>
-              </Card>
+              {(layoutMode === 'editor-only' || layoutMode === 'split') && (
+                <Card className="flex flex-col">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Code className="h-4 w-4" />
+                      QTI XML Editor
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 p-0 overflow-hidden">
+                    <CodeMirror
+                      value={xmlContent}
+                      onChange={handleXmlChange}
+                      extensions={[xml()]}
+                      theme={oneDark}
+                      className="h-full"
+                      basicSetup={{
+                        lineNumbers: true,
+                        foldGutter: true,
+                        dropCursor: false,
+                        allowMultipleSelections: false,
+                        indentOnInput: true,
+                        autocompletion: true,
+                      }}
+                    />
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Preview Panel */}
-              <Card className="flex flex-col">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Eye className="h-4 w-4" />
-                    Live Preview
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 overflow-auto">
-                  {/* Errors */}
-                  {errors.length > 0 && (
-                    <Alert variant="destructive" className="mb-4">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription>
-                        <div className="space-y-1">
-                          {errors.map((error, index) => (
-                            <div key={index} className="text-sm">{error}</div>
-                          ))}
-                        </div>
-                      </AlertDescription>
-                    </Alert>
-                  )}
-
-                  {/* Item Type Summary */}
-                  {qtiItems.length > 0 && (
-                    <div className="mb-6 p-4 bg-muted/50 rounded-lg">
-                      <div className="flex flex-wrap gap-2">
-                        {Array.from(new Set(qtiItems.map(item => item.type))).map(type => {
-                          const count = qtiItems.filter(item => item.type === type).length;
-                          return (
-                            <Badge 
-                              key={type} 
-                              variant={getItemTypeVariant(type) as any}
-                              className="text-xs"
-                            >
-                              {count} {getItemTypeLabel(type)}
-                            </Badge>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Items */}
-                  {qtiItems.length > 0 ? (
-                    <div className="space-y-6">
-                      {qtiItems.map((item, index) => (
-                        <div key={item.id} className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            <Badge variant="outline" className="text-xs font-mono">
-                              #{index + 1}
-                            </Badge>
-                            <Badge variant={getItemTypeVariant(item.type) as any} className="text-xs">
-                              {getItemTypeLabel(item.type)}
-                            </Badge>
+              {(layoutMode === 'preview-only' || layoutMode === 'split') && (
+                <Card className="flex flex-col">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Eye className="h-4 w-4" />
+                      Live Preview
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 overflow-auto">
+                    {/* Errors */}
+                    {errors.length > 0 && (
+                      <Alert variant="destructive" className="mb-4">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription>
+                          <div className="space-y-1">
+                            {errors.map((error, index) => (
+                              <div key={index} className="text-sm">{error}</div>
+                            ))}
                           </div>
-                          <QTIItemRenderer item={item} />
+                        </AlertDescription>
+                      </Alert>
+                    )}
+
+                    {/* Item Type Summary */}
+                    {qtiItems.length > 0 && (
+                      <div className="mb-6 p-4 bg-muted/50 rounded-lg">
+                        <div className="flex flex-wrap gap-2">
+                          {Array.from(new Set(qtiItems.map(item => item.type))).map(type => {
+                            const count = qtiItems.filter(item => item.type === type).length;
+                            return (
+                              <Badge 
+                                key={type} 
+                                variant={getItemTypeVariant(type) as any}
+                                className="text-xs"
+                              >
+                                {count} {getItemTypeLabel(type)}
+                              </Badge>
+                            );
+                          })}
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    !errors.length && (
-                      <div className="text-center text-muted-foreground py-12">
-                        <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                        <p>No valid QTI items found</p>
-                        <p className="text-sm">Check your XML structure</p>
                       </div>
-                    )
-                  )}
-                </CardContent>
-              </Card>
+                    )}
+
+                    {/* Items */}
+                    {qtiItems.length > 0 ? (
+                      <div className="space-y-6">
+                        {qtiItems.map((item, index) => (
+                          <div key={item.id} className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <Badge variant="outline" className="text-xs font-mono">
+                                #{index + 1}
+                              </Badge>
+                              <Badge variant={getItemTypeVariant(item.type) as any} className="text-xs">
+                                {getItemTypeLabel(item.type)}
+                              </Badge>
+                            </div>
+                            <QTIItemRenderer item={item} />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      !errors.length && (
+                        <div className="text-center text-muted-foreground py-12">
+                          <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                          <p>No valid QTI items found</p>
+                          <p className="text-sm">Check your XML structure</p>
+                        </div>
+                      )
+                    )}
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         )}
