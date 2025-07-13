@@ -4,7 +4,7 @@ import { QTIItemRenderer } from './qti/QTIItemRenderer';
 import { parseQTIXML } from '@/utils/qtiParser';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, Typography, Box, Container, Button, Chip, Alert, AlertTitle, Avatar, ToggleButton, ToggleButtonGroup, useTheme, CircularProgress, Grid } from '@mui/material';
-import { Description, Warning, CheckCircle, MenuBook, Download, Code, Visibility, ViewColumn, ViewAgenda, ViewStream, Home, School } from '@mui/icons-material';
+import { Description, Warning, CheckCircle, MenuBook, Download, Code, Visibility, ViewColumn, ViewAgenda, ViewStream, Home, School, OpenInFull } from '@mui/icons-material';
 import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
@@ -292,7 +292,7 @@ export function QTIPreview() {
                           onClick={() => setLayoutMode(layoutMode === 'editor-only' ? 'split' : 'editor-only')}
                           sx={{ minWidth: 'auto', p: 1 }}
                         >
-                          <ViewAgenda fontSize="small" />
+                          <OpenInFull fontSize="small" />
                         </Button>
                       </Box>
                     </CardContent>
@@ -350,7 +350,7 @@ export function QTIPreview() {
                           onClick={() => setLayoutMode(layoutMode === 'preview-only' ? 'split' : 'preview-only')}
                           sx={{ minWidth: 'auto', p: 1 }}
                         >
-                          <ViewStream fontSize="small" />
+                          <OpenInFull fontSize="small" />
                         </Button>
                       </Box>
                     </CardContent>
