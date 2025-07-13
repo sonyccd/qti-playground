@@ -1,7 +1,7 @@
-import { QTIPreview } from '@/components/QTIPreview';
+import LandingPage from '@/components/LandingPage';
 
 const Index = () => {
-  return <QTIPreview />;
+  return <LandingPage />;
 };
 
 export default Index;
