@@ -250,12 +250,18 @@ const LandingPage = () => {
                       <strong>Multiple Response:</strong> Questions allowing multiple selections
                     </Typography>
                   </Box>
-                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
-                    <Typography variant="body1">
-                      <strong>Text Entry:</strong> Short text input questions
-                    </Typography>
-                  </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">
+                       <strong>Text Entry:</strong> Short text input questions
+                     </Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">
+                       <strong>Extended Text:</strong> Long-form text response questions
+                     </Typography>
+                   </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -279,22 +285,26 @@ const LandingPage = () => {
                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
                     <Typography variant="body1">choiceInteraction</Typography>
                   </Box>
-                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
-                    <Typography variant="body1">textEntryInteraction</Typography>
-                  </Box>
-                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
-                    <Typography variant="body1">simpleChoice</Typography>
-                  </Box>
-                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
-                    <Typography variant="body1">responseDeclaration</Typography>
-                  </Box>
-                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
-                    <Typography variant="body1">correctResponse</Typography>
-                  </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">textEntryInteraction</Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">extendedTextInteraction</Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">simpleChoice</Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">responseDeclaration</Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">correctResponse</Typography>
+                   </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -309,20 +319,19 @@ const LandingPage = () => {
               <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                 We're continuously expanding QTI support. Future releases will include:
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
-                {[
-                  'Extended Text',
-                  'Order Interaction',
-                  'Associate Interaction',
-                  'Match Interaction',
-                  'Gap Match',
-                  'Inline Choice',
-                  'Hottext',
-                  'Hotspot',
-                  'Graphic Interactions',
-                  'Sliders',
-                  'File Upload'
-                ].map((feature) => (
+               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
+                 {[
+                   'Order Interaction',
+                   'Associate Interaction',
+                   'Match Interaction',
+                   'Gap Match',
+                   'Inline Choice',
+                   'Hottext',
+                   'Hotspot',
+                   'Graphic Interactions',
+                   'Sliders',
+                   'File Upload'
+                 ].map((feature) => (
                   <Box 
                     key={feature}
                     sx={{ 

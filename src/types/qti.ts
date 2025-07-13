@@ -1,7 +1,7 @@
 export interface QTIItem {
   id: string;
   title: string;
-  type: 'choice' | 'multipleResponse' | 'textEntry' | 'unknown';
+  type: 'choice' | 'multipleResponse' | 'textEntry' | 'extendedText' | 'unknown';
   prompt: string;
   choices?: QTIChoice[];
   correctResponse?: string | string[];

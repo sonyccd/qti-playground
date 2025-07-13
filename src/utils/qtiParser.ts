@@ -73,12 +73,13 @@ function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<stri
   // Determine item type and parse accordingly
   const choiceInteraction = itemBody.querySelector('choiceInteraction');
   const textEntryInteraction = itemBody.querySelector('textEntryInteraction');
+  const extendedTextInteraction = itemBody.querySelector('extendedTextInteraction');
   
   // Look for unsupported interaction types
   const allInteractions = itemBody.querySelectorAll('[class*="Interaction"], [tagName*="Interaction"]');
   allInteractions.forEach(interaction => {
     const tagName = interaction.tagName.toLowerCase();
-    if (!['choiceinteraction', 'textentryinteraction'].includes(tagName)) {
+    if (!['choiceinteraction', 'textentryinteraction', 'extendedtextinteraction'].includes(tagName)) {
       addUnsupportedElement(unsupportedElements, tagName, getInteractionDescription(tagName));
     }
   });
@@ -87,6 +88,8 @@ function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<stri
     return parseChoiceInteraction(id, title, prompt, choiceInteraction, itemElement);
   } else if (textEntryInteraction) {
     return parseTextEntryInteraction(id, title, prompt, textEntryInteraction, itemElement);
+  } else if (extendedTextInteraction) {
+    return parseExtendedTextInteraction(id, title, prompt, extendedTextInteraction, itemElement);
   }
 
   return {
@@ -163,6 +166,26 @@ function parseTextEntryInteraction(
   };
 }
 
+function parseExtendedTextInteraction(
+  id: string,
+  title: string,
+  prompt: string,
+  extendedTextInteraction: Element,
+  itemElement: Element
+): QTIItem {
+  const responseIdentifier = extendedTextInteraction.getAttribute('responseIdentifier') || 'RESPONSE';
+  const correctResponse = findCorrectResponse(itemElement, responseIdentifier);
+
+  return {
+    id,
+    title,
+    type: 'extendedText',
+    prompt,
+    correctResponse,
+    responseIdentifier
+  };
+}
+
 function findCorrectResponse(itemElement: Element, responseIdentifier: string): string | string[] | undefined {
   const responseDeclaration = itemElement.querySelector(`responseDeclaration[identifier="${responseIdentifier}"]`);
   if (!responseDeclaration) return undefined;
@@ -183,7 +206,7 @@ function findCorrectResponse(itemElement: Element, responseIdentifier: string): 
 function scanForUnsupportedElements(xmlDoc: Document, unsupportedElements: Map<string, UnsupportedElement>) {
   // Common QTI interaction types that are not supported
   const unsupportedInteractions = [
-    'extendedTextInteraction',
+    // 'extendedTextInteraction', // Now supported
     'orderInteraction', 
     'associateInteraction',
     'matchInteraction',
