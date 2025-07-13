@@ -14,7 +14,8 @@ import {
   Description, 
   Code, 
   Lightbulb,
-  BeachAccess
+  BeachAccess,
+  Toys
 } from '@mui/icons-material';
 import { Link } from "react-router-dom";
 
@@ -89,7 +90,7 @@ const LandingPage = () => {
                   mb: 2
                 }}
               >
-                <PlayArrow sx={{ fontSize: 30, color: theme.palette.primary.main }} />
+                <Toys sx={{ fontSize: 30, color: theme.palette.primary.main }} />
               </Avatar>
               <Typography variant="h4" component="h2" gutterBottom fontWeight="bold">
                 Start Playing
