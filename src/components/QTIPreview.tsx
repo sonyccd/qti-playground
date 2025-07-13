@@ -245,6 +245,25 @@ export function QTIPreview() {
             alignItems: 'center',
             gap: 2
           }}>
+                <Button 
+                  variant="outlined" 
+                  size="small" 
+                  onClick={() => {
+                    const blob = new Blob([xmlContent], { type: 'application/xml' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'qti-item.xml';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                  }}
+                  startIcon={<Download />}
+                  disabled={!xmlContent.trim()}
+                >
+                  Download XML
+                </Button>
                 <Button variant="outlined" size="small" onClick={handleClearFile} startIcon={<Description />}>
                   New File
                 </Button>
