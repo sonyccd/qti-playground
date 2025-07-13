@@ -144,42 +144,6 @@ export function QTIPreview() {
   }}>
       <Container maxWidth="xl">
         
-        {/* Header */}
-        <Box textAlign="center" sx={{
-        mb: 4
-      }}>
-          <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 2,
-          mb: 2
-        }}>
-            <Avatar sx={{
-            width: 50,
-            height: 50,
-            bgcolor: theme.palette.primary.light
-          }}>
-              <MenuBook sx={{
-              fontSize: 30,
-              color: theme.palette.primary.main
-            }} />
-            </Avatar>
-            <Typography variant="h3" component="h1" sx={{
-            fontWeight: 'bold',
-            background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}>Playground</Typography>
-          </Box>
-          <Typography variant="h6" color="text.secondary" sx={{
-          maxWidth: '600px',
-          mx: 'auto'
-        }}>
-            Edit QTI XML content and see live preview updates. Upload a file or try the example to get started.
-          </Typography>
-        </Box>
 
         {/* File Upload and Controls */}
         {!hasContent && <Box sx={{
@@ -274,7 +238,7 @@ export function QTIPreview() {
             <Box sx={{
           display: 'flex',
           gap: 2,
-          height: 'calc(100vh - 400px)'
+          height: 'calc(100vh - 200px)'
         }}>
               {/* XML Editor */}
               {(layoutMode === 'editor-only' || layoutMode === 'split') && <Box sx={{
