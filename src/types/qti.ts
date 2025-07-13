@@ -17,4 +17,11 @@ export interface QTIParseResult {
   success: boolean;
   items: QTIItem[];
   errors: string[];
+  unsupportedElements: UnsupportedElement[];
+}
+
+export interface UnsupportedElement {
+  type: string;
+  count: number;
+  description: string;
 }

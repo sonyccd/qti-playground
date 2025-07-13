@@ -24,6 +24,7 @@ export function QTIPreview() {
   const [xmlContent, setXmlContent] = useState<string>('');
   const [hasContent, setHasContent] = useState(false);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('split');
+  const [unsupportedElements, setUnsupportedElements] = useState<import('@/types/qti').UnsupportedElement[]>([]);
   const { toast } = useToast();
 
   const handleFileSelect = async (file: File) => {
@@ -60,10 +61,13 @@ export function QTIPreview() {
       const parseResult = parseQTIXML(xmlText);
       setQtiItems(parseResult.items);
       setErrors(parseResult.errors);
+      // Store unsupported elements for display
+      setUnsupportedElements(parseResult.unsupportedElements);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'XML Parse Error';
       setErrors([errorMessage]);
       setQtiItems([]);
+      setUnsupportedElements([]);
     }
   };
 
@@ -116,6 +120,7 @@ export function QTIPreview() {
     setErrors([]);
     setXmlContent('');
     setHasContent(false);
+    setUnsupportedElements([]);
   };
 
   const getItemTypeLabel = (type: string) => {
@@ -315,6 +320,7 @@ export function QTIPreview() {
                     {/* Item Type Summary */}
                     {qtiItems.length > 0 && (
                       <div className="mb-6 p-4 bg-muted/50 rounded-lg">
+                        <h4 className="text-sm font-medium mb-3">Parsed Items</h4>
                         <div className="flex flex-wrap gap-2">
                           {Array.from(new Set(qtiItems.map(item => item.type))).map(type => {
                             const count = qtiItems.filter(item => item.type === type).length;
@@ -329,6 +335,30 @@ export function QTIPreview() {
                             );
                           })}
                         </div>
+                      </div>
+                    )}
+
+                    {/* Unsupported Elements Summary */}
+                    {unsupportedElements.length > 0 && (
+                      <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                        <h4 className="text-sm font-medium mb-3 text-yellow-800 dark:text-yellow-200">
+                          Unsupported Elements Found
+                        </h4>
+                        <div className="space-y-2">
+                          {unsupportedElements.map((element, index) => (
+                            <div key={index} className="flex items-center justify-between text-sm">
+                              <span className="text-yellow-700 dark:text-yellow-300">
+                                {element.description}
+                              </span>
+                              <Badge variant="outline" className="text-xs border-yellow-300 text-yellow-700 dark:text-yellow-300">
+                                {element.count}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-2">
+                          These elements were found but are not currently supported by the previewer.
+                        </p>
                       </div>
                     )}
 

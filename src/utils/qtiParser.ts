@@ -1,8 +1,9 @@
-import { QTIItem, QTIChoice, QTIParseResult } from '@/types/qti';
+import { QTIItem, QTIChoice, QTIParseResult, UnsupportedElement } from '@/types/qti';
 
 export function parseQTIXML(xmlContent: string): QTIParseResult {
   const errors: string[] = [];
   const items: QTIItem[] = [];
+  const unsupportedElements: Map<string, UnsupportedElement> = new Map();
 
   try {
     const parser = new DOMParser();
@@ -14,7 +15,8 @@ export function parseQTIXML(xmlContent: string): QTIParseResult {
       return {
         success: false,
         items: [],
-        errors: ['Invalid XML format']
+        errors: ['Invalid XML format'],
+        unsupportedElements: []
       };
     }
 
@@ -25,9 +27,12 @@ export function parseQTIXML(xmlContent: string): QTIParseResult {
       errors.push('No assessment items found in the QTI file');
     }
 
+    // Scan for unsupported elements
+    scanForUnsupportedElements(xmlDoc, unsupportedElements);
+
     assessmentItems.forEach((itemElement, index) => {
       try {
-        const item = parseAssessmentItem(itemElement);
+        const item = parseAssessmentItem(itemElement, unsupportedElements);
         if (item) {
           items.push(item);
         }
@@ -39,18 +44,20 @@ export function parseQTIXML(xmlContent: string): QTIParseResult {
     return {
       success: errors.length === 0 || items.length > 0,
       items,
-      errors
+      errors,
+      unsupportedElements: Array.from(unsupportedElements.values())
     };
   } catch (error) {
     return {
       success: false,
       items: [],
-      errors: [`Failed to parse QTI XML: ${error instanceof Error ? error.message : 'Unknown error'}`]
+      errors: [`Failed to parse QTI XML: ${error instanceof Error ? error.message : 'Unknown error'}`],
+      unsupportedElements: []
     };
   }
 }
 
-function parseAssessmentItem(itemElement: Element): QTIItem | null {
+function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<string, UnsupportedElement>): QTIItem | null {
   const id = itemElement.getAttribute('identifier') || `item-${Date.now()}`;
   const title = itemElement.getAttribute('title') || 'Untitled Item';
 
@@ -66,6 +73,15 @@ function parseAssessmentItem(itemElement: Element): QTIItem | null {
   // Determine item type and parse accordingly
   const choiceInteraction = itemBody.querySelector('choiceInteraction');
   const textEntryInteraction = itemBody.querySelector('textEntryInteraction');
+  
+  // Look for unsupported interaction types
+  const allInteractions = itemBody.querySelectorAll('[class*="Interaction"], [tagName*="Interaction"]');
+  allInteractions.forEach(interaction => {
+    const tagName = interaction.tagName.toLowerCase();
+    if (!['choiceinteraction', 'textentryinteraction'].includes(tagName)) {
+      addUnsupportedElement(unsupportedElements, tagName, getInteractionDescription(tagName));
+    }
+  });
 
   if (choiceInteraction) {
     return parseChoiceInteraction(id, title, prompt, choiceInteraction, itemElement);
@@ -162,4 +178,86 @@ function findCorrectResponse(itemElement: Element, responseIdentifier: string): 
   } else {
     return Array.from(values).map(value => value.textContent?.trim() || '');
   }
+}
+
+function scanForUnsupportedElements(xmlDoc: Document, unsupportedElements: Map<string, UnsupportedElement>) {
+  // Common QTI interaction types that are not supported
+  const unsupportedInteractions = [
+    'extendedTextInteraction',
+    'orderInteraction', 
+    'associateInteraction',
+    'matchInteraction',
+    'gapMatchInteraction',
+    'inlineChoiceInteraction',
+    'textEntryInteraction',
+    'hottextInteraction',
+    'hotspotInteraction',
+    'graphicOrderInteraction',
+    'graphicAssociateInteraction',
+    'graphicGapMatchInteraction',
+    'positionObjectInteraction',
+    'sliderInteraction',
+    'drawingInteraction',
+    'uploadInteraction'
+  ];
+
+  unsupportedInteractions.forEach(interactionType => {
+    const elements = xmlDoc.querySelectorAll(interactionType);
+    if (elements.length > 0) {
+      addUnsupportedElement(unsupportedElements, interactionType, getInteractionDescription(interactionType));
+    }
+  });
+
+  // Look for any custom interactions
+  const customInteractions = xmlDoc.querySelectorAll('customInteraction');
+  if (customInteractions.length > 0) {
+    addUnsupportedElement(unsupportedElements, 'customInteraction', 'Custom interaction elements');
+  }
+
+  // Look for modal feedback
+  const modalFeedback = xmlDoc.querySelectorAll('modalFeedback');
+  if (modalFeedback.length > 0) {
+    addUnsupportedElement(unsupportedElements, 'modalFeedback', 'Modal feedback elements');
+  }
+
+  // Look for outcome processing
+  const outcomeProcessing = xmlDoc.querySelectorAll('outcomeProcessing');
+  if (outcomeProcessing.length > 0) {
+    addUnsupportedElement(unsupportedElements, 'outcomeProcessing', 'Outcome processing rules');
+  }
+}
+
+function addUnsupportedElement(unsupportedElements: Map<string, UnsupportedElement>, type: string, description: string) {
+  if (unsupportedElements.has(type)) {
+    const existing = unsupportedElements.get(type)!;
+    existing.count++;
+  } else {
+    unsupportedElements.set(type, {
+      type,
+      count: 1,
+      description
+    });
+  }
+}
+
+function getInteractionDescription(interactionType: string): string {
+  const descriptions: Record<string, string> = {
+    'extendedTextInteraction': 'Extended text input fields',
+    'orderInteraction': 'Drag and drop ordering',
+    'associateInteraction': 'Association/matching pairs',
+    'matchInteraction': 'Matrix matching questions',
+    'gapMatchInteraction': 'Gap matching with draggable items',
+    'inlineChoiceInteraction': 'Inline dropdown selections',
+    'hottextInteraction': 'Hottext selection',
+    'hotspotInteraction': 'Image hotspot clicking',
+    'graphicOrderInteraction': 'Graphic ordering tasks',
+    'graphicAssociateInteraction': 'Graphic association tasks',
+    'graphicGapMatchInteraction': 'Graphic gap matching',
+    'positionObjectInteraction': 'Object positioning',
+    'sliderInteraction': 'Slider controls',
+    'drawingInteraction': 'Drawing/sketching',
+    'uploadInteraction': 'File upload questions'
+  };
+  
+  return descriptions[interactionType] || `${interactionType} elements`;
 }
