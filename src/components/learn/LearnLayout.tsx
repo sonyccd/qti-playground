@@ -41,7 +41,7 @@ export default function LearnLayout() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full pt-14"> {/* Move pt-14 here to push entire layout below nav */}
+      <div className="min-h-screen flex w-full"> {/* Removed pt-14 to eliminate white space */}
         <Sidebar className="w-64 border-r h-[calc(100vh-3.5rem)] sticky top-14"> {/* Make sidebar sticky below nav */}
           <SidebarContent>
               <SidebarGroup>
