@@ -10,7 +10,8 @@ import {
   ListItemText,
   Avatar,
   Divider,
-  useTheme
+  useTheme,
+  Grid
 } from '@mui/material';
 import { 
   ArrowBack, 
@@ -19,8 +20,7 @@ import {
   Code, 
   CheckCircle,
   Home,
-  School,
-  MenuBook
+  School
 } from '@mui/icons-material';
 import { Link } from "react-router-dom";
 
@@ -75,32 +75,6 @@ const Learn = () => {
             Question & Test Interoperability (QTI) is a standard for creating portable, interoperable assessment content
           </Typography>
         </Box>
-
-        {/* Detailed Learning Guide CTA */}
-        <Card sx={{ mb: 4, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
-          <CardContent sx={{ p: 4, textAlign: 'center' }}>
-            <MenuBook sx={{ fontSize: 48, mb: 2 }} />
-            <Typography variant="h4" component="h2" gutterBottom fontWeight="bold">
-              📘 Complete QTI Learning Guide
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>
-              Access our comprehensive step-by-step guide with 13 detailed sections covering everything from basic concepts to advanced implementations.
-            </Typography>
-            <Button 
-              component={Link} 
-              to="/learn/introduction"
-              variant="contained" 
-              size="large"
-              sx={{ 
-                bgcolor: 'white', 
-                color: 'primary.main',
-                '&:hover': { bgcolor: 'grey.100' }
-              }}
-            >
-              Start Complete Guide
-            </Button>
-          </CardContent>
-        </Card>
 
         {/* What is QTI */}
         <Card sx={{ mb: 4 }}>
@@ -187,10 +161,10 @@ const Learn = () => {
               </Avatar>
               <Box>
                 <Typography variant="h6" component="h4" gutterBottom>
-                  Start with the Complete Guide
+                  Start with the Playground
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Follow our step-by-step learning guide with detailed explanations and examples
+                  Head to the playground to experiment with QTI content in a live editor
                 </Typography>
               </Box>
             </Box>
@@ -209,10 +183,10 @@ const Learn = () => {
               </Avatar>
               <Box>
                 <Typography variant="h6" component="h4" gutterBottom>
-                  Try the Playground
+                  Try the Sample Content
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Head to the playground to experiment with QTI content in a live editor
+                  Load the example QTI file to see how different question types are structured
                 </Typography>
               </Box>
             </Box>
@@ -248,26 +222,26 @@ const Learn = () => {
             Ready to Get Started?
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            Choose your learning path based on your experience level
+            Jump into the playground and start creating your first QTI content
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Button 
               component={Link} 
-              to="/learn/introduction"
-              variant="contained" 
-              size="large"
-              startIcon={<MenuBook />}
-            >
-              Complete Learning Guide
-            </Button>
-            <Button 
-              component={Link} 
               to="/playground"
-              variant="outlined" 
+              variant="contained" 
               size="large"
               startIcon={<PlayArrow />}
             >
-              Jump to Playground
+              Go to Playground
+            </Button>
+            <Button 
+              component={Link} 
+              to="/"
+              variant="outlined" 
+              size="large"
+              startIcon={<Home />}
+            >
+              Back to Home
             </Button>
           </Box>
         </Box>
