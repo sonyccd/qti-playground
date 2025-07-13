@@ -1,10 +1,11 @@
 export interface QTIItem {
   id: string;
   title: string;
-  type: 'choice' | 'multipleResponse' | 'textEntry' | 'extendedText' | 'hottext' | 'unknown';
+  type: 'choice' | 'multipleResponse' | 'textEntry' | 'extendedText' | 'hottext' | 'slider' | 'unknown';
   prompt: string;
   choices?: QTIChoice[];
   hottextChoices?: QTIHottextChoice[];
+  sliderConfig?: QTISliderConfig;
   correctResponse?: string | string[];
   responseIdentifier?: string;
 }
@@ -17,6 +18,14 @@ export interface QTIChoice {
 export interface QTIHottextChoice {
   identifier: string;
   text: string;
+}
+
+export interface QTISliderConfig {
+  lowerBound: number;
+  upperBound: number;
+  step?: number;
+  stepLabel?: boolean;
+  orientation?: 'horizontal' | 'vertical';
 }
 
 export interface QTIParseResult {

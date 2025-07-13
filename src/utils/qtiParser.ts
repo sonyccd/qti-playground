@@ -1,4 +1,4 @@
-import { QTIItem, QTIChoice, QTIHottextChoice, QTIParseResult, UnsupportedElement } from '@/types/qti';
+import { QTIItem, QTIChoice, QTIHottextChoice, QTISliderConfig, QTIParseResult, UnsupportedElement } from '@/types/qti';
 
 export function parseQTIXML(xmlContent: string): QTIParseResult {
   const errors: string[] = [];
@@ -75,12 +75,13 @@ function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<stri
   const textEntryInteraction = itemBody.querySelector('textEntryInteraction');
   const extendedTextInteraction = itemBody.querySelector('extendedTextInteraction');
   const hottextInteraction = itemBody.querySelector('hottextInteraction');
+  const sliderInteraction = itemBody.querySelector('sliderInteraction');
   
   // Look for unsupported interaction types
   const allInteractions = itemBody.querySelectorAll('[class*="Interaction"], [tagName*="Interaction"]');
   allInteractions.forEach(interaction => {
     const tagName = interaction.tagName.toLowerCase();
-    if (!['choiceinteraction', 'textentryinteraction', 'extendedtextinteraction', 'hottextinteraction'].includes(tagName)) {
+    if (!['choiceinteraction', 'textentryinteraction', 'extendedtextinteraction', 'hottextinteraction', 'sliderinteraction'].includes(tagName)) {
       addUnsupportedElement(unsupportedElements, tagName, getInteractionDescription(tagName));
     }
   });
@@ -93,6 +94,8 @@ function parseAssessmentItem(itemElement: Element, unsupportedElements: Map<stri
     return parseExtendedTextInteraction(id, title, prompt, extendedTextInteraction, itemElement);
   } else if (hottextInteraction) {
     return parseHottextInteraction(id, title, prompt, hottextInteraction, itemElement);
+  } else if (sliderInteraction) {
+    return parseSliderInteraction(id, title, prompt, sliderInteraction, itemElement);
   }
 
   return {
@@ -108,7 +111,7 @@ function extractPromptText(itemBody: Element): string {
   const clone = itemBody.cloneNode(true) as Element;
   
   // Remove interaction elements to get just the prompt
-  const interactions = clone.querySelectorAll('choiceInteraction, textEntryInteraction, extendedTextInteraction, hottextInteraction');
+  const interactions = clone.querySelectorAll('choiceInteraction, textEntryInteraction, extendedTextInteraction, hottextInteraction, sliderInteraction');
   interactions.forEach(interaction => interaction.remove());
   
   return clone.textContent?.trim() || '';
@@ -224,6 +227,42 @@ function parseHottextInteraction(
   };
 }
 
+function parseSliderInteraction(
+  id: string,
+  title: string,
+  prompt: string,
+  sliderInteraction: Element,
+  itemElement: Element
+): QTIItem {
+  const responseIdentifier = sliderInteraction.getAttribute('responseIdentifier') || 'RESPONSE';
+  const lowerBound = parseFloat(sliderInteraction.getAttribute('lowerBound') || '0');
+  const upperBound = parseFloat(sliderInteraction.getAttribute('upperBound') || '100');
+  const step = parseFloat(sliderInteraction.getAttribute('step') || '1');
+  const stepLabel = sliderInteraction.getAttribute('stepLabel') === 'true';
+  const orientation = sliderInteraction.getAttribute('orientation') as 'horizontal' | 'vertical' || 'horizontal';
+
+  const sliderConfig: QTISliderConfig = {
+    lowerBound,
+    upperBound,
+    step,
+    stepLabel,
+    orientation
+  };
+
+  // Try to find correct response
+  const correctResponse = findCorrectResponse(itemElement, responseIdentifier);
+
+  return {
+    id,
+    title,
+    type: 'slider',
+    prompt,
+    sliderConfig,
+    correctResponse,
+    responseIdentifier
+  };
+}
+
 function findCorrectResponse(itemElement: Element, responseIdentifier: string): string | string[] | undefined {
   const responseDeclaration = itemElement.querySelector(`responseDeclaration[identifier="${responseIdentifier}"]`);
   if (!responseDeclaration) return undefined;
@@ -257,7 +296,7 @@ function scanForUnsupportedElements(xmlDoc: Document, unsupportedElements: Map<s
     'graphicAssociateInteraction',
     'graphicGapMatchInteraction',
     'positionObjectInteraction',
-    'sliderInteraction',
+    // 'sliderInteraction', // Now supported
     'drawingInteraction',
     'uploadInteraction'
   ];

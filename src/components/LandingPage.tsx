@@ -268,6 +268,12 @@ const LandingPage = () => {
                        <strong>Hottext:</strong> Select specific words or phrases in text
                      </Typography>
                    </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">
+                       <strong>Slider:</strong> Select values on a continuous scale
+                     </Typography>
+                   </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -302,6 +308,10 @@ const LandingPage = () => {
                    <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
                      <Typography variant="body1">hottextInteraction</Typography>
+                   </Box>
+                   <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                     <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                     <Typography variant="body1">sliderInteraction</Typography>
                    </Box>
                    <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
@@ -342,7 +352,6 @@ const LandingPage = () => {
                    'Inline Choice',
                    'Hotspot',
                    'Graphic Interactions',
-                   'Sliders',
                    'File Upload'
                  ].map((feature) => (
                   <Box 

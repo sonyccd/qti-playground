@@ -124,6 +124,8 @@ export function QTIPreview() {
         return 'Extended Text';
       case 'hottext':
         return 'Hottext Selection';
+      case 'slider':
+        return 'Slider';
       default:
         return 'Unknown';
     }
@@ -140,6 +142,8 @@ export function QTIPreview() {
         return 'info';
       case 'hottext':
         return 'warning';
+      case 'slider':
+        return 'default';
       default:
         return 'error';
     }

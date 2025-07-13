@@ -107,6 +107,20 @@
     </itemBody>
   </assessmentItem>
 
+  <assessmentItem identifier="slider_1" title="Customer Satisfaction Rating" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="float">
+      <correctResponse>
+        <value>7.5</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>On a scale from 1 to 10, how would you rate your overall satisfaction with our service?</p>
+      <p><em>1 = Very Dissatisfied, 10 = Very Satisfied</em></p>
+      <sliderInteraction responseIdentifier="RESPONSE" lowerBound="1" upperBound="10" step="0.5" stepLabel="true"/>
+    </itemBody>
+  </assessmentItem>
+
   <assessmentItem identifier="choice_item_2" title="Literature Question" adaptive="false" timeDependent="false">
     <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
       <correctResponse>
