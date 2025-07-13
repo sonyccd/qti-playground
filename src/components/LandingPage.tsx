@@ -1,100 +1,220 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Play, FileText, Code, Lightbulb } from "lucide-react";
+import { 
+  Button, 
+  Card, 
+  CardContent, 
+  Typography, 
+  Box, 
+  Container,
+  Avatar,
+  useTheme
+} from '@mui/material';
+import { 
+  MenuBook, 
+  PlayArrow, 
+  Description, 
+  Code, 
+  Lightbulb 
+} from '@mui/icons-material';
 import { Link } from "react-router-dom";
 
 const LandingPage = () => {
+  const theme = useTheme();
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-16">
+    <Box 
+      sx={{ 
+        minHeight: '100vh',
+        background: `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.grey[50]} 100%)`,
+        py: 8
+      }}
+    >
+      <Container maxWidth="lg">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
-            <FileText className="w-8 h-8 text-primary" />
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+        <Box textAlign="center" mb={8}>
+          <Avatar 
+            sx={{ 
+              width: 80, 
+              height: 80, 
+              bgcolor: theme.palette.primary.light,
+              mx: 'auto',
+              mb: 3
+            }}
+          >
+            <Description sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+          </Avatar>
+          <Typography 
+            variant="h2" 
+            component="h1" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontSize: { xs: '2.5rem', md: '4rem' }
+            }}
+          >
             QTI Playground
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          </Typography>
+          <Typography 
+            variant="h5" 
+            color="text.secondary"
+            sx={{ maxWidth: '600px', mx: 'auto' }}
+          >
             Explore, create, and test QTI (Question & Test Interoperability) content with our interactive playground
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
         {/* Main CTAs */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
-          <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
-            <CardHeader className="text-center pb-4">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4 group-hover:bg-primary/20 transition-colors">
-                <Play className="w-6 h-6 text-primary" />
-              </div>
-              <CardTitle className="text-2xl">Start Playing</CardTitle>
-              <CardDescription className="text-base">
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4, mb: 8, maxWidth: '800px', mx: 'auto' }}>
+          <Card 
+            sx={{ 
+              height: '100%',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-8px)',
+                boxShadow: theme.shadows[8]
+              }
+            }}
+          >
+            <CardContent sx={{ textAlign: 'center', p: 4 }}>
+              <Avatar 
+                sx={{ 
+                  width: 60, 
+                  height: 60, 
+                  bgcolor: theme.palette.primary.light,
+                  mx: 'auto',
+                  mb: 2
+                }}
+              >
+                <PlayArrow sx={{ fontSize: 30, color: theme.palette.primary.main }} />
+              </Avatar>
+              <Typography variant="h4" component="h2" gutterBottom fontWeight="bold">
+                Start Playing
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                 Jump right into the playground and start experimenting with QTI content
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Link to="/playground">
-                <Button size="lg" className="w-full">
-                  Go to Playground
-                </Button>
-              </Link>
+              </Typography>
+              <Button 
+                component={Link} 
+                to="/playground"
+                variant="contained" 
+                size="large" 
+                fullWidth
+                sx={{ py: 1.5 }}
+              >
+                Go to Playground
+              </Button>
             </CardContent>
           </Card>
 
-          <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
-            <CardHeader className="text-center pb-4">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4 group-hover:bg-primary/20 transition-colors">
-                <BookOpen className="w-6 h-6 text-primary" />
-              </div>
-              <CardTitle className="text-2xl">Learn QTI</CardTitle>
-              <CardDescription className="text-base">
+          <Card 
+            sx={{ 
+              height: '100%',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-8px)',
+                boxShadow: theme.shadows[8]
+              }
+            }}
+          >
+            <CardContent sx={{ textAlign: 'center', p: 4 }}>
+              <Avatar 
+                sx={{ 
+                  width: 60, 
+                  height: 60, 
+                  bgcolor: theme.palette.secondary.light,
+                  mx: 'auto',
+                  mb: 2
+                }}
+              >
+                <MenuBook sx={{ fontSize: 30, color: theme.palette.secondary.main }} />
+              </Avatar>
+              <Typography variant="h4" component="h2" gutterBottom fontWeight="bold">
+                Learn QTI
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                 New to QTI? Learn the basics and discover what's possible
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Link to="/learn">
-                <Button variant="outline" size="lg" className="w-full">
-                  Start Learning
-                </Button>
-              </Link>
+              </Typography>
+              <Button 
+                component={Link} 
+                to="/learn"
+                variant="outlined" 
+                size="large" 
+                fullWidth
+                sx={{ py: 1.5 }}
+              >
+                Start Learning
+              </Button>
             </CardContent>
           </Card>
-        </div>
+        </Box>
 
         {/* Features */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          <div className="text-center p-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-              <Code className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Live Editor</h3>
-            <p className="text-muted-foreground">
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 4, maxWidth: '1000px', mx: 'auto' }}>
+          <Box textAlign="center" p={3}>
+            <Avatar 
+              sx={{ 
+                width: 60, 
+                height: 60, 
+                bgcolor: theme.palette.info.light,
+                mx: 'auto',
+                mb: 2
+              }}
+            >
+              <Code sx={{ fontSize: 30, color: theme.palette.info.main }} />
+            </Avatar>
+            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
+              Live Editor
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
               Write and edit QTI XML with syntax highlighting and real-time preview
-            </p>
-          </div>
+            </Typography>
+          </Box>
 
-          <div className="text-center p-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-              <FileText className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Interactive Preview</h3>
-            <p className="text-muted-foreground">
+          <Box textAlign="center" p={3}>
+            <Avatar 
+              sx={{ 
+                width: 60, 
+                height: 60, 
+                bgcolor: theme.palette.success.light,
+                mx: 'auto',
+                mb: 2
+              }}
+            >
+              <Description sx={{ fontSize: 30, color: theme.palette.success.main }} />
+            </Avatar>
+            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
+              Interactive Preview
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
               See how your QTI content will render and behave in real-time
-            </p>
-          </div>
+            </Typography>
+          </Box>
 
-          <div className="text-center p-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-              <Lightbulb className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Examples & Samples</h3>
-            <p className="text-muted-foreground">
+          <Box textAlign="center" p={3}>
+            <Avatar 
+              sx={{ 
+                width: 60, 
+                height: 60, 
+                bgcolor: theme.palette.warning.light,
+                mx: 'auto',
+                mb: 2
+              }}
+            >
+              <Lightbulb sx={{ fontSize: 30, color: theme.palette.warning.main }} />
+            </Avatar>
+            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
+              Examples & Samples
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
               Start with built-in examples or upload your own QTI files
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 
