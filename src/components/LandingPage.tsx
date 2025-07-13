@@ -236,7 +236,8 @@ const LandingPage = () => {
         }}>
             {/* Item Types */}
             <Card sx={{
-            height: 'fit-content'
+            height: 'fit-content',
+            mx: 'auto'
           }}>
               <CardContent sx={{
               p: 4
