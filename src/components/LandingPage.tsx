@@ -237,6 +237,8 @@ const LandingPage = () => {
             {/* Item Types */}
             <Card sx={{
             height: 'fit-content',
+            gridColumn: { xs: '1', md: '1 / -1' },
+            maxWidth: '500px',
             mx: 'auto'
           }}>
               <CardContent sx={{
