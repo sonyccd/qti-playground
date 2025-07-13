@@ -143,7 +143,7 @@ const LandingPage = () => {
               <Button 
                 component={Link} 
                 to="/learn"
-                variant="outlined" 
+                variant="contained" 
                 size="large" 
                 fullWidth
                 sx={{ py: 1.5 }}
