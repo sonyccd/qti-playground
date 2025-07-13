@@ -40,69 +40,71 @@ export default function LearnLayout() {
   const nextSection = currentIndex < sections.length - 1 ? sections[currentIndex + 1] : null;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <Sidebar className="w-64 border-r">
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupLabel className="flex items-center gap-2">
-                <Book className="h-4 w-4" />
-                QTI Documentation
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {sections.map((section) => (
-                    <SidebarMenuItem key={section.id}>
-                      <SidebarMenuButton asChild>
-                        <Link 
-                          to={section.path}
-                          className={currentPath === section.path ? "bg-accent text-accent-foreground" : ""}
-                        >
-                          {section.title}
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-        </Sidebar>
+    <div className="pt-14"> {/* Add padding-top to account for fixed top nav */}
+      <SidebarProvider>
+        <div className="min-h-[calc(100vh-3.5rem)] flex w-full"> {/* Subtract top nav height */}
+          <Sidebar className="w-64 border-r">
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel className="flex items-center gap-2">
+                  <Book className="h-4 w-4" />
+                  QTI Documentation
+                </SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {sections.map((section) => (
+                      <SidebarMenuItem key={section.id}>
+                        <SidebarMenuButton asChild>
+                          <Link 
+                            to={section.path}
+                            className={currentPath === section.path ? "bg-accent text-accent-foreground" : ""}
+                          >
+                            {section.title}
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+          </Sidebar>
 
-        <main className="flex-1 flex flex-col">
-          <header className="border-b p-4">
-            <SidebarTrigger />
-          </header>
-          
-          <div className="flex-1 p-8 max-w-4xl mx-auto w-full">
-            <Outlet />
+          <main className="flex-1 flex flex-col">
+            <header className="border-b p-4">
+              <SidebarTrigger />
+            </header>
             
-            {/* Navigation buttons */}
-            <div className="flex justify-between items-center mt-12 pt-8 border-t">
-              <div>
-                {prevSection && (
-                  <Button variant="outline" asChild>
-                    <Link to={prevSection.path} className="flex items-center gap-2">
-                      <ChevronLeft className="h-4 w-4" />
-                      {prevSection.title}
-                    </Link>
-                  </Button>
-                )}
-              </div>
-              <div>
-                {nextSection && (
-                  <Button asChild>
-                    <Link to={nextSection.path} className="flex items-center gap-2">
-                      {nextSection.title}
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                )}
+            <div className="flex-1 p-8 max-w-4xl mx-auto w-full">
+              <Outlet />
+              
+              {/* Navigation buttons */}
+              <div className="flex justify-between items-center mt-12 pt-8 border-t">
+                <div>
+                  {prevSection && (
+                    <Button variant="outline" asChild>
+                      <Link to={prevSection.path} className="flex items-center gap-2">
+                        <ChevronLeft className="h-4 w-4" />
+                        {prevSection.title}
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+                <div>
+                  {nextSection && (
+                    <Button asChild>
+                      <Link to={nextSection.path} className="flex items-center gap-2">
+                        {nextSection.title}
+                        <ChevronRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </main>
-      </div>
-    </SidebarProvider>
+          </main>
+        </div>
+      </SidebarProvider>
+    </div>
   );
 }
