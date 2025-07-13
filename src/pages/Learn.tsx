@@ -10,8 +10,7 @@ import {
   ListItemText,
   Avatar,
   Divider,
-  useTheme,
-  Grid
+  useTheme
 } from '@mui/material';
 import { 
   ArrowBack, 
@@ -20,7 +19,8 @@ import {
   Code, 
   CheckCircle,
   Home,
-  School
+  School,
+  MenuBook
 } from '@mui/icons-material';
 import { Link } from "react-router-dom";
 
@@ -75,6 +75,32 @@ const Learn = () => {
             Question & Test Interoperability (QTI) is a standard for creating portable, interoperable assessment content
           </Typography>
         </Box>
+
+        {/* Detailed Learning Guide CTA */}
+        <Card sx={{ mb: 4, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
+          <CardContent sx={{ p: 4, textAlign: 'center' }}>
+            <MenuBook sx={{ fontSize: 48, mb: 2 }} />
+            <Typography variant="h4" component="h2" gutterBottom fontWeight="bold">
+              📘 Complete QTI Learning Guide
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>
+              Access our comprehensive step-by-step guide with 13 detailed sections covering everything from basic concepts to advanced implementations.
+            </Typography>
+            <Button 
+              component={Link} 
+              to="/learn/introduction"
+              variant="contained" 
+              size="large"
+              sx={{ 
+                bgcolor: 'white', 
+                color: 'primary.main',
+                '&:hover': { bgcolor: 'grey.100' }
+              }}
+            >
+              Start Complete Guide
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* What is QTI */}
         <Card sx={{ mb: 4 }}>
@@ -161,10 +187,10 @@ const Learn = () => {
               </Avatar>
               <Box>
                 <Typography variant="h6" component="h4" gutterBottom>
-                  Start with the Playground
+                  Start with the Complete Guide
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Head to the playground to experiment with QTI content in a live editor
+                  Follow our step-by-step learning guide with detailed explanations and examples
                 </Typography>
               </Box>
             </Box>
@@ -183,10 +209,10 @@ const Learn = () => {
               </Avatar>
               <Box>
                 <Typography variant="h6" component="h4" gutterBottom>
-                  Try the Sample Content
+                  Try the Playground
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Load the example QTI file to see how different question types are structured
+                  Head to the playground to experiment with QTI content in a live editor
                 </Typography>
               </Box>
             </Box>
@@ -222,26 +248,26 @@ const Learn = () => {
             Ready to Get Started?
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            Jump into the playground and start creating your first QTI content
+            Choose your learning path based on your experience level
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Button 
               component={Link} 
-              to="/playground"
+              to="/learn/introduction"
               variant="contained" 
               size="large"
-              startIcon={<PlayArrow />}
+              startIcon={<MenuBook />}
             >
-              Go to Playground
+              Complete Learning Guide
             </Button>
             <Button 
               component={Link} 
-              to="/"
+              to="/playground"
               variant="outlined" 
               size="large"
-              startIcon={<Home />}
+              startIcon={<PlayArrow />}
             >
-              Back to Home
+              Jump to Playground
             </Button>
           </Box>
         </Box>
