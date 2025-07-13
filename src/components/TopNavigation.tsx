@@ -21,7 +21,7 @@ const TopNavigation = () => {
   };
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="flex gap-6 md:gap-10">
           {navItems.map((item) => {
