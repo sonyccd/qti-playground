@@ -326,7 +326,7 @@ export function QTIPreview() {
             <Box sx={{ display: 'flex', gap: 2, height: 'calc(100vh - 400px)' }}>
               {/* XML Editor */}
               {(layoutMode === 'editor-only' || layoutMode === 'split') && (
-                <Box sx={{ flex: layoutMode === 'split' ? 1 : 2 }}>
+                <Box sx={{ flex: layoutMode === 'split' ? 1 : 1, minWidth: 0 }}>
                   <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                     <CardContent sx={{ pb: 1 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -359,7 +359,7 @@ export function QTIPreview() {
 
               {/* Preview Panel */}
               {(layoutMode === 'preview-only' || layoutMode === 'split') && (
-                <Box sx={{ flex: layoutMode === 'split' ? 1 : 2 }}>
+                <Box sx={{ flex: layoutMode === 'split' ? 1 : 1, minWidth: 0 }}>
                   <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                     <CardContent sx={{ pb: 1 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
