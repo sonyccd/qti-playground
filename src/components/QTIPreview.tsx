@@ -4,7 +4,7 @@ import { QTIItemRenderer } from './qti/QTIItemRenderer';
 import { parseQTIXML } from '@/utils/qtiParser';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, Typography, Box, Container, Button, Chip, Alert, AlertTitle, Avatar, ToggleButton, ToggleButtonGroup, useTheme, CircularProgress, Grid } from '@mui/material';
-import { Description, Warning, CheckCircle, MenuBook, Download, Code, Visibility, ViewColumn, ViewAgenda, ViewStream, Home, School, OpenInFull } from '@mui/icons-material';
+import { Description, Warning, CheckCircle, MenuBook, Download, Code, Visibility, ViewColumn, ViewAgenda, ViewStream, Home, School, OpenInFull, Add } from '@mui/icons-material';
 import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
@@ -104,6 +104,56 @@ export function QTIPreview() {
       setIsLoading(false);
     }
   };
+
+  const handleCreateBlankFile = () => {
+    const blankQTITemplate = `<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
+                identifier="sample-item" 
+                title="New QTI Item" 
+                adaptive="false" 
+                timeDependent="false">
+  
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+    <correctResponse>
+      <value>ChoiceA</value>
+    </correctResponse>
+  </responseDeclaration>
+  
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  
+  <itemBody>
+    <div>
+      <p>Enter your question text here.</p>
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
+        <prompt>Select the correct answer:</prompt>
+        <simpleChoice identifier="ChoiceA">Option A</simpleChoice>
+        <simpleChoice identifier="ChoiceB">Option B</simpleChoice>
+        <simpleChoice identifier="ChoiceC">Option C</simpleChoice>
+        <simpleChoice identifier="ChoiceD">Option D</simpleChoice>
+      </choiceInteraction>
+    </div>
+  </itemBody>
+  
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+  
+</assessmentItem>`;
+
+    setXmlContent(blankQTITemplate);
+    setHasContent(true);
+    setSelectedFile(undefined);
+    parseXMLContent(blankQTITemplate);
+    
+    toast({
+      title: "Blank QTI file created",
+      description: "A new blank QTI template is ready for editing"
+    });
+  };
   const handleClearFile = () => {
     setSelectedFile(undefined);
     setQtiItems([]);
@@ -168,10 +218,16 @@ export function QTIPreview() {
             <FileUpload onFileSelect={handleFileSelect} onClear={handleClearFile} selectedFile={selectedFile} />
             
             <Box textAlign="center" sx={{
-          mt: 2
+          mt: 2,
+          display: 'flex',
+          gap: 2,
+          justifyContent: 'center'
         }}>
               <Button variant="outlined" onClick={handleLoadExample} startIcon={<Download />} disabled={isLoading}>
                 Try Example QTI File
+              </Button>
+              <Button variant="outlined" onClick={handleCreateBlankFile} startIcon={<Add />} disabled={isLoading}>
+                Create Blank File
               </Button>
             </Box>
           </Box>}
