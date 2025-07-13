@@ -336,7 +336,7 @@ export function QTIPreview() {
                         </Typography>
                       </Box>
                     </CardContent>
-                    <Box sx={{ flex: 1, overflow: 'hidden' }}>
+                    <Box sx={{ flex: 1, overflow: 'auto', height: 0 }}>
                       <CodeMirror
                         value={xmlContent}
                         onChange={handleXmlChange}
