@@ -1,170 +1,157 @@
-import { 
-  Button, 
-  Card, 
-  CardBody, 
-  CardHeader, 
-  CardTitle, 
-  Grid, 
-  GridItem,
-  Title,
-  PageSection
-} from "@patternfly/react-core";
-import { ArrowLeftIcon, FileIcon, PlayIcon, CodeIcon, CheckCircleIcon } from "@patternfly/react-icons";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { ArrowLeft, FileText, Play, Code2, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Learn = () => {
   return (
-    <PageSection style={{ minHeight: '100vh' }}>
-      <div style={{ maxWidth: '64rem', margin: '0 auto', padding: '2rem 1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
           <Link to="/">
-            <Button variant="link" size="sm">
-              <ArrowLeftIcon style={{ marginRight: '0.5rem' }} />
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
             </Button>
           </Link>
         </div>
 
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <Title headingLevel="h1" size="4xl" style={{ marginBottom: '1rem' }}>Learn QTI</Title>
-          <p style={{ fontSize: '1.25rem', maxWidth: '48rem', margin: '0 auto', color: '#6c757d' }}>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">Learn QTI</h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Question & Test Interoperability (QTI) is a standard for creating portable, interoperable assessment content
           </p>
         </div>
 
-        <Card style={{ marginBottom: '2rem' }}>
+        {/* What is QTI */}
+        <Card className="mb-8">
           <CardHeader>
-            <CardTitle>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FileIcon />
-                What is QTI?
-              </div>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              What is QTI?
             </CardTitle>
           </CardHeader>
-          <CardBody>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <p>
-                QTI (Question & Test Interoperability) is an international standard that defines how assessment content 
-                should be structured and exchanged between different learning management systems and assessment platforms.
-              </p>
-              <p>
-                With QTI, you can create questions and assessments that work across different platforms without 
-                modification, ensuring your educational content is truly portable and interoperable.
-              </p>
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card style={{ marginBottom: '2rem' }}>
-          <CardHeader>
-            <CardTitle>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <CheckCircleIcon />
-                Key Features
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardBody>
-            <Grid hasGutter>
-              <GridItem md={6}>
-                <h4 style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Question Types</h4>
-                <ul style={{ listStyle: 'disc', paddingLeft: '1.5rem', color: '#6c757d' }}>
-                  <li>Multiple Choice</li>
-                  <li>Fill-in-the-blank</li>
-                  <li>True/False</li>
-                  <li>Essay Questions</li>
-                  <li>Matching</li>
-                </ul>
-              </GridItem>
-              <GridItem md={6}>
-                <h4 style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Advanced Features</h4>
-                <ul style={{ listStyle: 'disc', paddingLeft: '1.5rem', color: '#6c757d' }}>
-                  <li>Response Processing</li>
-                  <li>Scoring Rules</li>
-                  <li>Adaptive Testing</li>
-                  <li>Media Integration</li>
-                  <li>Accessibility Support</li>
-                </ul>
-              </GridItem>
-            </Grid>
-          </CardBody>
-        </Card>
-
-        <Card style={{ marginBottom: '2rem' }}>
-          <CardHeader>
-            <CardTitle>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <CodeIcon />
-                Getting Started
-              </div>
-            </CardTitle>
-            <p style={{ color: '#6c757d', marginTop: '0.5rem' }}>
-              Ready to create your first QTI content? Here's how to get started:
+          <CardContent className="space-y-4">
+            <p>
+              QTI (Question & Test Interoperability) is an international standard that defines how assessment content 
+              should be structured and exchanged between different learning management systems and assessment platforms.
             </p>
+            <p>
+              With QTI, you can create questions and assessments that work across different platforms without 
+              modification, ensuring your educational content is truly portable and interoperable.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Key Features */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5" />
+              Key Features
+            </CardTitle>
           </CardHeader>
-          <CardBody>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <div style={{ flexShrink: 0, width: '24px', height: '24px', backgroundColor: '#0066cc', color: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem', fontWeight: 'bold' }}>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold mb-2">Question Types</h4>
+                <ul className="space-y-1 text-sm text-muted-foreground">
+                  <li>• Multiple Choice</li>
+                  <li>• Fill-in-the-blank</li>
+                  <li>• True/False</li>
+                  <li>• Essay Questions</li>
+                  <li>• Matching</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Advanced Features</h4>
+                <ul className="space-y-1 text-sm text-muted-foreground">
+                  <li>• Response Processing</li>
+                  <li>• Scoring Rules</li>
+                  <li>• Adaptive Testing</li>
+                  <li>• Media Integration</li>
+                  <li>• Accessibility Support</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Getting Started */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Code2 className="w-5 h-5" />
+              Getting Started
+            </CardTitle>
+            <CardDescription>
+              Ready to create your first QTI content? Here's how to get started:
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
                   1
                 </div>
                 <div>
-                  <h4 style={{ fontWeight: 'bold' }}>Start with the Playground</h4>
-                  <p style={{ fontSize: '0.875rem', color: '#6c757d' }}>
+                  <h4 className="font-medium">Start with the Playground</h4>
+                  <p className="text-sm text-muted-foreground">
                     Head to the playground to experiment with QTI content in a live editor
                   </p>
                 </div>
               </div>
               
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <div style={{ flexShrink: 0, width: '24px', height: '24px', backgroundColor: '#0066cc', color: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem', fontWeight: 'bold' }}>
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
                   2
                 </div>
                 <div>
-                  <h4 style={{ fontWeight: 'bold' }}>Try the Sample Content</h4>
-                  <p style={{ fontSize: '0.875rem', color: '#6c757d' }}>
+                  <h4 className="font-medium">Try the Sample Content</h4>
+                  <p className="text-sm text-muted-foreground">
                     Load the example QTI file to see how different question types are structured
                   </p>
                 </div>
               </div>
               
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <div style={{ flexShrink: 0, width: '24px', height: '24px', backgroundColor: '#0066cc', color: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem', fontWeight: 'bold' }}>
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
                   3
                 </div>
                 <div>
-                  <h4 style={{ fontWeight: 'bold' }}>Modify and Experiment</h4>
-                  <p style={{ fontSize: '0.875rem', color: '#6c757d' }}>
+                  <h4 className="font-medium">Modify and Experiment</h4>
+                  <p className="text-sm text-muted-foreground">
                     Edit the XML content and see how your changes affect the rendered output
                   </p>
                 </div>
               </div>
             </div>
-          </CardBody>
+          </CardContent>
         </Card>
 
-        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
-          <hr style={{ marginBottom: '2rem', border: '1px solid #e9ecef' }} />
-          <Title headingLevel="h3" size="2xl" style={{ marginBottom: '1rem' }}>Ready to Get Started?</Title>
-          <p style={{ color: '#6c757d', marginBottom: '1.5rem' }}>
+        {/* CTA */}
+        <div className="text-center">
+          <Separator className="mb-8" />
+          <h3 className="text-2xl font-semibold mb-4">Ready to Get Started?</h3>
+          <p className="text-muted-foreground mb-6">
             Jump into the playground and start creating your first QTI content
           </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/playground">
-              <Button variant="primary" size="lg">
-                <PlayIcon style={{ marginRight: '0.5rem' }} />
-                Go to Playground
-              </Button>
-            </Link>
-            <Link to="/">
-              <Button variant="secondary" size="lg">
-                Back to Home
-              </Button>
-            </Link>
-          </div>
+          <Link to="/playground">
+            <Button size="lg" className="mr-4">
+              <Play className="w-4 h-4 mr-2" />
+              Go to Playground
+            </Button>
+          </Link>
+          <Link to="/">
+            <Button variant="outline" size="lg">
+              Back to Home
+            </Button>
+          </Link>
         </div>
       </div>
-    </PageSection>
+    </div>
   );
 };
 

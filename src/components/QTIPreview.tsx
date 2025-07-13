@@ -3,40 +3,16 @@ import { FileUpload } from './FileUpload';
 import { QTIItemRenderer } from './qti/QTIItemRenderer';
 import { parseQTIXML } from '@/utils/qtiParser';
 import { QTIItem } from '@/types/qti';
-import { 
-  Card, 
-  CardBody, 
-  CardHeader, 
-  CardTitle,
-  Alert,
-  Label,
-  Button,
-  Grid,
-  GridItem,
-  Title,
-  PageSection,
-  Flex,
-  FlexItem,
-  Badge
-} from '@patternfly/react-core';
-import { 
-  FileIcon, 
-  ExclamationTriangleIcon, 
-  CheckCircleIcon, 
-  BookOpenIcon, 
-  DownloadIcon, 
-  CodeIcon, 
-  EyeIcon, 
-  ArrowLeftIcon, 
-  ArrowRightIcon, 
-  ColumnsIcon,
-  HomeIcon
-} from '@patternfly/react-icons';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { FileText, AlertTriangle, CheckCircle, BookOpen, Download, Code, Eye, PanelLeft, PanelRight, Columns } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { Link } from 'react-router-dom';
 
 type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 
@@ -85,6 +61,7 @@ export function QTIPreview() {
       const parseResult = parseQTIXML(xmlText);
       setQtiItems(parseResult.items);
       setErrors(parseResult.errors);
+      // Store unsupported elements for display
       setUnsupportedElements(parseResult.unsupportedElements);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'XML Parse Error';
@@ -116,6 +93,7 @@ export function QTIPreview() {
       setHasContent(true);
       parseXMLContent(xmlText);
       
+      // Create a mock file object for display
       const mockFile = new File([xmlText], 'sample-qti.xml', { type: 'text/xml' });
       setSelectedFile(mockFile);
       
@@ -158,60 +136,52 @@ export function QTIPreview() {
     }
   };
 
-  return (
-    <PageSection style={{ minHeight: '100vh', padding: '1.5rem' }}>
-      <div style={{ maxWidth: '112rem', margin: '0 auto' }}>
-        {/* Navigation */}
-        <div style={{ marginBottom: '2rem' }}>
-          <Flex>
-            <FlexItem>
-              <Link to="/">
-                <Button variant="link">
-                  <HomeIcon style={{ marginRight: '0.5rem' }} />
-                  Home
-                </Button>
-              </Link>
-            </FlexItem>
-            <FlexItem>
-              <Link to="/learn">
-                <Button variant="link">
-                  <BookOpenIcon style={{ marginRight: '0.5rem' }} />
-                  Learn
-                </Button>
-              </Link>
-            </FlexItem>
-          </Flex>
-        </div>
+  const getItemTypeVariant = (type: string) => {
+    switch (type) {
+      case 'choice':
+        return 'default';
+      case 'multipleResponse':
+        return 'secondary';
+      case 'textEntry':
+        return 'outline';
+      default:
+        return 'destructive';
+    }
+  };
 
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-            <BookOpenIcon style={{ fontSize: '32px', color: '#0066cc' }} />
-            <Title headingLevel="h1" size="4xl">
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <BookOpen className="h-8 w-8 text-primary" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               QTI Live Editor
-            </Title>
+            </h1>
           </div>
-          <p style={{ fontSize: '1.125rem', maxWidth: '48rem', margin: '0 auto', color: '#6c757d' }}>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Edit QTI XML content and see live preview updates. Upload a file or try the example to get started.
           </p>
         </div>
 
         {/* File Upload and Controls */}
         {!hasContent && (
-          <div style={{ marginBottom: '1.5rem' }}>
+          <div className="space-y-4">
             <FileUpload
               onFileSelect={handleFileSelect}
               onClear={handleClearFile}
               selectedFile={selectedFile}
             />
             
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <div className="flex justify-center">
               <Button
-                variant="secondary"
+                variant="outline"
                 onClick={handleLoadExample}
-                isDisabled={isLoading}
+                className="gap-2"
+                disabled={isLoading}
               >
-                <DownloadIcon style={{ marginRight: '0.5rem' }} />
+                <Download className="h-4 w-4" />
                 Try Example QTI File
               </Button>
             </div>
@@ -221,188 +191,223 @@ export function QTIPreview() {
         {/* Loading State */}
         {isLoading && (
           <Card>
-            <CardBody style={{ padding: '2rem', textAlign: 'center' }}>
-              <div style={{ marginBottom: '1rem', color: '#6c757d' }}>Processing QTI file...</div>
-            </CardBody>
+            <CardContent className="p-8 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Processing QTI file...</p>
+            </CardContent>
           </Card>
         )}
 
         {/* Side by Side Editor */}
         {hasContent && !isLoading && (
-          <div>
+          <div className="space-y-4">
             {/* Control Bar */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <Badge isRead>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Badge variant="secondary" className="text-sm">
                   {selectedFile?.name || 'sample-qti.xml'}
                 </Badge>
                 {qtiItems.length > 0 && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <CheckCircleIcon style={{ color: '#22c55e' }} />
-                    <span style={{ fontSize: '0.875rem', color: '#6c757d' }}>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span className="text-sm text-muted-foreground">
                       {qtiItems.length} item{qtiItems.length !== 1 ? 's' : ''} parsed
                     </span>
                   </div>
                 )}
               </div>
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Button
-                  variant={layoutMode === 'editor-only' ? 'primary' : 'secondary'}
-                  size="sm"
-                  onClick={() => setLayoutMode('editor-only')}
-                >
-                  <ArrowLeftIcon />
-                </Button>
-                <Button
-                  variant={layoutMode === 'split' ? 'primary' : 'secondary'}
-                  size="sm"
-                  onClick={() => setLayoutMode('split')}
-                >
-                  <ColumnsIcon />
-                </Button>
-                <Button
-                  variant={layoutMode === 'preview-only' ? 'primary' : 'secondary'}
-                  size="sm"
-                  onClick={() => setLayoutMode('preview-only')}
-                >
-                  <ArrowRightIcon />
-                </Button>
+              <div className="flex items-center gap-2">
+                {/* Layout Controls */}
+                <div className="flex items-center bg-muted/50 rounded-lg p-1">
+                  <Button
+                    variant={layoutMode === 'editor-only' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setLayoutMode('editor-only')}
+                    className="h-8 px-3"
+                  >
+                    <PanelLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={layoutMode === 'split' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setLayoutMode('split')}
+                    className="h-8 px-3"
+                  >
+                    <Columns className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={layoutMode === 'preview-only' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setLayoutMode('preview-only')}
+                    className="h-8 px-3"
+                  >
+                    <PanelRight className="h-4 w-4" />
+                  </Button>
+                </div>
                 
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="sm"
                   onClick={handleClearFile}
+                  className="gap-2"
                 >
-                  <FileIcon style={{ marginRight: '0.5rem' }} />
+                  <FileText className="h-4 w-4" />
                   New File
                 </Button>
               </div>
             </div>
 
             {/* Editor Layout */}
-            <Grid hasGutter style={{ minHeight: 'calc(100vh - 300px)' }}>
+            <div className={`grid gap-6 h-[calc(100vh-300px)] ${
+              layoutMode === 'editor-only' ? 'grid-cols-1' :
+              layoutMode === 'preview-only' ? 'grid-cols-1' :
+              'grid-cols-1 lg:grid-cols-2'
+            }`}>
               {/* XML Editor */}
               {(layoutMode === 'editor-only' || layoutMode === 'split') && (
-                <GridItem md={layoutMode === 'split' ? 6 : 12}>
-                  <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <CardHeader>
-                      <CardTitle>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <CodeIcon />
-                          QTI XML Editor
-                        </div>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardBody style={{ flex: 1, padding: 0, overflow: 'hidden' }}>
-                      <CodeMirror
-                        value={xmlContent}
-                        onChange={handleXmlChange}
-                        extensions={[xml()]}
-                        theme={oneDark}
-                        style={{ height: '100%' }}
-                        basicSetup={{
-                          lineNumbers: true,
-                          foldGutter: true,
-                          dropCursor: false,
-                          allowMultipleSelections: false,
-                          indentOnInput: true,
-                          autocompletion: true,
-                        }}
-                      />
-                    </CardBody>
-                  </Card>
-                </GridItem>
+                <Card className="flex flex-col">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Code className="h-4 w-4" />
+                      QTI XML Editor
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 p-0 overflow-hidden">
+                    <CodeMirror
+                      value={xmlContent}
+                      onChange={handleXmlChange}
+                      extensions={[xml()]}
+                      theme={oneDark}
+                      className="h-full"
+                      basicSetup={{
+                        lineNumbers: true,
+                        foldGutter: true,
+                        dropCursor: false,
+                        allowMultipleSelections: false,
+                        indentOnInput: true,
+                        autocompletion: true,
+                      }}
+                    />
+                  </CardContent>
+                </Card>
               )}
 
               {/* Preview Panel */}
               {(layoutMode === 'preview-only' || layoutMode === 'split') && (
-                <GridItem md={layoutMode === 'split' ? 6 : 12}>
-                  <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <CardHeader>
-                      <CardTitle>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <EyeIcon />
-                          Live Preview
-                        </div>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardBody style={{ flex: 1, overflow: 'auto' }}>
-                      {/* Errors */}
-                      {errors.length > 0 && (
-                        <Alert variant="danger" title="Parse Errors" style={{ marginBottom: '1rem' }}>
-                          <div>
+                <Card className="flex flex-col">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Eye className="h-4 w-4" />
+                      Live Preview
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 overflow-auto">
+                    {/* Errors */}
+                    {errors.length > 0 && (
+                      <Alert variant="destructive" className="mb-4">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription>
+                          <div className="space-y-1">
                             {errors.map((error, index) => (
-                              <div key={index} style={{ fontSize: '0.875rem' }}>{error}</div>
+                              <div key={index} className="text-sm">{error}</div>
                             ))}
                           </div>
-                        </Alert>
-                      )}
+                        </AlertDescription>
+                      </Alert>
+                    )}
 
-                      {/* Item Type Summary */}
-                      {qtiItems.length > 0 && (
-                        <div style={{ marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem' }}>
-                          <h4 style={{ fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.75rem' }}>Parsed Items</h4>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            {Array.from(new Set(qtiItems.map(item => item.type))).map(type => {
-                              const count = qtiItems.filter(item => item.type === type).length;
-                              return (
-                                <Badge key={type} isRead>
-                                  {count} {getItemTypeLabel(type)}
-                                </Badge>
-                              );
-                            })}
-                          </div>
+                    {/* Item Type Summary */}
+                    {qtiItems.length > 0 && (
+                      <div className="mb-6 p-4 bg-muted/50 rounded-lg">
+                        <h4 className="text-sm font-medium mb-3">Parsed Items</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {Array.from(new Set(qtiItems.map(item => item.type))).map(type => {
+                            const count = qtiItems.filter(item => item.type === type).length;
+                            return (
+                              <Badge 
+                                key={type} 
+                                variant={getItemTypeVariant(type) as any}
+                                className="text-xs"
+                              >
+                                {count} {getItemTypeLabel(type)}
+                              </Badge>
+                            );
+                          })}
                         </div>
-                      )}
+                      </div>
+                    )}
 
-                      {/* Items */}
-                      {qtiItems.length > 0 ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                          {qtiItems.map((item, index) => (
-                            <div key={item.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <Badge isRead>
-                                  #{index + 1}
-                                </Badge>
-                                <Badge isRead>
-                                  {getItemTypeLabel(item.type)}
-                                </Badge>
-                              </div>
-                              <QTIItemRenderer item={item} />
+                    {/* Unsupported Elements Summary */}
+                    {unsupportedElements.length > 0 && (
+                      <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                        <h4 className="text-sm font-medium mb-3 text-yellow-800 dark:text-yellow-200">
+                          Unsupported Elements Found
+                        </h4>
+                        <div className="space-y-2">
+                          {unsupportedElements.map((element, index) => (
+                            <div key={index} className="flex items-center justify-between text-sm">
+                              <span className="text-yellow-700 dark:text-yellow-300">
+                                {element.description}
+                              </span>
+                              <Badge variant="outline" className="text-xs border-yellow-300 text-yellow-700 dark:text-yellow-300">
+                                {element.count}
+                              </Badge>
                             </div>
                           ))}
                         </div>
-                      ) : (
-                        !errors.length && (
-                          <div style={{ textAlign: 'center', color: '#6c757d', padding: '3rem 0' }}>
-                            <FileIcon style={{ fontSize: '48px', opacity: 0.5, marginBottom: '0.75rem' }} />
-                            <p>No valid QTI items found</p>
-                            <p style={{ fontSize: '0.875rem' }}>Check your XML structure</p>
+                        <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-2">
+                          These elements were found but are not currently supported by the previewer.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Items */}
+                    {qtiItems.length > 0 ? (
+                      <div className="space-y-6">
+                        {qtiItems.map((item, index) => (
+                          <div key={item.id} className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <Badge variant="outline" className="text-xs font-mono">
+                                #{index + 1}
+                              </Badge>
+                              <Badge variant={getItemTypeVariant(item.type) as any} className="text-xs">
+                                {getItemTypeLabel(item.type)}
+                              </Badge>
+                            </div>
+                            <QTIItemRenderer item={item} />
                           </div>
-                        )
-                      )}
-                    </CardBody>
-                  </Card>
-                </GridItem>
+                        ))}
+                      </div>
+                    ) : (
+                      !errors.length && (
+                        <div className="text-center text-muted-foreground py-12">
+                          <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                          <p>No valid QTI items found</p>
+                          <p className="text-sm">Check your XML structure</p>
+                        </div>
+                      )
+                    )}
+                  </CardContent>
+                </Card>
               )}
-            </Grid>
+            </div>
           </div>
         )}
 
         {/* Empty State */}
         {!hasContent && !isLoading && (
-          <Card style={{ border: '2px dashed #d1d5db' }}>
-            <CardBody style={{ padding: '3rem', textAlign: 'center' }}>
-              <CodeIcon style={{ fontSize: '64px', color: '#6c757d', marginBottom: '1rem' }} />
-              <Title headingLevel="h3" size="xl" style={{ marginBottom: '0.5rem' }}>QTI Live Editor</Title>
-              <p style={{ color: '#6c757d', marginBottom: '1rem' }}>
+          <Card className="border-dashed">
+            <CardContent className="p-12 text-center">
+              <Code className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">QTI Live Editor</h3>
+              <p className="text-muted-foreground mb-4">
                 Upload a QTI XML file to start editing, or try our example file to see the live editor in action.
               </p>
-            </CardBody>
+            </CardContent>
           </Card>
         )}
       </div>
-    </PageSection>
+    </div>
   );
 }
