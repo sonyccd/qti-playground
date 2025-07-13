@@ -31,9 +31,15 @@ This project is built with modern web technologies:
 - **Tailwind CSS** - Utility-first CSS framework
 - **shadcn/ui** - Modern UI component library
 - **Radix UI** - Accessible component primitives
+- **Material-UI** - Additional UI components and styling
 - **CodeMirror** - Code editor with XML syntax highlighting
 - **React Router** - Client-side routing
-- **React Query** - Data fetching and state management
+- **TanStack Query** - Data fetching and state management
+- **React Hook Form** - Form handling and validation
+- **Zod** - TypeScript-first schema validation
+- **React Dropzone** - File upload functionality
+- **Next Themes** - Theme switching support
+- **Sonner** - Toast notifications
 
 ## Local Development Setup
 
