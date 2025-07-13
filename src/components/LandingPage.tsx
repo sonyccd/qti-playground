@@ -15,7 +15,8 @@ import {
   Code, 
   Lightbulb,
   BeachAccess,
-  Toys
+  Toys,
+  GitHub
 } from '@mui/icons-material';
 import { Link } from "react-router-dom";
 
@@ -365,7 +366,7 @@ const LandingPage = () => {
                   mb: 3
                 }}
               >
-                <Code sx={{ fontSize: 40, color: 'primary.contrastText' }} />
+                <GitHub sx={{ fontSize: 40, color: 'primary.contrastText' }} />
               </Avatar>
               <Typography 
                 variant="h3" 
