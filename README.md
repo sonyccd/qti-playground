@@ -1,73 +1,186 @@
-# Welcome to your Lovable project
+# QTI Playground
 
-## Project info
+A modern web application for viewing, editing, and understanding QTI (Question and Test Interoperability) XML content. This tool provides an interactive environment for working with QTI assessment items and comprehensive documentation to learn about the QTI standard.
 
-**URL**: https://lovable.dev/projects/3831e069-30a8-4e8f-83d5-b475512b2f72
+## What is this app?
 
-## How can I edit this code?
+QTI Playground is an educational tool that allows users to:
 
-There are several ways of editing your application.
+- **View and Preview QTI Content**: Load QTI XML files and see how they render as interactive assessments
+- **Edit QTI XML**: Use a built-in code editor with syntax highlighting to modify QTI content
+- **Learn QTI**: Access comprehensive documentation covering all aspects of the QTI standard
+- **Experiment**: Try sample QTI content and modify it to understand how different components work
 
-**Use Lovable**
+## How it works
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3831e069-30a8-4e8f-83d5-b475512b2f72) and start prompting.
+The application consists of three main sections:
 
-Changes made via Lovable will be committed automatically to this repo.
+1. **Home Page**: Landing page with navigation to all features
+2. **Playground**: Interactive editor where you can load, edit, and preview QTI XML files
+3. **Learn**: Comprehensive documentation system with 13 sections covering everything from QTI basics to advanced topics
 
-**Use your preferred IDE**
+The playground uses a split-pane interface with a code editor on the left and a live preview on the right, allowing real-time visualization of QTI content changes.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Technologies Used
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+This project is built with modern web technologies:
 
-Follow these steps:
+- **React 18** - Frontend framework
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Fast build tool and development server
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - Modern UI component library
+- **Radix UI** - Accessible component primitives
+- **CodeMirror** - Code editor with XML syntax highlighting
+- **React Router** - Client-side routing
+- **React Query** - Data fetching and state management
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Local Development Setup
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Prerequisites
 
-# Step 3: Install the necessary dependencies.
-npm i
+- Node.js 18+ (recommended to use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+- npm or yarn package manager
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <your-repo-url>
+cd qti-playground
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open your browser and navigate to `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Available Scripts
 
-**Use GitHub Codespaces**
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Docker Development Setup
 
-## What technologies are used for this project?
+### Using Docker Compose (Recommended)
 
-This project is built with:
+1. Create a `docker-compose.yml` file in the project root:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```yaml
+version: '3.8'
+services:
+  qti-playground:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+```
 
-## How can I deploy this project?
+2. Create a `Dockerfile.dev` for development:
 
-Simply open [Lovable](https://lovable.dev/projects/3831e069-30a8-4e8f-83d5-b475512b2f72) and click on Share -> Publish.
+```dockerfile
+FROM node:18-alpine
 
-## Can I connect a custom domain to my Lovable project?
+WORKDIR /app
 
-Yes, you can!
+# Copy package files
+COPY package*.json ./
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# Install dependencies
+RUN npm install
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 5173
+
+# Start development server
+CMD ["npm", "run", "dev", "--", "--host"]
+```
+
+3. Run with Docker Compose:
+```bash
+docker-compose up --build
+```
+
+### Using Docker directly
+
+1. Build the development image:
+```bash
+docker build -f Dockerfile.dev -t qti-playground-dev .
+```
+
+2. Run the container:
+```bash
+docker run -p 5173:5173 -v $(pwd):/app -v /app/node_modules qti-playground-dev
+```
+
+### Production Docker Build
+
+For production deployment, create a `Dockerfile`:
+
+```dockerfile
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Build and run:
+```bash
+docker build -t qti-playground .
+docker run -p 80:80 qti-playground
+```
+
+## Project Structure
+
+```
+src/
+├── components/           # Reusable UI components
+│   ├── learn/           # Learning documentation components
+│   ├── qti/             # QTI-specific components
+│   └── ui/              # shadcn/ui components
+├── pages/               # Main page components
+├── hooks/               # Custom React hooks
+├── lib/                 # Utility functions
+├── types/               # TypeScript type definitions
+└── utils/               # Helper functions
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes and commit: `git commit -m "Add your feature"`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
