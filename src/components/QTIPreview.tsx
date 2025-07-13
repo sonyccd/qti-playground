@@ -8,9 +8,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
 import { FileText, AlertTriangle, CheckCircle, BookOpen, Download, Code, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import CodeMirror from '@uiw/react-codemirror';
+import { xml } from '@codemirror/lang-xml';
+import { oneDark } from '@codemirror/theme-one-dark';
 
 export function QTIPreview() {
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -227,12 +229,21 @@ export function QTIPreview() {
                     QTI XML Editor
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-0">
-                  <Textarea
+                <CardContent className="flex-1 p-0 overflow-hidden">
+                  <CodeMirror
                     value={xmlContent}
-                    onChange={(e) => handleXmlChange(e.target.value)}
-                    className="h-full resize-none border-0 rounded-none font-mono text-sm"
-                    placeholder="Enter QTI XML content here..."
+                    onChange={handleXmlChange}
+                    extensions={[xml()]}
+                    theme={oneDark}
+                    className="h-full"
+                    basicSetup={{
+                      lineNumbers: true,
+                      foldGutter: true,
+                      dropCursor: false,
+                      allowMultipleSelections: false,
+                      indentOnInput: true,
+                      autocompletion: true,
+                    }}
                   />
                 </CardContent>
               </Card>
