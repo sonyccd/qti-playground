@@ -43,7 +43,7 @@ const LandingPage = () => {
               mb: 3
             }}
           >
-            <BeachAccess sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+            <BeachAccess sx={{ fontSize: 40, color: 'white' }} />
           </Avatar>
           <Typography 
             variant="h2" 
@@ -91,7 +91,7 @@ const LandingPage = () => {
                   mb: 2
                 }}
               >
-                <Toys sx={{ fontSize: 30, color: theme.palette.primary.main }} />
+                <Toys sx={{ fontSize: 30, color: 'white' }} />
               </Avatar>
               <Typography variant="h4" component="h2" gutterBottom fontWeight="bold">
                 Start Playing
@@ -132,7 +132,7 @@ const LandingPage = () => {
                   mb: 2
                 }}
               >
-                <MenuBook sx={{ fontSize: 30, color: theme.palette.secondary.main }} />
+                <MenuBook sx={{ fontSize: 30, color: 'white' }} />
               </Avatar>
               <Typography variant="h4" component="h2" gutterBottom fontWeight="bold">
                 Learn QTI
@@ -166,7 +166,7 @@ const LandingPage = () => {
                 mb: 2
               }}
             >
-              <Code sx={{ fontSize: 30, color: theme.palette.info.main }} />
+              <Code sx={{ fontSize: 30, color: 'white' }} />
             </Avatar>
             <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
               Live Editor
@@ -186,7 +186,7 @@ const LandingPage = () => {
                 mb: 2
               }}
             >
-              <Description sx={{ fontSize: 30, color: theme.palette.success.main }} />
+              <Description sx={{ fontSize: 30, color: 'white' }} />
             </Avatar>
             <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
               Interactive Preview
@@ -206,7 +206,7 @@ const LandingPage = () => {
                 mb: 2
               }}
             >
-              <Lightbulb sx={{ fontSize: 30, color: theme.palette.warning.main }} />
+              <Lightbulb sx={{ fontSize: 30, color: 'white' }} />
             </Avatar>
             <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
               Examples & Samples
@@ -366,7 +366,7 @@ const LandingPage = () => {
                   mb: 3
                 }}
               >
-                <GitHub sx={{ fontSize: 40, color: 'primary.contrastText' }} />
+                <GitHub sx={{ fontSize: 40, color: 'white' }} />
               </Avatar>
               <Typography 
                 variant="h3" 
