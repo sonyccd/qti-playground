@@ -1,44 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FileUpload } from './FileUpload';
 import { QTIItemRenderer } from './qti/QTIItemRenderer';
 import { parseQTIXML } from '@/utils/qtiParser';
 import { QTIItem } from '@/types/qti';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  Card, 
-  CardContent, 
-  Typography, 
-  Box, 
-  Container, 
-  Button, 
-  Chip, 
-  Alert,
-  AlertTitle,
-  Avatar,
-  ToggleButton,
-  ToggleButtonGroup,
-  useTheme,
-  CircularProgress,
-  Grid
-} from '@mui/material';
-import { 
-  Description, 
-  Warning, 
-  CheckCircle, 
-  MenuBook, 
-  Download, 
-  Code, 
-  Visibility, 
-  ViewColumn,
-  ViewAgenda,
-  ViewStream,
-  Home,
-  School
-} from '@mui/icons-material';
+  SidebarProvider, 
+  Sidebar, 
+  SidebarContent, 
+  SidebarGroup, 
+  SidebarGroupContent, 
+  SidebarGroupLabel, 
+  SidebarMenu, 
+  SidebarMenuButton, 
+  SidebarMenuItem,
+  SidebarTrigger 
+} from '@/components/ui/sidebar';
 import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { Link } from 'react-router-dom';
+import { 
+  ArrowLeft, 
+  Book, 
+  Code, 
+  Eye, 
+  Download, 
+  FileText, 
+  CheckCircle, 
+  AlertTriangle,
+  Columns2,
+  FileCode,
+  Monitor
+} from 'lucide-react';
 
 type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 
@@ -52,7 +50,6 @@ export function QTIPreview() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('split');
   const [unsupportedElements, setUnsupportedElements] = useState<import('@/types/qti').UnsupportedElement[]>([]);
   const { toast } = useToast();
-  const theme = useTheme();
 
   const handleFileSelect = async (file: File) => {
     setSelectedFile(file);
@@ -88,7 +85,6 @@ export function QTIPreview() {
       const parseResult = parseQTIXML(xmlText);
       setQtiItems(parseResult.items);
       setErrors(parseResult.errors);
-      // Store unsupported elements for display
       setUnsupportedElements(parseResult.unsupportedElements);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'XML Parse Error';
@@ -120,7 +116,6 @@ export function QTIPreview() {
       setHasContent(true);
       parseXMLContent(xmlText);
       
-      // Create a mock file object for display
       const mockFile = new File([xmlText], 'sample-qti.xml', { type: 'text/xml' });
       setSelectedFile(mockFile);
       
@@ -163,328 +158,315 @@ export function QTIPreview() {
     }
   };
 
-  const getItemTypeColor = (type: string) => {
-    switch (type) {
-      case 'choice':
-        return 'primary';
-      case 'multipleResponse':
-        return 'secondary';
-      case 'textEntry':
-        return 'success';
-      default:
-        return 'error';
-    }
-  };
+  const navigationItems = [
+    { title: "File Upload", icon: FileText, active: !hasContent },
+    { title: "XML Editor", icon: Code, active: hasContent && (layoutMode === 'editor-only' || layoutMode === 'split') },
+    { title: "Live Preview", icon: Eye, active: hasContent && (layoutMode === 'preview-only' || layoutMode === 'split') },
+  ];
 
   return (
-    <Box 
-      sx={{ 
-        minHeight: '100vh',
-        background: `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.grey[50]} 100%)`,
-        py: 3,
-        px: 2
-      }}
-    >
-      <Container maxWidth="xl">
-        {/* Navigation */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-          <Button 
-            component={Link}
-            to="/"
-            startIcon={<Home />}
-            variant="outlined"
-            size="small"
-          >
-            Home
-          </Button>
-          <Button 
-            component={Link}
-            to="/learn"
-            startIcon={<School />}
-            variant="outlined"
-            size="small"
-          >
-            Learn
-          </Button>
-        </Box>
-        
-        {/* Header */}
-        <Box textAlign="center" sx={{ mb: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
-            <Avatar 
-              sx={{ 
-                width: 50, 
-                height: 50, 
-                bgcolor: theme.palette.primary.light
-              }}
-            >
-              <MenuBook sx={{ fontSize: 30, color: theme.palette.primary.main }} />
-            </Avatar>
-            <Typography 
-              variant="h3" 
-              component="h1" 
-              sx={{
-                fontWeight: 'bold',
-                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}
-            >
-              QTI Live Editor
-            </Typography>
-          </Box>
-          <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '600px', mx: 'auto' }}>
-            Edit QTI XML content and see live preview updates. Upload a file or try the example to get started.
-          </Typography>
-        </Box>
-
-        {/* File Upload and Controls */}
-        {!hasContent && (
-          <Box sx={{ mb: 4 }}>
-            <FileUpload
-              onFileSelect={handleFileSelect}
-              onClear={handleClearFile}
-              selectedFile={selectedFile}
-            />
-            
-            <Box textAlign="center" sx={{ mt: 2 }}>
-              <Button
-                variant="outlined"
-                onClick={handleLoadExample}
-                startIcon={<Download />}
-                disabled={isLoading}
-              >
-                Try Example QTI File
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <Sidebar className="w-64 border-r">
+          <SidebarContent>
+            <div className="p-4 border-b">
+              <Button variant="ghost" size="sm" asChild className="w-full justify-start mb-2">
+                <Link to="/">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Home
+                </Link>
               </Button>
-            </Box>
-          </Box>
-        )}
+              <Button variant="ghost" size="sm" asChild className="w-full justify-start">
+                <Link to="/learn">
+                  <Book className="mr-2 h-4 w-4" />
+                  Learn QTI
+                </Link>
+              </Button>
+            </div>
+            
+            <SidebarGroup>
+              <SidebarGroupLabel className="flex items-center gap-2">
+                <Code className="h-4 w-4" />
+                QTI Playground
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {navigationItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton className={item.active ? "bg-accent text-accent-foreground" : ""}>
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {item.title}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
 
-        {/* Loading State */}
-        {isLoading && (
-          <Card sx={{ mb: 4 }}>
-            <CardContent sx={{ textAlign: 'center', py: 8 }}>
-              <CircularProgress size={40} sx={{ mb: 2 }} />
-              <Typography color="text.secondary">Processing QTI file...</Typography>
-            </CardContent>
-          </Card>
-        )}
+            {hasContent && (
+              <SidebarGroup>
+                <SidebarGroupLabel>Layout Options</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton 
+                        onClick={() => setLayoutMode('editor-only')}
+                        className={layoutMode === 'editor-only' ? "bg-accent text-accent-foreground" : ""}
+                      >
+                        <FileCode className="mr-2 h-4 w-4" />
+                        Editor Only
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton 
+                        onClick={() => setLayoutMode('split')}
+                        className={layoutMode === 'split' ? "bg-accent text-accent-foreground" : ""}
+                      >
+                        <Columns2 className="mr-2 h-4 w-4" />
+                        Split View
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton 
+                        onClick={() => setLayoutMode('preview-only')}
+                        className={layoutMode === 'preview-only' ? "bg-accent text-accent-foreground" : ""}
+                      >
+                        <Monitor className="mr-2 h-4 w-4" />
+                        Preview Only
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )}
+          </SidebarContent>
+        </Sidebar>
 
-        {/* Side by Side Editor */}
-        {hasContent && !isLoading && (
-          <Box sx={{ mb: 4 }}>
-            {/* Control Bar */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Chip 
-                  label={selectedFile?.name || 'sample-qti.xml'}
-                  variant="outlined"
-                  size="small"
+        <main className="flex-1 flex flex-col">
+          <header className="border-b p-4">
+            <div className="flex items-center justify-between">
+              <SidebarTrigger />
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-bold">QTI Playground</h1>
+              </div>
+            </div>
+          </header>
+          
+          <div className="flex-1 p-6">
+            {/* File Upload Section */}
+            {!hasContent && (
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold mb-4">QTI Live Editor</h2>
+                  <p className="text-muted-foreground text-lg">
+                    Edit QTI XML content and see live preview updates. Upload a file or try the example to get started.
+                  </p>
+                </div>
+
+                <FileUpload
+                  onFileSelect={handleFileSelect}
+                  onClear={handleClearFile}
+                  selectedFile={selectedFile}
                 />
-                {qtiItems.length > 0 && (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <CheckCircle color="success" fontSize="small" />
-                    <Typography variant="body2" color="text.secondary">
-                      {qtiItems.length} item{qtiItems.length !== 1 ? 's' : ''} parsed
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-              
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                {/* Layout Controls */}
-                <ToggleButtonGroup
-                  value={layoutMode}
-                  exclusive
-                  onChange={(_, newMode) => newMode && setLayoutMode(newMode)}
-                  size="small"
-                >
-                  <ToggleButton value="editor-only">
-                    <ViewAgenda />
-                  </ToggleButton>
-                  <ToggleButton value="split">
-                    <ViewColumn />
-                  </ToggleButton>
-                  <ToggleButton value="preview-only">
-                    <ViewStream />
-                  </ToggleButton>
-                </ToggleButtonGroup>
                 
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={handleClearFile}
-                  startIcon={<Description />}
-                >
-                  New File
-                </Button>
-              </Box>
-            </Box>
+                <div className="text-center mt-4">
+                  <Button
+                    variant="outline"
+                    onClick={handleLoadExample}
+                    disabled={isLoading}
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Try Example QTI File
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Loading State */}
+            {isLoading && (
+              <Card className="max-w-2xl mx-auto">
+                <CardContent className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-muted-foreground">Processing QTI file...</p>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Editor Layout */}
-            <Box sx={{ display: 'flex', gap: 2, height: 'calc(100vh - 400px)' }}>
-              {/* XML Editor */}
-              {(layoutMode === 'editor-only' || layoutMode === 'split') && (
-                <Box sx={{ flex: layoutMode === 'split' ? 1 : 1, minWidth: 0 }}>
-                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <CardContent sx={{ pb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                        <Code fontSize="small" />
-                        <Typography variant="h6" component="h3">
-                          QTI XML Editor
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                    <Box sx={{ flex: 1, overflow: 'auto', height: 0 }}>
-                      <CodeMirror
-                        value={xmlContent}
-                        onChange={handleXmlChange}
-                        extensions={[xml()]}
-                        theme={oneDark}
-                        style={{ height: '100%' }}
-                        basicSetup={{
-                          lineNumbers: true,
-                          foldGutter: true,
-                          dropCursor: false,
-                          allowMultipleSelections: false,
-                          indentOnInput: true,
-                          autocompletion: true,
-                        }}
-                      />
-                    </Box>
-                  </Card>
-                </Box>
-              )}
+            {hasContent && !isLoading && (
+              <div className="h-full flex flex-col">
+                {/* Control Bar */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">
+                      {selectedFile?.name || 'sample-qti.xml'}
+                    </Badge>
+                    {qtiItems.length > 0 && (
+                      <div className="flex items-center gap-1">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <span className="text-sm text-muted-foreground">
+                          {qtiItems.length} item{qtiItems.length !== 1 ? 's' : ''} parsed
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearFile}
+                  >
+                    <FileText className="mr-2 h-4 w-4" />
+                    New File
+                  </Button>
+                </div>
 
-              {/* Preview Panel */}
-              {(layoutMode === 'preview-only' || layoutMode === 'split') && (
-                <Box sx={{ flex: layoutMode === 'split' ? 1 : 1, minWidth: 0 }}>
-                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <CardContent sx={{ pb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                        <Visibility fontSize="small" />
-                        <Typography variant="h6" component="h3">
-                          Live Preview
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                    <CardContent sx={{ flex: 1, overflow: 'auto', pt: 0 }}>
-                      {/* Errors */}
-                      {errors.length > 0 && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
-                          <AlertTitle>Parsing Errors</AlertTitle>
-                          {errors.map((error, index) => (
-                            <Typography key={index} variant="body2">
-                              {error}
-                            </Typography>
-                          ))}
-                        </Alert>
-                      )}
+                {/* Editor Content */}
+                <div className="flex-1 flex gap-4 min-h-0">
+                  {/* XML Editor */}
+                  {(layoutMode === 'editor-only' || layoutMode === 'split') && (
+                    <div className={`${layoutMode === 'split' ? 'flex-1' : 'w-full'} flex flex-col min-w-0`}>
+                      <Card className="flex-1 flex flex-col">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="flex items-center gap-2 text-lg">
+                            <Code className="h-5 w-5" />
+                            QTI XML Editor
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-1 p-0">
+                          <CodeMirror
+                            value={xmlContent}
+                            onChange={handleXmlChange}
+                            extensions={[xml()]}
+                            theme={oneDark}
+                            height="100%"
+                            basicSetup={{
+                              lineNumbers: true,
+                              foldGutter: true,
+                              dropCursor: false,
+                              allowMultipleSelections: false,
+                              indentOnInput: true,
+                              autocompletion: true,
+                            }}
+                          />
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
 
-                      {/* Item Type Summary */}
-                      {qtiItems.length > 0 && (
-                        <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                          <Typography variant="subtitle2" gutterBottom>
-                            Parsed Items
-                          </Typography>
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                            {Array.from(new Set(qtiItems.map(item => item.type))).map(type => {
-                              const count = qtiItems.filter(item => item.type === type).length;
-                              return (
-                                <Chip 
-                                  key={type} 
-                                  label={`${count} ${getItemTypeLabel(type)}`}
-                                  color={getItemTypeColor(type) as any}
-                                  size="small"
-                                />
-                              );
-                            })}
-                          </Box>
-                        </Box>
-                      )}
+                  {/* Preview Panel */}
+                  {(layoutMode === 'preview-only' || layoutMode === 'split') && (
+                    <div className={`${layoutMode === 'split' ? 'flex-1' : 'w-full'} flex flex-col min-w-0`}>
+                      <Card className="flex-1 flex flex-col">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="flex items-center gap-2 text-lg">
+                            <Eye className="h-5 w-5" />
+                            Live Preview
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-1 overflow-auto">
+                          {/* Errors */}
+                          {errors.length > 0 && (
+                            <Alert variant="destructive" className="mb-4">
+                              <AlertTriangle className="h-4 w-4" />
+                              <AlertDescription>
+                                <div className="font-medium mb-1">Parsing Errors</div>
+                                {errors.map((error, index) => (
+                                  <div key={index} className="text-sm">
+                                    {error}
+                                  </div>
+                                ))}
+                              </AlertDescription>
+                            </Alert>
+                          )}
 
-                      {/* Unsupported Elements Summary */}
-                      {unsupportedElements.length > 0 && (
-                        <Alert severity="warning" sx={{ mb: 3 }}>
-                          <AlertTitle>Unsupported Elements Found</AlertTitle>
-                          <Box sx={{ mt: 1 }}>
-                            {unsupportedElements.map((element, index) => (
-                              <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Typography variant="body2">
-                                  {element.description}
-                                </Typography>
-                                <Chip 
-                                  label={element.count}
-                                  size="small"
-                                  variant="outlined"
-                                />
-                              </Box>
-                            ))}
-                          </Box>
-                          <Typography variant="caption" sx={{ mt: 1, display: 'block' }}>
-                            These elements were found but are not currently supported by the previewer.
-                          </Typography>
-                        </Alert>
-                      )}
+                          {/* Item Type Summary */}
+                          {qtiItems.length > 0 && (
+                            <div className="mb-4 p-3 bg-muted rounded-lg">
+                              <h4 className="font-medium mb-2">Parsed Items</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {Array.from(new Set(qtiItems.map(item => item.type))).map(type => {
+                                  const count = qtiItems.filter(item => item.type === type).length;
+                                  return (
+                                    <Badge key={type} variant="secondary">
+                                      {count} {getItemTypeLabel(type)}
+                                    </Badge>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
 
-                      {/* Items */}
-                      {qtiItems.length > 0 ? (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                          {qtiItems.map((item, index) => (
-                            <Box key={item.id}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                                <Chip 
-                                  label={`#${index + 1}`}
-                                  variant="outlined"
-                                  size="small"
-                                />
-                                <Chip 
-                                  label={getItemTypeLabel(item.type)}
-                                  color={getItemTypeColor(item.type) as any}
-                                  size="small"
-                                />
-                              </Box>
-                              <QTIItemRenderer item={item} />
-                            </Box>
-                          ))}
-                        </Box>
-                      ) : (
-                        !errors.length && (
-                          <Box sx={{ textAlign: 'center', py: 6 }}>
-                            <Description sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
-                            <Typography variant="h6" color="text.secondary">
-                              No valid QTI items found
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Check your XML structure
-                            </Typography>
-                          </Box>
-                        )
-                      )}
-                    </CardContent>
-                  </Card>
-                </Box>
-              )}
-            </Box>
-          </Box>
-        )}
+                          {/* Unsupported Elements Summary */}
+                          {unsupportedElements.length > 0 && (
+                            <Alert className="mb-4">
+                              <AlertTriangle className="h-4 w-4" />
+                              <AlertDescription>
+                                <div className="font-medium mb-2">Unsupported Elements Found</div>
+                                <div className="space-y-1">
+                                  {unsupportedElements.map((element, index) => (
+                                    <div key={index} className="flex justify-between items-center text-sm">
+                                      <span>{element.description}</span>
+                                      <Badge variant="outline">{element.count}</Badge>
+                                    </div>
+                                  ))}
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  These elements were found but are not currently supported by the previewer.
+                                </p>
+                              </AlertDescription>
+                            </Alert>
+                          )}
 
-        {/* Empty State */}
-        {!hasContent && !isLoading && (
-          <Card sx={{ border: '2px dashed', borderColor: 'grey.300' }}>
-            <CardContent sx={{ textAlign: 'center', py: 8 }}>
-              <Code sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
-              <Typography variant="h5" component="h3" gutterBottom>
-                QTI Live Editor
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Upload a QTI XML file to start editing, or try our example file to see the live editor in action.
-              </Typography>
-            </CardContent>
-          </Card>
-        )}
-      </Container>
-    </Box>
+                          {/* Items */}
+                          {qtiItems.length > 0 ? (
+                            <div className="space-y-6">
+                              {qtiItems.map((item, index) => (
+                                <div key={item.id}>
+                                  <div className="flex items-center gap-2 mb-3">
+                                    <Badge variant="outline">#{index + 1}</Badge>
+                                    <Badge>{getItemTypeLabel(item.type)}</Badge>
+                                  </div>
+                                  <QTIItemRenderer item={item} />
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            !errors.length && (
+                              <div className="text-center py-12">
+                                <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                                <h3 className="text-lg font-medium text-muted-foreground mb-2">
+                                  No valid QTI items found
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  Check your XML structure
+                                </p>
+                              </div>
+                            )
+                          )}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!hasContent && !isLoading && (
+              <Card className="max-w-2xl mx-auto border-dashed border-2">
+                <CardContent className="text-center py-12">
+                  <Code className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-medium mb-2">QTI Live Editor</h3>
+                  <p className="text-muted-foreground">
+                    Upload a QTI XML file to start editing, or try our example file to see the live editor in action.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }
