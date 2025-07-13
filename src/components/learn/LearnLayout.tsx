@@ -26,9 +26,7 @@ const sections = [
   { id: "response-processing", title: "Response Processing", path: "/learn/response-processing" },
   { id: "assessment-test", title: "Assessment Test", path: "/learn/assessment-test" },
   { id: "organizing-files", title: "Organizing Files", path: "/learn/organizing-files" },
-  { id: "tools", title: "Tools for QTI", path: "/learn/tools" },
   { id: "best-practices", title: "Best Practices", path: "/learn/best-practices" },
-  { id: "summary", title: "Summary", path: "/learn/summary" },
 ];
 
 export default function LearnLayout() {

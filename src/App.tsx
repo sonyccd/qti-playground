@@ -18,9 +18,7 @@ import AnswerChoices from "./components/learn/sections/AnswerChoices";
 import ResponseProcessing from "./components/learn/sections/ResponseProcessing";
 import AssessmentTest from "./components/learn/sections/AssessmentTest";
 import OrganizingFiles from "./components/learn/sections/OrganizingFiles";
-import Tools from "./components/learn/sections/Tools";
 import BestPractices from "./components/learn/sections/BestPractices";
-import Summary from "./components/learn/sections/Summary";
 import Footer from "./components/Footer";
 import AppLayout from "./components/AppLayout";
 
@@ -50,9 +48,7 @@ const App = () => (
                   <Route path="response-processing" element={<ResponseProcessing />} />
                   <Route path="assessment-test" element={<AssessmentTest />} />
                   <Route path="organizing-files" element={<OrganizingFiles />} />
-                  <Route path="tools" element={<Tools />} />
                   <Route path="best-practices" element={<BestPractices />} />
-                  <Route path="summary" element={<Summary />} />
                 </Route>
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
