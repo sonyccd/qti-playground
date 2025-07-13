@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { 
   SidebarProvider, 
@@ -32,6 +32,11 @@ const sections = [
 export default function LearnLayout() {
   const location = useLocation();
   const currentPath = location.pathname;
+  
+  // Scroll to top when route changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPath]);
   
   // Handle /learn route as introduction
   const effectivePath = currentPath === '/learn' ? '/learn/introduction' : currentPath;
