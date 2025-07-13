@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
+                identifier="sample_assessment"
+                title="Sample QTI Assessment">
+
+  <assessmentItem identifier="choice_item_1" title="Basic Geography Question" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+      <correctResponse>
+        <value>choice_c</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>What is the capital city of France?</p>
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
+        <simpleChoice identifier="choice_a">London</simpleChoice>
+        <simpleChoice identifier="choice_b">Berlin</simpleChoice>
+        <simpleChoice identifier="choice_c">Paris</simpleChoice>
+        <simpleChoice identifier="choice_d">Madrid</simpleChoice>
+      </choiceInteraction>
+    </itemBody>
+  </assessmentItem>
+
+  <assessmentItem identifier="multiple_response_1" title="Programming Languages" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+      <correctResponse>
+        <value>choice_a</value>
+        <value>choice_c</value>
+        <value>choice_d</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>Which of the following are programming languages? (Select all that apply)</p>
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="0">
+        <simpleChoice identifier="choice_a">Python</simpleChoice>
+        <simpleChoice identifier="choice_b">HTML</simpleChoice>
+        <simpleChoice identifier="choice_c">JavaScript</simpleChoice>
+        <simpleChoice identifier="choice_d">Java</simpleChoice>
+        <simpleChoice identifier="choice_e">CSS</simpleChoice>
+      </choiceInteraction>
+    </itemBody>
+  </assessmentItem>
+
+  <assessmentItem identifier="text_entry_1" title="Simple Math" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+      <correctResponse>
+        <value>12</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>What is the result of 8 + 4?</p>
+      <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="10"/>
+    </itemBody>
+  </assessmentItem>
+
+  <assessmentItem identifier="fill_blank_1" title="Science Fill-in-the-Blank" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+      <correctResponse>
+        <value>oxygen</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>Water (H₂O) is composed of hydrogen and ________.</p>
+      <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="15"/>
+    </itemBody>
+  </assessmentItem>
+
+  <assessmentItem identifier="choice_item_2" title="Literature Question" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+      <correctResponse>
+        <value>choice_b</value>
+      </correctResponse>
+    </responseDeclaration>
+    
+    <itemBody>
+      <p>Who wrote the novel "To Kill a Mockingbird"?</p>
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
+        <simpleChoice identifier="choice_a">Mark Twain</simpleChoice>
+        <simpleChoice identifier="choice_b">Harper Lee</simpleChoice>
+        <simpleChoice identifier="choice_c">F. Scott Fitzgerald</simpleChoice>
+        <simpleChoice identifier="choice_d">Ernest Hemingway</simpleChoice>
+      </choiceInteraction>
+    </itemBody>
+  </assessmentItem>
+
+</assessmentTest>

@@ -6,8 +6,9 @@ import { QTIItem } from '@/types/qti';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { FileText, AlertTriangle, CheckCircle, BookOpen } from 'lucide-react';
+import { FileText, AlertTriangle, CheckCircle, BookOpen, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export function QTIPreview() {
@@ -48,6 +49,47 @@ export function QTIPreview() {
       toast({
         title: "Error",
         description: "Failed to process the QTI file",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoadExample = async () => {
+    setIsLoading(true);
+    setErrors([]);
+    setQtiItems([]);
+    setSelectedFile(undefined);
+
+    try {
+      const response = await fetch('/sample-qti.xml');
+      if (!response.ok) {
+        throw new Error('Failed to load example file');
+      }
+      
+      const xmlText = await response.text();
+      const parseResult = parseQTIXML(xmlText);
+      
+      setQtiItems(parseResult.items);
+      setErrors(parseResult.errors);
+      
+      // Create a mock file object for display
+      const mockFile = new File([xmlText], 'sample-qti.xml', { type: 'text/xml' });
+      setSelectedFile(mockFile);
+      
+      if (parseResult.success) {
+        toast({
+          title: "Example QTI file loaded",
+          description: `Found ${parseResult.items.length} sample item(s)`,
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setErrors([`Failed to load example file: ${errorMessage}`]);
+      toast({
+        title: "Error",
+        description: "Failed to load the example QTI file",
         variant: "destructive",
       });
     } finally {
@@ -105,11 +147,27 @@ export function QTIPreview() {
         </div>
 
         {/* File Upload */}
-        <FileUpload
-          onFileSelect={handleFileSelect}
-          onClear={handleClearFile}
-          selectedFile={selectedFile}
-        />
+        <div className="space-y-4">
+          <FileUpload
+            onFileSelect={handleFileSelect}
+            onClear={handleClearFile}
+            selectedFile={selectedFile}
+          />
+          
+          {/* Example Button */}
+          {!selectedFile && !isLoading && (
+            <div className="flex justify-center">
+              <Button
+                variant="outline"
+                onClick={handleLoadExample}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Try Example QTI File
+              </Button>
+            </div>
+          )}
+        </div>
 
         {/* Loading State */}
         {isLoading && (
@@ -198,9 +256,17 @@ export function QTIPreview() {
             <CardContent className="p-12 text-center">
               <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">No QTI file selected</h3>
-              <p className="text-muted-foreground">
-                Upload a QTI XML file to start previewing assessment items
+              <p className="text-muted-foreground mb-4">
+                Upload a QTI XML file to start previewing assessment items, or try our example file to see how it works.
               </p>
+              <Button
+                variant="outline"
+                onClick={handleLoadExample}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Try Example QTI File
+              </Button>
             </CardContent>
           </Card>
         )}
