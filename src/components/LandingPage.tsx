@@ -10,7 +10,7 @@ const LandingPage = () => {
   }}>
       <Container maxWidth="lg">
         {/* Header */}
-        <Box textAlign="center" mb={8}>
+        <Box textAlign="center" mb={8} className="animate-fade-in">
           <Avatar sx={{
           width: 80,
           height: 80,
@@ -54,8 +54,9 @@ const LandingPage = () => {
         gap: 4,
         mb: 8,
         maxWidth: '800px',
-        mx: 'auto'
-      }}>
+        mx: 'auto',
+        animationDelay: '0.2s'
+      }} className="animate-fade-in">
           <Card sx={{
           height: '100%',
           transition: 'all 0.3s ease',
@@ -147,8 +148,9 @@ const LandingPage = () => {
         gap: 4,
         maxWidth: '1000px',
         mx: 'auto',
-        mb: 8
-      }}>
+        mb: 8,
+        animationDelay: '0.4s'
+      }} className="animate-fade-in">
           <Box textAlign="center" p={3}>
             <Avatar sx={{
             width: 60,
@@ -217,8 +219,9 @@ const LandingPage = () => {
         <Box sx={{
         maxWidth: '1000px',
         mx: 'auto',
-        mb: 8
-      }}>
+        mb: 8,
+        animationDelay: '0.6s'
+      }} className="animate-fade-in">
           <Typography variant="h3" component="h2" textAlign="center" gutterBottom fontWeight="bold" sx={{
           mb: 4
         }}>
@@ -420,8 +423,9 @@ const LandingPage = () => {
         <Box sx={{
         maxWidth: '800px',
         mx: 'auto',
-        textAlign: 'center'
-      }}>
+        textAlign: 'center',
+        animationDelay: '0.8s'
+      }} className="animate-fade-in">
           <Card sx={{
           bgcolor: 'primary.main',
           color: 'primary.contrastText',
