@@ -475,7 +475,7 @@ const LandingPage = () => {
                 bgcolor: 'grey.100',
                 transform: 'scale(1.05)'
               }
-            }} onClick={() => window.open('https://github.com', '_blank')}>
+            }} onClick={() => window.open('https://github.com/sonyccd/qti-playground', '_blank')}>
                 View on GitHub
               </Button>
             </CardContent>
