@@ -186,27 +186,6 @@ export function QTIPreview() {
       }}
     >
       <Container maxWidth="xl">
-        {/* Navigation */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-          <Button 
-            component={Link}
-            to="/"
-            startIcon={<Home />}
-            variant="outlined"
-            size="small"
-          >
-            Home
-          </Button>
-          <Button 
-            component={Link}
-            to="/learn"
-            startIcon={<School />}
-            variant="outlined"
-            size="small"
-          >
-            Learn
-          </Button>
-        </Box>
         
         {/* Header */}
         <Box textAlign="center" sx={{ mb: 4 }}>
