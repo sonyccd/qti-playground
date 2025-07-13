@@ -151,6 +151,132 @@ const LandingPage = () => {
           </Card>
         </Box>
 
+        {/* Supported Features Section */}
+        <Box sx={{ maxWidth: '1000px', mx: 'auto', mb: 8 }}>
+          <Typography 
+            variant="h3" 
+            component="h2" 
+            textAlign="center" 
+            gutterBottom 
+            fontWeight="bold"
+            sx={{ mb: 4 }}
+          >
+            Currently Supported QTI Features
+          </Typography>
+          
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4, mb: 4 }}>
+            {/* Item Types */}
+            <Card sx={{ height: 'fit-content' }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h5" component="h3" gutterBottom fontWeight="bold" color="primary.main">
+                  Item Types
+                </Typography>
+                <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">
+                      <strong>Single Choice:</strong> Multiple choice questions with one correct answer
+                    </Typography>
+                  </Box>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">
+                      <strong>Multiple Response:</strong> Questions allowing multiple selections
+                    </Typography>
+                  </Box>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">
+                      <strong>Text Entry:</strong> Short text input questions
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+
+            {/* QTI Elements */}
+            <Card sx={{ height: 'fit-content' }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h5" component="h3" gutterBottom fontWeight="bold" color="primary.main">
+                  QTI Elements
+                </Typography>
+                <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">assessmentItem</Typography>
+                  </Box>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">itemBody</Typography>
+                  </Box>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">choiceInteraction</Typography>
+                  </Box>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">textEntryInteraction</Typography>
+                  </Box>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">simpleChoice</Typography>
+                  </Box>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">responseDeclaration</Typography>
+                  </Box>
+                  <Box component="li" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+                    <Typography variant="body1">correctResponse</Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
+
+          {/* Coming Soon */}
+          <Card sx={{ bgcolor: 'grey.50', border: '2px dashed', borderColor: 'grey.300' }}>
+            <CardContent sx={{ p: 4, textAlign: 'center' }}>
+              <Typography variant="h5" component="h3" gutterBottom fontWeight="bold" color="text.secondary">
+                Coming Soon
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+                We're continuously expanding QTI support. Future releases will include:
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
+                {[
+                  'Extended Text',
+                  'Order Interaction',
+                  'Associate Interaction',
+                  'Match Interaction',
+                  'Gap Match',
+                  'Inline Choice',
+                  'Hottext',
+                  'Hotspot',
+                  'Graphic Interactions',
+                  'Sliders',
+                  'File Upload'
+                ].map((feature) => (
+                  <Box 
+                    key={feature}
+                    sx={{ 
+                      px: 2, 
+                      py: 0.5, 
+                      bgcolor: 'white', 
+                      border: '1px solid', 
+                      borderColor: 'grey.300', 
+                      borderRadius: 1,
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    {feature}
+                  </Box>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+
         {/* Features */}
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 4, maxWidth: '1000px', mx: 'auto' }}>
           <Box textAlign="center" p={3}>
