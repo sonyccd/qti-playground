@@ -18,7 +18,7 @@ export function HottextItem({ item }: HottextItemProps) {
     );
   };
 
-  // Parse the HTML content and render it with interactive hottext elements
+  // Parse the HTML content and render it with React components
   const renderContent = () => {
     if (!item.prompt) return null;
 
@@ -26,29 +26,65 @@ export function HottextItem({ item }: HottextItemProps) {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = item.prompt;
 
-    // Find all hottext elements and make them interactive
-    const hottextElements = tempDiv.querySelectorAll('hottext');
-    hottextElements.forEach(hottextEl => {
-      const identifier = hottextEl.getAttribute('identifier') || '';
-      const isSelected = selectedHottexts.includes(identifier);
+    // Convert DOM nodes to React elements
+    const convertNodeToReact = (node: Node, index: number): React.ReactNode => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent;
+      }
       
-      // Replace the hottext element with a styled span
-      const span = document.createElement('span');
-      span.className = isSelected 
-        ? 'inline-block px-2 py-1 mx-1 rounded cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 transition-colors'
-        : 'inline-block px-2 py-1 mx-1 rounded cursor-pointer bg-muted hover:bg-accent transition-colors border-2 border-dashed border-muted-foreground/30';
-      span.textContent = hottextEl.textContent || '';
-      span.onclick = () => toggleHottext(identifier);
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element;
+        const tagName = element.tagName.toLowerCase();
+        
+        if (tagName === 'hottext') {
+          const identifier = element.getAttribute('identifier') || '';
+          const text = element.textContent || '';
+          const isSelected = selectedHottexts.includes(identifier);
+          
+          return (
+            <span
+              key={`hottext-${identifier}-${index}`}
+              className={`inline-block px-2 py-1 mx-1 rounded cursor-pointer transition-colors ${
+                isSelected 
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                  : 'bg-muted hover:bg-accent border-2 border-dashed border-muted-foreground/30'
+              }`}
+              onClick={() => toggleHottext(identifier)}
+            >
+              {text}
+            </span>
+          );
+        }
+        
+        // Handle other HTML elements
+        const children = Array.from(element.childNodes).map((child, childIndex) => 
+          convertNodeToReact(child, childIndex)
+        );
+        
+        // Return appropriate JSX element based on tag name
+        switch (tagName) {
+          case 'p':
+            return <p key={index} className="mb-2">{children}</p>;
+          case 'strong':
+            return <strong key={index}>{children}</strong>;
+          case 'em':
+            return <em key={index}>{children}</em>;
+          case 'br':
+            return <br key={index} />;
+          default:
+            return <span key={index}>{children}</span>;
+        }
+      }
       
-      hottextEl.replaceWith(span);
-    });
+      return null;
+    };
 
-    return (
-      <div 
-        className="leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: tempDiv.innerHTML }}
-      />
+    // Convert all child nodes to React elements
+    const reactElements = Array.from(tempDiv.childNodes).map((node, index) => 
+      convertNodeToReact(node, index)
     );
+
+    return <div className="leading-relaxed">{reactElements}</div>;
   };
 
   return (
