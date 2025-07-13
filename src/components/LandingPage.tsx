@@ -151,6 +151,69 @@ const LandingPage = () => {
           </Card>
         </Box>
 
+        {/* Features */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 4, maxWidth: '1000px', mx: 'auto', mb: 8 }}>
+          <Box textAlign="center" p={3}>
+            <Avatar 
+              sx={{ 
+                width: 60, 
+                height: 60, 
+                bgcolor: theme.palette.info.light,
+                mx: 'auto',
+                mb: 2
+              }}
+            >
+              <Code sx={{ fontSize: 30, color: theme.palette.info.main }} />
+            </Avatar>
+            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
+              Live Editor
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Write and edit QTI XML with syntax highlighting and real-time preview
+            </Typography>
+          </Box>
+
+          <Box textAlign="center" p={3}>
+            <Avatar 
+              sx={{ 
+                width: 60, 
+                height: 60, 
+                bgcolor: theme.palette.success.light,
+                mx: 'auto',
+                mb: 2
+              }}
+            >
+              <Description sx={{ fontSize: 30, color: theme.palette.success.main }} />
+            </Avatar>
+            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
+              Interactive Preview
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              See how your QTI content will render and behave in real-time
+            </Typography>
+          </Box>
+
+          <Box textAlign="center" p={3}>
+            <Avatar 
+              sx={{ 
+                width: 60, 
+                height: 60, 
+                bgcolor: theme.palette.warning.light,
+                mx: 'auto',
+                mb: 2
+              }}
+            >
+              <Lightbulb sx={{ fontSize: 30, color: theme.palette.warning.main }} />
+            </Avatar>
+            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
+              Examples & Samples
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Start with built-in examples or upload your own QTI files
+            </Typography>
+          </Box>
+        </Box>
+
         {/* Supported Features Section */}
         <Box sx={{ maxWidth: '1000px', mx: 'auto', mb: 8 }}>
           <Typography 
@@ -277,67 +340,68 @@ const LandingPage = () => {
           </Card>
         </Box>
 
-        {/* Features */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 4, maxWidth: '1000px', mx: 'auto' }}>
-          <Box textAlign="center" p={3}>
-            <Avatar 
-              sx={{ 
-                width: 60, 
-                height: 60, 
-                bgcolor: theme.palette.info.light,
-                mx: 'auto',
-                mb: 2
-              }}
-            >
-              <Code sx={{ fontSize: 30, color: theme.palette.info.main }} />
-            </Avatar>
-            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
-              Live Editor
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Write and edit QTI XML with syntax highlighting and real-time preview
-            </Typography>
-          </Box>
-
-          <Box textAlign="center" p={3}>
-            <Avatar 
-              sx={{ 
-                width: 60, 
-                height: 60, 
-                bgcolor: theme.palette.success.light,
-                mx: 'auto',
-                mb: 2
-              }}
-            >
-              <Description sx={{ fontSize: 30, color: theme.palette.success.main }} />
-            </Avatar>
-            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
-              Interactive Preview
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              See how your QTI content will render and behave in real-time
-            </Typography>
-          </Box>
-
-          <Box textAlign="center" p={3}>
-            <Avatar 
-              sx={{ 
-                width: 60, 
-                height: 60, 
-                bgcolor: theme.palette.warning.light,
-                mx: 'auto',
-                mb: 2
-              }}
-            >
-              <Lightbulb sx={{ fontSize: 30, color: theme.palette.warning.main }} />
-            </Avatar>
-            <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
-              Examples & Samples
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Start with built-in examples or upload your own QTI files
-            </Typography>
-          </Box>
+        {/* GitHub CTA */}
+        <Box sx={{ maxWidth: '800px', mx: 'auto', textAlign: 'center' }}>
+          <Card 
+            sx={{ 
+              bgcolor: 'primary.main',
+              color: 'primary.contrastText',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: theme.shadows[12]
+              }
+            }}
+          >
+            <CardContent sx={{ p: 6 }}>
+              <Avatar 
+                sx={{ 
+                  width: 80, 
+                  height: 80, 
+                  bgcolor: 'rgba(255, 255, 255, 0.1)',
+                  mx: 'auto',
+                  mb: 3
+                }}
+              >
+                <Code sx={{ fontSize: 40, color: 'primary.contrastText' }} />
+              </Avatar>
+              <Typography 
+                variant="h3" 
+                component="h2" 
+                gutterBottom 
+                fontWeight="bold"
+                sx={{ color: 'primary.contrastText' }}
+              >
+                Open Source & Community Driven
+              </Typography>
+              <Typography 
+                variant="h6" 
+                sx={{ mb: 4, opacity: 0.9, maxWidth: '600px', mx: 'auto' }}
+              >
+                QTI Playground is completely open source. Join our community, contribute features, 
+                report issues, or help improve QTI support for everyone.
+              </Typography>
+              <Button 
+                variant="contained"
+                size="large"
+                sx={{ 
+                  bgcolor: 'white',
+                  color: 'primary.main',
+                  fontWeight: 'bold',
+                  px: 4,
+                  py: 1.5,
+                  fontSize: '1.1rem',
+                  '&:hover': {
+                    bgcolor: 'grey.100',
+                    transform: 'scale(1.05)'
+                  }
+                }}
+                onClick={() => window.open('https://github.com', '_blank')}
+              >
+                View on GitHub
+              </Button>
+            </CardContent>
+          </Card>
         </Box>
       </Container>
     </Box>
