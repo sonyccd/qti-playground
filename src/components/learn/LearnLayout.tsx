@@ -33,7 +33,9 @@ export default function LearnLayout() {
   const location = useLocation();
   const currentPath = location.pathname;
   
-  const currentIndex = sections.findIndex(section => section.path === currentPath);
+  // Handle /learn route as introduction
+  const effectivePath = currentPath === '/learn' ? '/learn/introduction' : currentPath;
+  const currentIndex = sections.findIndex(section => section.path === effectivePath);
   const prevSection = currentIndex > 0 ? sections[currentIndex - 1] : null;
   const nextSection = currentIndex < sections.length - 1 ? sections[currentIndex + 1] : null;
 
@@ -52,11 +54,11 @@ export default function LearnLayout() {
                     {sections.map((section) => (
                       <SidebarMenuItem key={section.id}>
                         <SidebarMenuButton asChild>
-                          <Link 
-                            to={section.path}
-                            className={currentPath === section.path ? "bg-accent text-accent-foreground" : ""}
-                          >
-                            {section.title}
+                           <Link 
+                             to={section.path}
+                             className={effectivePath === section.path ? "bg-accent text-accent-foreground" : ""}
+                           >
+                             {section.title}
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
