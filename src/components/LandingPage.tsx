@@ -239,8 +239,7 @@ const LandingPage = () => {
             height: 'fit-content'
           }}>
               <CardContent sx={{
-              p: 4,
-              textAlign: 'center'
+              p: 4
             }}>
                 <Typography variant="h5" component="h3" gutterBottom fontWeight="bold" color="primary.main">
                   Item Types
