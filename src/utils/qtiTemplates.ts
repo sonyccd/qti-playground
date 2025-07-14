@@ -291,14 +291,31 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
     
     return result;
   } else {
-    // Standalone items - simple concatenation
+    // Standalone items - need to handle namespaces properly
+    const firstItem = assessmentItems[0];
+    const hasNamespaces = firstItem && firstItem.hasAttribute('xmlns');
+    
+    // If the existing items have namespaces, add them to the new item
+    let finalNewItemXML = newItemXML.trim();
+    if (hasNamespaces) {
+      const xmlns = firstItem.getAttribute('xmlns') || '';
+      const xmlnsXsi = firstItem.getAttribute('xmlns:xsi') || '';
+      const schemaLocation = firstItem.getAttribute('xsi:schemaLocation') || '';
+      
+      // Add namespaces to the new item
+      finalNewItemXML = finalNewItemXML.replace(
+        '<assessmentItem identifier=',
+        `<assessmentItem xmlns="${xmlns}" xmlns:xsi="${xmlnsXsi}" xsi:schemaLocation="${schemaLocation}" identifier=`
+      );
+    }
+    
     const insertIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
       ? insertAfterIndex + 1
       : insertAfterIndex === -1 
         ? 0 
         : assessmentItems.length;
     
-    // Split by items and reassemble
+    // Extract XML declaration
     const xmlDeclarationMatch = xmlContent.match(/^<\?xml[^>]*>\s*/);
     const xmlDeclaration = xmlDeclarationMatch ? xmlDeclarationMatch[0] : '';
     const contentWithoutDeclaration = xmlContent.replace(/^<\?xml[^>]*>\s*/, '');
@@ -309,11 +326,11 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
     
     // Insert new item at specified position
     if (insertIndex === 0) {
-      itemMatches.unshift(newItemXML.trim());
+      itemMatches.unshift(finalNewItemXML);
     } else if (insertIndex >= itemMatches.length) {
-      itemMatches.push(newItemXML.trim());
+      itemMatches.push(finalNewItemXML);
     } else {
-      itemMatches.splice(insertIndex, 0, newItemXML.trim());
+      itemMatches.splice(insertIndex, 0, finalNewItemXML);
     }
     
     return xmlDeclaration + itemMatches.join('\n\n');
