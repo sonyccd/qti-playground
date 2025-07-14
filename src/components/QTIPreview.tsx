@@ -180,7 +180,9 @@ export function QTIPreview() {
       // Set the ID of the newly added item for animation
       const newItemIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
         ? insertAfterIndex + 1 
-        : prevItemCount;
+        : insertAfterIndex === -1 
+          ? 0  // Adding to the top
+          : prevItemCount; // Adding to the end
       
       // Clear the animation state after a short delay to trigger the animation
       setTimeout(() => {
