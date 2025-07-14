@@ -83,11 +83,6 @@ export function ChoiceItem({ item }: ChoiceItemProps) {
           <div className="text-xs text-muted-foreground">
             {isMultipleChoice ? 'Select one option' : 'Select one or more options'}
           </div>
-          {item.correctResponse && (
-            <div className="text-xs text-green-600 mt-1">
-              ✓ Correct responses highlighted in green
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>

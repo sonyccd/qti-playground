@@ -138,11 +138,6 @@ export function HottextItem({ item }: HottextItemProps) {
           <div className="text-xs text-muted-foreground">
             Select the appropriate text segments by clicking on them
           </div>
-          {item.correctResponse && (
-            <div className="text-xs text-green-600 mt-1">
-              ✓ Correct responses highlighted in green
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>
