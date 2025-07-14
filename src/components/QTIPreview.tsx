@@ -199,32 +199,36 @@ export function QTIPreview() {
   const handleAddItem = (itemXML: string, insertAfterIndex?: number) => {
     try {
       const prevItemCount = qtiItems.length;
+      const originalXML = xmlContent;
       const updatedXML = insertItemIntoXML(xmlContent, itemXML, insertAfterIndex);
-      
-      // Find the insertion point to highlight in the editor
-      const insertionPoint = findInsertionPoint(xmlContent, itemXML, insertAfterIndex);
       
       setXmlContent(updatedXML);
       parseXMLContent(updatedXML);
       
-      // Highlight the added XML in the editor
-      if (editorView && insertionPoint) {
-        const highlightFrom = insertionPoint.from;
-        const highlightTo = insertionPoint.to;
-        
-        editorView.dispatch({
-          effects: addHighlight.of({ from: highlightFrom, to: highlightTo })
-        });
-        
-        // Clear highlight after 2 seconds
-        setTimeout(() => {
-          if (editorView) {
+      // Highlight the added XML in the editor after a short delay to ensure content is updated
+      setTimeout(() => {
+        if (editorView) {
+          const insertionPoint = findInsertionPointByDiff(originalXML, updatedXML);
+          console.log('Insertion point found:', insertionPoint);
+          
+          if (insertionPoint) {
             editorView.dispatch({
-              effects: StateEffect.define<void>().of(undefined)
+              effects: addHighlight.of({ from: insertionPoint.from, to: insertionPoint.to })
             });
+            
+            // Clear highlight after 2 seconds
+            setTimeout(() => {
+              if (editorView) {
+                // Create a new effect to clear highlights
+                const clearHighlight = StateEffect.define<void>();
+                editorView.dispatch({
+                  effects: clearHighlight.of(undefined)
+                });
+              }
+            }, 2000);
           }
-        }, 2000);
-      }
+        }
+      }, 150);
       
       // Set the ID of the newly added item for animation
       const newItemIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
@@ -259,27 +263,38 @@ export function QTIPreview() {
     }
   };
 
-  // Helper function to find where the item was inserted for highlighting
-  const findInsertionPoint = (originalXML: string, insertedXML: string, insertAfterIndex?: number) => {
-    // Simple approach: find where the new content was added
-    // This is approximate and could be improved with better diff detection
-    const lines = insertedXML.split('\n');
-    const insertedLines = lines.filter(line => line.trim().length > 0);
+  // Improved function to find where the item was inserted
+  const findInsertionPointByDiff = (originalXML: string, updatedXML: string) => {
+    const originalLines = originalXML.split('\n');
+    const updatedLines = updatedXML.split('\n');
     
-    if (insertedLines.length > 0) {
-      const startPattern = insertedLines[0].trim();
-      const xmlLines = originalXML.split('\n');
-      
-      // Find the line where insertion happened
-      let charCount = 0;
-      for (let i = 0; i < xmlLines.length; i++) {
-        if (xmlLines[i].includes(startPattern)) {
-          const from = charCount + xmlLines[i].indexOf(startPattern);
-          const estimatedLength = insertedXML.length * 0.8; // Rough estimate
-          return { from, to: from + estimatedLength };
+    // Find the first difference
+    let startLine = -1;
+    let endLine = -1;
+    
+    for (let i = 0; i < Math.max(originalLines.length, updatedLines.length); i++) {
+      if (i >= originalLines.length || i >= updatedLines.length || originalLines[i] !== updatedLines[i]) {
+        if (startLine === -1) {
+          startLine = i;
         }
-        charCount += xmlLines[i].length + 1; // +1 for newline
+        endLine = i;
       }
+    }
+    
+    if (startLine !== -1) {
+      // Calculate character positions
+      let fromChar = 0;
+      for (let i = 0; i < startLine; i++) {
+        fromChar += (updatedLines[i]?.length || 0) + 1; // +1 for newline
+      }
+      
+      let toChar = fromChar;
+      for (let i = startLine; i <= endLine && i < updatedLines.length; i++) {
+        toChar += (updatedLines[i]?.length || 0) + (i < updatedLines.length - 1 ? 1 : 0); // +1 for newline except last line
+      }
+      
+      console.log(`Found diff from line ${startLine} to ${endLine}, chars ${fromChar} to ${toChar}`);
+      return { from: fromChar, to: toChar };
     }
     
     return null;
