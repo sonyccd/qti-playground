@@ -148,7 +148,7 @@ export default function Anatomy() {
         The simplest approach is to use a predefined template. These are URLs that point to standard scoring logic. In our example:
       </p>
       
-      <pre className="bg-gray-100 p-4 rounded-lg mb-4 overflow-x-auto">
+      <pre className="bg-gray-100 p-4 rounded-lg mb-4 overflow-x-auto text-xs sm:text-sm break-all whitespace-pre-wrap">
         <code>&lt;responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/&gt;</code>
       </pre>
       

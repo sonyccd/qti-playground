@@ -79,7 +79,7 @@ export default function LearnLayout() {
               <SidebarTrigger />
             </header>
             
-            <div className="flex-1 p-8 max-w-4xl mx-auto w-full">
+            <div className="flex-1 p-4 md:p-8 w-full min-w-0">  {/* min-w-0 prevents flex overflow */}
               <Outlet />
               
               {/* Navigation buttons */}
