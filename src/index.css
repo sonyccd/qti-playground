@@ -113,33 +113,6 @@ All colors MUST be HSL.
   }
 }
 
-/* CodeMirror highlighting animation */
-.cm-highlight-flash {
-  background-color: hsl(var(--accent) / 0.4) !important;
-  animation: flash-highlight 2s ease-out !important;
-  border-radius: 2px;
-}
-
-@keyframes flash-highlight {
-  0% {
-    background-color: hsl(var(--accent) / 0.8) !important;
-    box-shadow: 0 0 8px hsl(var(--accent) / 0.6);
-  }
-  25% {
-    background-color: hsl(var(--accent) / 0.6) !important;
-  }
-  50% {
-    background-color: hsl(var(--accent) / 0.4) !important;
-  }
-  75% {
-    background-color: hsl(var(--accent) / 0.2) !important;
-  }
-  100% {
-    background-color: transparent !important;
-    box-shadow: none;
-  }
-}
-
 /* Slide animations for newly added items */
 @keyframes slide-in-right {
   0% {

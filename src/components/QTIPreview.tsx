@@ -11,34 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
-import { StateEffect, StateField } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 import { Link } from 'react-router-dom';
-
-// Create highlighting effects for the editor
-const highlightMark = Decoration.mark({
-  class: "cm-highlight-flash"
-});
-
-const addHighlight = StateEffect.define<{from: number, to: number}>();
-
-const highlightField = StateField.define<DecorationSet>({
-  create() {
-    return Decoration.none;
-  },
-  update(highlights, tr) {
-    highlights = highlights.map(tr.changes);
-    for (let e of tr.effects) {
-      if (e.is(addHighlight)) {
-        highlights = highlights.update({
-          add: [highlightMark.range(e.value.from, e.value.to)]
-        });
-      }
-    }
-    return highlights;
-  },
-  provide: f => EditorView.decorations.from(f)
-});
 
 type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 export function QTIPreview() {
@@ -51,7 +25,6 @@ export function QTIPreview() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('split');
   const [unsupportedElements, setUnsupportedElements] = useState<import('@/types/qti').UnsupportedElement[]>([]);
   const [newlyAddedItemId, setNewlyAddedItemId] = useState<string | null>(null);
-  const [editorView, setEditorView] = useState<EditorView | null>(null);
   
   const {
     toast
@@ -199,36 +172,10 @@ export function QTIPreview() {
   const handleAddItem = (itemXML: string, insertAfterIndex?: number) => {
     try {
       const prevItemCount = qtiItems.length;
-      const originalXML = xmlContent;
       const updatedXML = insertItemIntoXML(xmlContent, itemXML, insertAfterIndex);
       
       setXmlContent(updatedXML);
       parseXMLContent(updatedXML);
-      
-      // Highlight the added XML in the editor after a short delay to ensure content is updated
-      setTimeout(() => {
-        if (editorView) {
-          const insertionPoint = findInsertionPointByDiff(originalXML, updatedXML);
-          console.log('Insertion point found:', insertionPoint);
-          
-          if (insertionPoint) {
-            editorView.dispatch({
-              effects: addHighlight.of({ from: insertionPoint.from, to: insertionPoint.to })
-            });
-            
-            // Clear highlight after 2 seconds
-            setTimeout(() => {
-              if (editorView) {
-                // Create a new effect to clear highlights
-                const clearHighlight = StateEffect.define<void>();
-                editorView.dispatch({
-                  effects: clearHighlight.of(undefined)
-                });
-              }
-            }, 2000);
-          }
-        }
-      }, 150);
       
       // Set the ID of the newly added item for animation
       const newItemIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
@@ -261,43 +208,6 @@ export function QTIPreview() {
         variant: "destructive"
       });
     }
-  };
-
-  // Improved function to find where the item was inserted
-  const findInsertionPointByDiff = (originalXML: string, updatedXML: string) => {
-    const originalLines = originalXML.split('\n');
-    const updatedLines = updatedXML.split('\n');
-    
-    // Find the first difference
-    let startLine = -1;
-    let endLine = -1;
-    
-    for (let i = 0; i < Math.max(originalLines.length, updatedLines.length); i++) {
-      if (i >= originalLines.length || i >= updatedLines.length || originalLines[i] !== updatedLines[i]) {
-        if (startLine === -1) {
-          startLine = i;
-        }
-        endLine = i;
-      }
-    }
-    
-    if (startLine !== -1) {
-      // Calculate character positions
-      let fromChar = 0;
-      for (let i = 0; i < startLine; i++) {
-        fromChar += (updatedLines[i]?.length || 0) + 1; // +1 for newline
-      }
-      
-      let toChar = fromChar;
-      for (let i = startLine; i <= endLine && i < updatedLines.length; i++) {
-        toChar += (updatedLines[i]?.length || 0) + (i < updatedLines.length - 1 ? 1 : 0); // +1 for newline except last line
-      }
-      
-      console.log(`Found diff from line ${startLine} to ${endLine}, chars ${fromChar} to ${toChar}`);
-      return { from: fromChar, to: toChar };
-    }
-    
-    return null;
   };
 
   const getItemTypeLabel = (type: string) => {
@@ -497,7 +407,7 @@ export function QTIPreview() {
                       <CodeMirror 
                         value={xmlContent} 
                         onChange={handleXmlChange} 
-                        extensions={[xml(), EditorView.lineWrapping, highlightField]} 
+                        extensions={[xml(), EditorView.lineWrapping]} 
                         theme={oneDark} 
                         style={{
                           height: '100%'
@@ -510,7 +420,6 @@ export function QTIPreview() {
                           indentOnInput: true,
                           autocompletion: true
                         }}
-                        onCreateEditor={(view) => setEditorView(view)}
                       />
                     </Box>
                   </Card>
