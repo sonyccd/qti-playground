@@ -266,22 +266,17 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
     // Import the new node into the target document
     const importedNode = xmlDoc.importNode(newItemElement, true);
     
-    // Insert the new item
+    // Insert the new item without adding extra whitespace nodes
     if (insertIndex === 0) {
       // Insert as first child
       const firstItem = itemsInTest[0];
-      assessmentTest.insertBefore(xmlDoc.createTextNode('\n\n  '), firstItem);
       assessmentTest.insertBefore(importedNode, firstItem);
     } else if (insertIndex >= itemsInTest.length) {
       // Insert at the end
-      assessmentTest.appendChild(xmlDoc.createTextNode('\n\n  '));
       assessmentTest.appendChild(importedNode);
-      assessmentTest.appendChild(xmlDoc.createTextNode('\n\n'));
     } else {
       // Insert after the specified item
-      const targetItem = itemsInTest[insertIndex - 1];
       const nextItem = itemsInTest[insertIndex];
-      assessmentTest.insertBefore(xmlDoc.createTextNode('\n\n  '), nextItem);
       assessmentTest.insertBefore(importedNode, nextItem);
     }
     
@@ -289,10 +284,10 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
     const serializer = new XMLSerializer();
     let result = serializer.serializeToString(xmlDoc);
     
-    // Clean up the XML formatting
+    // Clean up the XML formatting to ensure consistent spacing
     result = result.replace(/><assessmentItem/g, '>\n\n  <assessmentItem');
-    result = result.replace(/<\/assessmentItem></g, '</assessmentItem>\n\n  </');
-    result = result.replace(/>\s*<\/assessmentTest>/g, '>\n\n</assessmentTest>');
+    result = result.replace(/<\/assessmentItem><assessmentItem/g, '</assessmentItem>\n\n  <assessmentItem');
+    result = result.replace(/<\/assessmentItem><\/assessmentTest>/g, '</assessmentItem>\n\n</assessmentTest>');
     
     return result;
   } else {
