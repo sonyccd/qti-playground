@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
 import { oneDark } from '@codemirror/theme-one-dark';
+import { EditorView } from '@codemirror/view';
 import { Link } from 'react-router-dom';
 type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 export function QTIPreview() {
@@ -380,7 +381,7 @@ export function QTIPreview() {
                 overflow: 'auto',
                 height: 0
               }}>
-                      <CodeMirror value={xmlContent} onChange={handleXmlChange} extensions={[xml()]} theme={oneDark} style={{
+                      <CodeMirror value={xmlContent} onChange={handleXmlChange} extensions={[xml(), EditorView.lineWrapping]} theme={oneDark} style={{
                   height: '100%'
                 }} basicSetup={{
                   lineNumbers: true,
