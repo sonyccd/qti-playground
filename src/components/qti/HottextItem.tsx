@@ -12,10 +12,20 @@ export function HottextItem({ item }: HottextItemProps) {
 
   const toggleHottext = (identifier: string) => {
     setSelectedHottexts(prev => 
-      prev.includes(identifier) 
+      prev.includes(identifier)
         ? prev.filter(id => id !== identifier)
         : [...prev, identifier]
     );
+  };
+
+  // Check if a hottext is correct
+  const isCorrectHottext = (identifier: string): boolean => {
+    if (!item.correctResponse) return false;
+    
+    if (Array.isArray(item.correctResponse)) {
+      return item.correctResponse.includes(identifier);
+    }
+    return item.correctResponse === identifier;
   };
 
   // Parse the HTML content and render it with React components
@@ -40,18 +50,22 @@ export function HottextItem({ item }: HottextItemProps) {
           const identifier = element.getAttribute('identifier') || '';
           const text = element.textContent || '';
           const isSelected = selectedHottexts.includes(identifier);
+          const isCorrect = isCorrectHottext(identifier);
           
           return (
             <span
               key={`hottext-${identifier}-${index}`}
-              className={`inline-block px-2 py-1 mx-1 rounded cursor-pointer transition-colors ${
-                isSelected 
-                  ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                  : 'bg-muted hover:bg-accent border-2 border-dashed border-muted-foreground/30'
+              className={`inline-block px-2 py-1 mx-1 rounded cursor-pointer transition-colors border-2 ${
+                isCorrect
+                  ? 'bg-green-50 border-green-200 text-green-800 hover:bg-green-100'
+                  : isSelected 
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-primary' 
+                    : 'bg-muted hover:bg-accent border-dashed border-muted-foreground/30'
               }`}
               onClick={() => toggleHottext(identifier)}
             >
               {text}
+              {isCorrect && <span className="ml-1 text-green-600">✓</span>}
             </span>
           );
         }
@@ -124,6 +138,11 @@ export function HottextItem({ item }: HottextItemProps) {
           <div className="text-xs text-muted-foreground">
             Select the appropriate text segments by clicking on them
           </div>
+          {item.correctResponse && (
+            <div className="text-xs text-green-600 mt-1">
+              ✓ Correct responses highlighted in green
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

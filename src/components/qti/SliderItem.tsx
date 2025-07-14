@@ -71,6 +71,11 @@ export function SliderItem({ item }: SliderItemProps) {
           <div className="text-xs text-muted-foreground">
             Use the slider to select your answer
           </div>
+          {item.correctResponse && (
+            <div className="text-xs text-green-600 mt-1">
+              ✓ Correct value: {item.correctResponse}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
