@@ -11,27 +11,28 @@ import { AlertTriangle } from 'lucide-react';
 interface QTIItemRendererProps {
   item: QTIItem;
   isNewlyAdded?: boolean;
+  onCorrectResponseChange?: (itemId: string, correctResponse: string | string[] | number) => void;
 }
 
-export function QTIItemRenderer({ item, isNewlyAdded = false }: QTIItemRendererProps) {
+export function QTIItemRenderer({ item, isNewlyAdded = false, onCorrectResponseChange }: QTIItemRendererProps) {
   const animationClass = isNewlyAdded ? "animate-slide-in-right" : "";
   const renderItem = () => {
     switch (item.type) {
       case 'choice':
       case 'multipleResponse':
-        return <ChoiceItem item={item} />;
+        return <ChoiceItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
       
       case 'textEntry':
-        return <TextEntryItem item={item} />;
+        return <TextEntryItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
       
       case 'extendedText':
-        return <ExtendedTextItem item={item} />;
+        return <ExtendedTextItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
       
       case 'hottext':
-        return <HottextItem item={item} />;
+        return <HottextItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
       
       case 'slider':
-        return <SliderItem item={item} />;
+        return <SliderItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
       
       case 'order':
         return <OrderItem item={item} />;

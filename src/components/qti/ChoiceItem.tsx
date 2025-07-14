@@ -9,9 +9,10 @@ import { Edit3, Save, X } from 'lucide-react';
 
 interface ChoiceItemProps {
   item: QTIItem;
+  onCorrectResponseChange?: (itemId: string, correctResponse: string | string[]) => void;
 }
 
-export function ChoiceItem({ item }: ChoiceItemProps) {
+export function ChoiceItem({ item, onCorrectResponseChange }: ChoiceItemProps) {
   const [selectedChoices, setSelectedChoices] = useState<string[]>([]);
   const [isEditingCorrect, setIsEditingCorrect] = useState(false);
   const [tempCorrectAnswers, setTempCorrectAnswers] = useState<string[]>(
@@ -58,6 +59,8 @@ export function ChoiceItem({ item }: ChoiceItemProps) {
   const saveCorrectAnswers = () => {
     setCorrectAnswers(tempCorrectAnswers);
     setIsEditingCorrect(false);
+    // Notify parent component of the change
+    onCorrectResponseChange?.(item.id, isMultipleChoice ? tempCorrectAnswers[0] || '' : tempCorrectAnswers);
   };
 
   const cancelEditing = () => {

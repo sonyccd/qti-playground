@@ -4,6 +4,7 @@ import { QTIItemRenderer } from './qti/QTIItemRenderer';
 import { AddItemButton } from './qti/AddItemButton';
 import { parseQTIXML } from '@/utils/qtiParser';
 import { insertItemIntoXML } from '@/utils/qtiTemplates';
+import { updateQTIXMLWithCorrectResponse, formatXML } from '@/utils/xmlUpdater';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, Typography, Box, Container, Button, Chip, Alert, AlertTitle, Avatar, ToggleButton, ToggleButtonGroup, useTheme, CircularProgress, Grid } from '@mui/material';
 import { Description, Warning, CheckCircle, MenuBook, Download, Code, Visibility, ViewColumn, ViewAgenda, ViewStream, Home, School, OpenInFull, Add } from '@mui/icons-material';
@@ -196,20 +197,17 @@ export function QTIPreview() {
           }, 600);
         }
       }, 100);
-      
-      toast({
-        title: "Item added",
-        description: "New QTI item has been added successfully"
-      });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    } catch (error: any) {
       console.error('Error adding item:', error);
-      toast({
-        title: "Error",
-        description: `Failed to add item: ${errorMessage}`,
-        variant: "destructive"
-      });
     }
+  };
+
+  const handleCorrectResponseChange = (itemId: string, correctResponse: string | string[] | number) => {
+    const updatedXML = updateQTIXMLWithCorrectResponse(xmlContent, itemId, correctResponse);
+    const formattedXML = formatXML(updatedXML);
+    setXmlContent(formattedXML);
+    // Re-parse to update the items
+    parseXMLContent(formattedXML);
   };
 
   const getItemTypeLabel = (type: string) => {
@@ -549,7 +547,11 @@ export function QTIPreview() {
                                   <Chip label={`#${index + 1}`} variant="outlined" size="small" />
                                   <Chip label={getItemTypeLabel(item.type)} color={getItemTypeColor(item.type) as any} size="small" />
                                 </Box>
-                                <QTIItemRenderer item={item} isNewlyAdded={item.id === newlyAddedItemId} />
+                                <QTIItemRenderer 
+                                  item={item} 
+                                  isNewlyAdded={item.id === newlyAddedItemId}
+                                  onCorrectResponseChange={handleCorrectResponseChange}
+                                />
                                 
                                 {/* Add item button after each item */}
                                 <AddItemButton onAddItem={(itemXML) => handleAddItem(itemXML, index)} />

@@ -9,9 +9,10 @@ import { Edit3, Save, X } from 'lucide-react';
 
 interface TextEntryItemProps {
   item: QTIItem;
+  onCorrectResponseChange?: (itemId: string, correctResponse: string) => void;
 }
 
-export function TextEntryItem({ item }: TextEntryItemProps) {
+export function TextEntryItem({ item, onCorrectResponseChange }: TextEntryItemProps) {
   const [userResponse, setUserResponse] = useState('');
   const [isEditingCorrect, setIsEditingCorrect] = useState(false);
   const [tempCorrectAnswer, setTempCorrectAnswer] = useState<string>(
@@ -24,6 +25,7 @@ export function TextEntryItem({ item }: TextEntryItemProps) {
   const saveCorrectAnswer = () => {
     setCorrectAnswer(tempCorrectAnswer);
     setIsEditingCorrect(false);
+    onCorrectResponseChange?.(item.id, tempCorrectAnswer);
   };
 
   const cancelEditing = () => {

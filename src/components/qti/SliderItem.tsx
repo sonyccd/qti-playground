@@ -10,9 +10,10 @@ import { Edit3, Save, X } from 'lucide-react';
 
 interface SliderItemProps {
   item: QTIItem;
+  onCorrectResponseChange?: (itemId: string, correctResponse: number) => void;
 }
 
-export function SliderItem({ item }: SliderItemProps) {
+export function SliderItem({ item, onCorrectResponseChange }: SliderItemProps) {
   const config = item.sliderConfig;
   const [value, setValue] = useState<number[]>([config?.lowerBound || 0]);
   const [isEditingCorrect, setIsEditingCorrect] = useState(false);
@@ -42,6 +43,7 @@ export function SliderItem({ item }: SliderItemProps) {
   const saveCorrectValue = () => {
     setCorrectValue(tempCorrectValue);
     setIsEditingCorrect(false);
+    onCorrectResponseChange?.(item.id, tempCorrectValue);
   };
 
   const cancelEditing = () => {
