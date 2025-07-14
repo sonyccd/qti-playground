@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { FileUpload } from './FileUpload';
 import { QTIItemRenderer } from './qti/QTIItemRenderer';
+import { AddItemButton } from './qti/AddItemButton';
 import { parseQTIXML } from '@/utils/qtiParser';
+import { insertItemIntoXML } from '@/utils/qtiTemplates';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, Typography, Box, Container, Button, Chip, Alert, AlertTitle, Avatar, ToggleButton, ToggleButtonGroup, useTheme, CircularProgress, Grid } from '@mui/material';
 import { Description, Warning, CheckCircle, MenuBook, Download, Code, Visibility, ViewColumn, ViewAgenda, ViewStream, Home, School, OpenInFull, Add } from '@mui/icons-material';
@@ -162,6 +164,27 @@ export function QTIPreview() {
     setHasContent(false);
     setUnsupportedElements([]);
   };
+
+  const handleAddItem = (itemXML: string, insertAfterIndex?: number) => {
+    try {
+      const updatedXML = insertItemIntoXML(xmlContent, itemXML, insertAfterIndex);
+      setXmlContent(updatedXML);
+      parseXMLContent(updatedXML);
+      
+      toast({
+        title: "Item added",
+        description: "New QTI item has been added successfully"
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast({
+        title: "Error",
+        description: `Failed to add item: ${errorMessage}`,
+        variant: "destructive"
+      });
+    }
+  };
+
   const getItemTypeLabel = (type: string) => {
     switch (type) {
       case 'choice':
@@ -473,40 +496,49 @@ export function QTIPreview() {
                           </Typography>
                         </Alert>}
 
-                      {/* Items */}
-                      {qtiItems.length > 0 ? <Box sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 3
-                }}>
-                          {qtiItems.map((item, index) => <Box key={item.id}>
-                              <Box sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      mb: 2
-                    }}>
-                                <Chip label={`#${index + 1}`} variant="outlined" size="small" />
-                                <Chip label={getItemTypeLabel(item.type)} color={getItemTypeColor(item.type) as any} size="small" />
+                       {/* Items */}
+                       {qtiItems.length > 0 ? <Box sx={{
+                   display: 'flex',
+                   flexDirection: 'column'
+                 }}>
+                            {/* Add item button at the beginning */}
+                            <AddItemButton onAddItem={(itemXML) => handleAddItem(itemXML, -1)} />
+                            
+                            {qtiItems.map((item, index) => (
+                              <Box key={item.id} sx={{ mb: 2 }}>
+                                <Box sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          mb: 2
+                        }}>
+                                  <Chip label={`#${index + 1}`} variant="outlined" size="small" />
+                                  <Chip label={getItemTypeLabel(item.type)} color={getItemTypeColor(item.type) as any} size="small" />
+                                </Box>
+                                <QTIItemRenderer item={item} />
+                                
+                                {/* Add item button after each item */}
+                                <AddItemButton onAddItem={(itemXML) => handleAddItem(itemXML, index)} />
                               </Box>
-                              <QTIItemRenderer item={item} />
-                            </Box>)}
-                        </Box> : !errors.length && <Box sx={{
-                  textAlign: 'center',
-                  py: 6
-                }}>
-                            <Description sx={{
-                    fontSize: 48,
-                    color: 'text.disabled',
-                    mb: 1
-                  }} />
-                            <Typography variant="h6" color="text.secondary">
-                              No valid QTI items found
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Check your XML structure
-                            </Typography>
-                          </Box>}
+                            ))}
+                         </Box> : !errors.length && <Box sx={{
+                   textAlign: 'center',
+                   py: 6
+                 }}>
+                             <Description sx={{
+                     fontSize: 48,
+                     color: 'text.disabled',
+                     mb: 1
+                   }} />
+                             <Typography variant="h6" color="text.secondary">
+                               No valid QTI items found
+                             </Typography>
+                             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                               Check your XML structure or add a new item below
+                             </Typography>
+                             {/* Add item button when no items exist */}
+                             <AddItemButton onAddItem={(itemXML) => handleAddItem(itemXML)} />
+                           </Box>}
                     </CardContent>
                   </Card>
                 </Box>}
