@@ -1,7 +1,7 @@
 export default function Structure() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">📊 Section 1: Understanding QTI Assessment Structure</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">📊 Section 1: Understanding QTI Assessment Structure</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         Before diving into code, it's essential to grasp the overall structure and hierarchy that QTI XML is based on. Think of QTI as a framework for describing digital assessments that can be interpreted by any QTI-compliant system. These systems include learning management systems, test delivery platforms, and analytics tools. The format is designed to separate content from presentation and logic, making it highly portable and reusable.

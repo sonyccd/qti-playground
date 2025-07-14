@@ -2,8 +2,8 @@ import { XmlCodeBlock } from '../XmlCodeBlock';
 
 export default function ResponseDeclaration() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">✅ Section 4: Defining Correct Answers with &lt;responseDeclaration&gt;</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">✅ Section 4: Defining Correct Answers with &lt;responseDeclaration&gt;</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         The &lt;responseDeclaration&gt; element is the part of the QTI item where you declare what kind of response the system should expect and what counts as correct. It's crucial for connecting the user interaction with the backend logic of the item.

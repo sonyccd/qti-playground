@@ -2,8 +2,8 @@ import { XmlCodeBlock } from '../XmlCodeBlock';
 
 export default function ResponseProcessing() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">🧮 Section 7: Scoring with &lt;responseProcessing&gt;</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">🧮 Section 7: Scoring with &lt;responseProcessing&gt;</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         The <code>&lt;responseProcessing&gt;</code> element defines how a test-taker's response is evaluated and scored. This is one of the most important parts of a QTI item because it controls how the system decides what is correct, how many points are awarded, and what outcomes are produced.

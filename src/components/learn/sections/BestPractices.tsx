@@ -1,6 +1,6 @@
 export default function BestPractices() {
-  return <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">🔍 Section 10: Best Practices</h1>
+  return <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">🔍 Section 10: Best Practices</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         Writing QTI-compliant assessment content is more than just following XML rules. It requires discipline, planning, and a good understanding of both technical constraints and instructional design principles. Whether you're creating a few items or scaling to thousands, these best practices will help you build robust, reusable, and learner-friendly QTI assessments.

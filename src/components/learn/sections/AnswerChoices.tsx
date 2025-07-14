@@ -2,8 +2,8 @@ import { XmlCodeBlock } from '../XmlCodeBlock';
 
 export default function AnswerChoices() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">🎯 Section 6: Providing Answer Choices</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">🎯 Section 6: Providing Answer Choices</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         The <code>&lt;choiceInteraction&gt;</code> element is one of the most widely used interaction types in QTI and is the standard way to build multiple-choice or multiple-response questions. It allows test-takers to choose from a set of predefined options—usually presented as radio buttons or checkboxes.

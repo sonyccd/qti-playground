@@ -1,7 +1,7 @@
 export default function Introduction() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">📘 Introduction to QTI XML Format</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">📘 Introduction to QTI XML Format</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         <strong>QTI</strong> (Question and Test Interoperability) is an XML-based standard for defining and exchanging digital assessment content. It allows different platforms and tools to create, share, and deliver assessments in a consistent way. QTI enables you to define questions, tests, scoring rules, and metadata all within a structured format that ensures interoperability across systems.

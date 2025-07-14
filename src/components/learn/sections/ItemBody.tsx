@@ -2,8 +2,8 @@ import { XmlCodeBlock } from '../XmlCodeBlock';
 
 export default function ItemBody() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">✍️ Section 5: Writing the Question with &lt;itemBody&gt;</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">✍️ Section 5: Writing the Question with &lt;itemBody&gt;</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         The &lt;itemBody&gt; element is where you define the actual content that the learner sees. It is essentially the presentation layer of a QTI item. This element includes all visible content such as the question prompt, any multimedia resources, and the interactive controls (like multiple-choice options or text input boxes) the test-taker will use to respond.

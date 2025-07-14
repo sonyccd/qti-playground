@@ -2,8 +2,8 @@ import { XmlCodeBlock } from '../XmlCodeBlock';
 
 export default function OrganizingFiles() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">📂 Section 9: Organizing Files</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">📂 Section 9: Organizing Files</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         Creating a QTI assessment involves not just writing well-structured XML files, but also organizing those files in a way that makes them easy to maintain, share, and deploy. A properly organized QTI package ensures compatibility with delivery platforms, simplifies troubleshooting, and makes collaboration between team members easier.

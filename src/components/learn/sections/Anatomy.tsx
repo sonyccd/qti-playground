@@ -2,8 +2,8 @@ import { XmlCodeBlock } from '../XmlCodeBlock';
 
 export default function Anatomy() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">📦 Section 2: The Basic Anatomy of a QTI File</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">📦 Section 2: The Basic Anatomy of a QTI File</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         Understanding the structure of a QTI XML file is critical for reading and authoring assessment items. In this section, we'll walk through a simple example and then dissect it to understand what each part does. This knowledge forms the foundation for building your own QTI-compliant content.

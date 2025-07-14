@@ -9,7 +9,7 @@ interface XmlCodeBlockProps {
 
 export const XmlCodeBlock = ({ code, className = "mb-6" }: XmlCodeBlockProps) => {
   return (
-    <div className={className}>
+    <div className={`${className} w-full overflow-x-auto`}>
       <CodeMirror
         value={code}
         extensions={[xml()]}
@@ -24,7 +24,8 @@ export const XmlCodeBlock = ({ code, className = "mb-6" }: XmlCodeBlockProps) =>
         }}
         style={{
           fontSize: '14px',
-          backgroundColor: 'transparent'
+          backgroundColor: 'transparent',
+          minWidth: 'fit-content'
         }}
       />
     </div>

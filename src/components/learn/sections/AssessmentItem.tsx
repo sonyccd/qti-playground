@@ -2,8 +2,8 @@ import { XmlCodeBlock } from '../XmlCodeBlock';
 
 export default function AssessmentItem() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">📟 Section 3: The &lt;assessmentItem&gt; Tag</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">📟 Section 3: The &lt;assessmentItem&gt; Tag</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         The &lt;assessmentItem&gt; element is the top-level container for a single assessment question within the QTI framework. This tag acts as the foundational wrapper for the rest of the question's structure—including the content the learner sees, the interactions for responses, and the logic to score and evaluate those responses.

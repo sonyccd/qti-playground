@@ -2,8 +2,8 @@ import { XmlCodeBlock } from '../XmlCodeBlock';
 
 export default function AssessmentTest() {
   return (
-    <div className="prose prose-slate max-w-none">
-      <h1 className="text-4xl font-bold mb-6">🧪 Section 8: Creating an Entire Test with &lt;assessmentTest&gt;</h1>
+    <div className="prose prose-slate max-w-none w-full overflow-hidden">
+      <h1 className="text-4xl font-bold mb-6 break-words">🧪 Section 8: Creating an Entire Test with &lt;assessmentTest&gt;</h1>
       
       <p className="text-lg leading-relaxed mb-6">
         While individual QTI items are powerful on their own, real-world assessments usually consist of many items organized into sections and governed by test-level rules. That's where the <code>&lt;assessmentTest&gt;</code> element comes in.
