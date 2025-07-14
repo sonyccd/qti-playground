@@ -74,6 +74,52 @@ npm run dev
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build locally
 - `npm run lint` - Run ESLint
+- `npm run test` - Run unit tests with Vitest
+- `npm run test:ui` - Run tests with interactive UI
+- `npm run test:coverage` - Run tests with coverage report
+
+## Testing
+
+This project includes comprehensive automated tests using [Vitest](https://vitest.dev/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/).
+
+### Running Tests
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode (for development)
+npm run test -- --watch
+
+# Run tests with interactive UI
+npm run test:ui
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+### Test Structure
+
+- **Unit Tests**: Located in `src/**/__tests__/` directories
+- **QTI Parser Tests**: Comprehensive testing of XML parsing logic
+- **Template Tests**: Testing of QTI item template generation
+- **Component Tests**: React component rendering and interaction tests
+
+### Writing Tests
+
+Tests are written using Vitest syntax (similar to Jest) with React Testing Library for component testing:
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { render } from '@testing-library/react';
+
+describe('Component', () => {
+  it('should render correctly', () => {
+    const { container } = render(<Component />);
+    expect(container).toBeInTheDocument();
+  });
+});
+```
 
 ## Docker Development Setup
 
