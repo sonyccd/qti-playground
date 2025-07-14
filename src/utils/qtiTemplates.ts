@@ -270,10 +270,8 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
     if (insertIndex === 0) {
       // Insert as first child
       const firstItem = itemsInTest[0];
+      assessmentTest.insertBefore(xmlDoc.createTextNode('\n\n  '), firstItem);
       assessmentTest.insertBefore(importedNode, firstItem);
-      // Add some whitespace formatting
-      assessmentTest.insertBefore(xmlDoc.createTextNode('\n  '), firstItem);
-      assessmentTest.insertBefore(xmlDoc.createTextNode('\n\n  '), importedNode);
     } else if (insertIndex >= itemsInTest.length) {
       // Insert at the end
       assessmentTest.appendChild(xmlDoc.createTextNode('\n\n  '));
