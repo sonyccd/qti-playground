@@ -112,3 +112,37 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* CodeMirror highlighting animation */
+.cm-highlight-flash {
+  background-color: hsl(var(--accent) / 0.3);
+  animation: flash-highlight 2s ease-out;
+}
+
+@keyframes flash-highlight {
+  0% {
+    background-color: hsl(var(--accent) / 0.6);
+  }
+  50% {
+    background-color: hsl(var(--accent) / 0.4);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* Slide animations for newly added items */
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s ease-out;
+}

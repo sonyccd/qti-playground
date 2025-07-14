@@ -11,8 +11,35 @@ import { useToast } from '@/hooks/use-toast';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { EditorView } from '@codemirror/view';
+import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
+import { StateEffect, StateField } from '@codemirror/state';
 import { Link } from 'react-router-dom';
+
+// Create highlighting effects for the editor
+const highlightMark = Decoration.mark({
+  class: "cm-highlight-flash"
+});
+
+const addHighlight = StateEffect.define<{from: number, to: number}>();
+
+const highlightField = StateField.define<DecorationSet>({
+  create() {
+    return Decoration.none;
+  },
+  update(highlights, tr) {
+    highlights = highlights.map(tr.changes);
+    for (let e of tr.effects) {
+      if (e.is(addHighlight)) {
+        highlights = highlights.update({
+          add: [highlightMark.range(e.value.from, e.value.to)]
+        });
+      }
+    }
+    return highlights;
+  },
+  provide: f => EditorView.decorations.from(f)
+});
+
 type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 export function QTIPreview() {
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -23,6 +50,9 @@ export function QTIPreview() {
   const [hasContent, setHasContent] = useState(false);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('split');
   const [unsupportedElements, setUnsupportedElements] = useState<import('@/types/qti').UnsupportedElement[]>([]);
+  const [newlyAddedItemId, setNewlyAddedItemId] = useState<string | null>(null);
+  const [editorView, setEditorView] = useState<EditorView | null>(null);
+  
   const {
     toast
   } = useToast();
@@ -168,9 +198,51 @@ export function QTIPreview() {
 
   const handleAddItem = (itemXML: string, insertAfterIndex?: number) => {
     try {
+      const prevItemCount = qtiItems.length;
       const updatedXML = insertItemIntoXML(xmlContent, itemXML, insertAfterIndex);
+      
+      // Find the insertion point to highlight in the editor
+      const insertionPoint = findInsertionPoint(xmlContent, itemXML, insertAfterIndex);
+      
       setXmlContent(updatedXML);
       parseXMLContent(updatedXML);
+      
+      // Highlight the added XML in the editor
+      if (editorView && insertionPoint) {
+        const highlightFrom = insertionPoint.from;
+        const highlightTo = insertionPoint.to;
+        
+        editorView.dispatch({
+          effects: addHighlight.of({ from: highlightFrom, to: highlightTo })
+        });
+        
+        // Clear highlight after 2 seconds
+        setTimeout(() => {
+          if (editorView) {
+            editorView.dispatch({
+              effects: StateEffect.define<void>().of(undefined)
+            });
+          }
+        }, 2000);
+      }
+      
+      // Set the ID of the newly added item for animation
+      const newItemIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
+        ? insertAfterIndex + 1 
+        : prevItemCount;
+      
+      // Clear the animation state after a short delay to trigger the animation
+      setTimeout(() => {
+        const parseResult = parseQTIXML(updatedXML);
+        if (parseResult.items[newItemIndex]) {
+          setNewlyAddedItemId(parseResult.items[newItemIndex].id);
+          
+          // Clear the animation state after animation completes
+          setTimeout(() => {
+            setNewlyAddedItemId(null);
+          }, 600);
+        }
+      }, 100);
       
       toast({
         title: "Item added",
@@ -185,6 +257,32 @@ export function QTIPreview() {
         variant: "destructive"
       });
     }
+  };
+
+  // Helper function to find where the item was inserted for highlighting
+  const findInsertionPoint = (originalXML: string, insertedXML: string, insertAfterIndex?: number) => {
+    // Simple approach: find where the new content was added
+    // This is approximate and could be improved with better diff detection
+    const lines = insertedXML.split('\n');
+    const insertedLines = lines.filter(line => line.trim().length > 0);
+    
+    if (insertedLines.length > 0) {
+      const startPattern = insertedLines[0].trim();
+      const xmlLines = originalXML.split('\n');
+      
+      // Find the line where insertion happened
+      let charCount = 0;
+      for (let i = 0; i < xmlLines.length; i++) {
+        if (xmlLines[i].includes(startPattern)) {
+          const from = charCount + xmlLines[i].indexOf(startPattern);
+          const estimatedLength = insertedXML.length * 0.8; // Rough estimate
+          return { from, to: from + estimatedLength };
+        }
+        charCount += xmlLines[i].length + 1; // +1 for newline
+      }
+    }
+    
+    return null;
   };
 
   const getItemTypeLabel = (type: string) => {
@@ -381,16 +479,24 @@ export function QTIPreview() {
                 overflow: 'auto',
                 height: 0
               }}>
-                      <CodeMirror value={xmlContent} onChange={handleXmlChange} extensions={[xml(), EditorView.lineWrapping]} theme={oneDark} style={{
-                  height: '100%'
-                }} basicSetup={{
-                  lineNumbers: true,
-                  foldGutter: true,
-                  dropCursor: false,
-                  allowMultipleSelections: false,
-                  indentOnInput: true,
-                  autocompletion: true
-                }} />
+                      <CodeMirror 
+                        value={xmlContent} 
+                        onChange={handleXmlChange} 
+                        extensions={[xml(), EditorView.lineWrapping, highlightField]} 
+                        theme={oneDark} 
+                        style={{
+                          height: '100%'
+                        }} 
+                        basicSetup={{
+                          lineNumbers: true,
+                          foldGutter: true,
+                          dropCursor: false,
+                          allowMultipleSelections: false,
+                          indentOnInput: true,
+                          autocompletion: true
+                        }}
+                        onCreateEditor={(view) => setEditorView(view)}
+                      />
                     </Box>
                   </Card>
                 </Box>}
@@ -517,7 +623,7 @@ export function QTIPreview() {
                                   <Chip label={`#${index + 1}`} variant="outlined" size="small" />
                                   <Chip label={getItemTypeLabel(item.type)} color={getItemTypeColor(item.type) as any} size="small" />
                                 </Box>
-                                <QTIItemRenderer item={item} />
+                                <QTIItemRenderer item={item} isNewlyAdded={item.id === newlyAddedItemId} />
                                 
                                 {/* Add item button after each item */}
                                 <AddItemButton onAddItem={(itemXML) => handleAddItem(itemXML, index)} />
