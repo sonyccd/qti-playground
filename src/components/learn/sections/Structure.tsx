@@ -115,7 +115,7 @@ export default function Structure() {
         Built-in templates make it easy to define right/wrong scoring without needing to write complex XML. For example:
       </p>
       
-      <pre className="bg-gray-100 p-4 rounded-lg mb-6 overflow-x-auto">
+      <pre className="bg-gray-100 p-4 rounded-lg mb-6 overflow-x-auto text-xs sm:text-sm break-all whitespace-pre-wrap">
         <code>&lt;responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/&gt;</code>
       </pre>
       
