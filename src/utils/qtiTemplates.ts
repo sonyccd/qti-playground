@@ -1,9 +1,5 @@
 export const QTI_ITEM_TEMPLATES = {
-  choice: (itemId: string) => `
-  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
-                   identifier="${itemId}" 
+  choice: (itemId: string) => `<assessmentItem identifier="${itemId}" 
                    title="Multiple Choice Question" 
                    adaptive="false" 
                    timeDependent="false">
@@ -37,11 +33,7 @@ export const QTI_ITEM_TEMPLATES = {
     
   </assessmentItem>`,
 
-  multipleResponse: (itemId: string) => `
-  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
-                   identifier="${itemId}" 
+  multipleResponse: (itemId: string) => `<assessmentItem identifier="${itemId}" 
                    title="Multiple Response Question" 
                    adaptive="false" 
                    timeDependent="false">
@@ -76,11 +68,7 @@ export const QTI_ITEM_TEMPLATES = {
     
   </assessmentItem>`,
 
-  textEntry: (itemId: string) => `
-  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
-                   identifier="${itemId}" 
+  textEntry: (itemId: string) => `<assessmentItem identifier="${itemId}" 
                    title="Fill in the Blank" 
                    adaptive="false" 
                    timeDependent="false">
@@ -107,11 +95,7 @@ export const QTI_ITEM_TEMPLATES = {
     
   </assessmentItem>`,
 
-  extendedText: (itemId: string) => `
-  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
-                   identifier="${itemId}" 
+  extendedText: (itemId: string) => `<assessmentItem identifier="${itemId}" 
                    title="Extended Text Response" 
                    adaptive="false" 
                    timeDependent="false">
@@ -136,11 +120,7 @@ export const QTI_ITEM_TEMPLATES = {
     
   </assessmentItem>`,
 
-  hottext: (itemId: string) => `
-  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
-                   identifier="${itemId}" 
+  hottext: (itemId: string) => `<assessmentItem identifier="${itemId}" 
                    title="Hottext Selection" 
                    adaptive="false" 
                    timeDependent="false">
@@ -170,11 +150,7 @@ export const QTI_ITEM_TEMPLATES = {
     
   </assessmentItem>`,
 
-  slider: (itemId: string) => `
-  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
-                   identifier="${itemId}" 
+  slider: (itemId: string) => `<assessmentItem identifier="${itemId}" 
                    title="Slider Question" 
                    adaptive="false" 
                    timeDependent="false">
@@ -202,11 +178,7 @@ export const QTI_ITEM_TEMPLATES = {
     
   </assessmentItem>`,
 
-  order: (itemId: string) => `
-  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
-                   identifier="${itemId}" 
+  order: (itemId: string) => `<assessmentItem identifier="${itemId}" 
                    title="Order Interaction" 
                    adaptive="false" 
                    timeDependent="false">
@@ -260,42 +232,94 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
   
-  // Check if we have a single assessmentItem or multiple in a test
+  // Check if this is an assessmentTest or standalone items
+  const assessmentTest = xmlDoc.querySelector('assessmentTest');
   const assessmentItems = xmlDoc.querySelectorAll('assessmentItem');
   
   if (assessmentItems.length === 0) {
-    // No existing items, replace entire content
-    return newItemXML.trim();
+    // No existing items, return just the new item with proper XML declaration
+    return `<?xml version="1.0" encoding="UTF-8"?>\n${newItemXML.trim()}`;
   }
   
-  if (assessmentItems.length === 1) {
-    // Single item file, convert to multi-item format
-    const singleItem = assessmentItems[0];
-    const newItemDoc = parser.parseFromString(newItemXML.trim(), 'text/xml');
-    const newItem = newItemDoc.querySelector('assessmentItem');
+  if (assessmentTest) {
+    // We have an assessmentTest container - insert inside it
+    const itemsInTest = assessmentTest.querySelectorAll('assessmentItem');
+    const insertIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
+      ? Math.min(insertAfterIndex + 1, itemsInTest.length)
+      : insertAfterIndex === -1 
+        ? 0 
+        : itemsInTest.length;
     
-    if (!newItem) return xmlContent;
-    
-    // Create a simple container with both items
-    if (insertAfterIndex === undefined || insertAfterIndex === 0) {
-      return `${xmlContent.trim()}\n\n${newItemXML.trim()}`;
-    } else {
-      return `${newItemXML.trim()}\n\n${xmlContent.trim()}`;
-    }
-  }
-  
-  // Multiple items - insert at specified position
-  const items = Array.from(assessmentItems);
-  const insertIndex = insertAfterIndex !== undefined ? insertAfterIndex + 1 : items.length;
-  
-  // Convert all items to string representations
-  const itemStrings = items.map(item => {
+    // Convert to string and find insertion point
     const serializer = new XMLSerializer();
-    return serializer.serializeToString(item);
-  });
-  
-  // Insert new item
-  itemStrings.splice(insertIndex, 0, newItemXML.trim());
-  
-  return itemStrings.join('\n\n');
+    let testXML = serializer.serializeToString(xmlDoc);
+    
+    if (itemsInTest.length === 0) {
+      // Empty test, insert before closing tag
+      testXML = testXML.replace('</assessmentTest>', `\n  ${newItemXML.trim()}\n\n</assessmentTest>`);
+    } else {
+      // Insert at the specified position
+      const targetItem = itemsInTest[insertIndex - 1] || itemsInTest[itemsInTest.length - 1];
+      const targetItemXML = serializer.serializeToString(targetItem);
+      const insertPoint = testXML.indexOf(targetItemXML) + targetItemXML.length;
+      testXML = testXML.slice(0, insertPoint) + `\n\n  ${newItemXML.trim()}` + testXML.slice(insertPoint);
+    }
+    
+    return testXML;
+  } else {
+    // Standalone items - simple concatenation
+    const insertIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
+      ? insertAfterIndex + 1
+      : insertAfterIndex === -1 
+        ? 0 
+        : assessmentItems.length;
+    
+    // Split content by items and reassemble
+    const lines = xmlContent.split('\n');
+    const result: string[] = [];
+    let currentItemLines: string[] = [];
+    let inItem = false;
+    let itemCount = 0;
+    
+    for (const line of lines) {
+      if (line.trim().startsWith('<?xml') || line.trim().startsWith('<assessmentItem')) {
+        if (inItem && currentItemLines.length > 0) {
+          // Finish previous item
+          if (itemCount === insertIndex) {
+            result.push(newItemXML.trim());
+          }
+          result.push(currentItemLines.join('\n'));
+          currentItemLines = [];
+          itemCount++;
+        }
+        inItem = line.trim().startsWith('<assessmentItem');
+        currentItemLines.push(line);
+      } else if (line.trim() === '</assessmentItem>') {
+        currentItemLines.push(line);
+        if (itemCount === insertIndex) {
+          result.push(newItemXML.trim());
+        }
+        result.push(currentItemLines.join('\n'));
+        currentItemLines = [];
+        itemCount++;
+        inItem = false;
+      } else {
+        currentItemLines.push(line);
+      }
+    }
+    
+    // Handle any remaining content
+    if (currentItemLines.length > 0) {
+      result.push(currentItemLines.join('\n'));
+    }
+    
+    // If inserting at the end or at the beginning
+    if (insertIndex === 0) {
+      result.unshift(newItemXML.trim());
+    } else if (insertIndex >= assessmentItems.length) {
+      result.push(newItemXML.trim());
+    }
+    
+    return result.filter(item => item.trim()).join('\n\n');
+  }
 }
