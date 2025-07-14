@@ -167,13 +167,7 @@ export function QTIPreview() {
 
   const handleAddItem = (itemXML: string, insertAfterIndex?: number) => {
     try {
-      console.log('Current XML content:', xmlContent);
-      console.log('New item XML:', itemXML);
-      console.log('Insert after index:', insertAfterIndex);
-      
       const updatedXML = insertItemIntoXML(xmlContent, itemXML, insertAfterIndex);
-      console.log('Updated XML:', updatedXML);
-      
       setXmlContent(updatedXML);
       parseXMLContent(updatedXML);
       

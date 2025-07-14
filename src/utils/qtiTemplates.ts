@@ -242,30 +242,61 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
   }
   
   if (assessmentTest) {
-    // We have an assessmentTest container - insert inside it
+    // We have an assessmentTest container - need to insert properly
     const itemsInTest = assessmentTest.querySelectorAll('assessmentItem');
-    const insertIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
-      ? Math.min(insertAfterIndex + 1, itemsInTest.length)
-      : insertAfterIndex === -1 
-        ? 0 
-        : itemsInTest.length;
     
-    // Convert to string and find insertion point
-    const serializer = new XMLSerializer();
-    let testXML = serializer.serializeToString(xmlDoc);
-    
-    if (itemsInTest.length === 0) {
-      // Empty test, insert before closing tag
-      testXML = testXML.replace('</assessmentTest>', `\n  ${newItemXML.trim()}\n\n</assessmentTest>`);
+    // Calculate insertion position
+    let insertIndex: number;
+    if (insertAfterIndex === -1) {
+      insertIndex = 0; // Insert at beginning
+    } else if (insertAfterIndex === undefined || insertAfterIndex >= itemsInTest.length - 1) {
+      insertIndex = itemsInTest.length; // Insert at end
     } else {
-      // Insert at the specified position
-      const targetItem = itemsInTest[insertIndex - 1] || itemsInTest[itemsInTest.length - 1];
-      const targetItemXML = serializer.serializeToString(targetItem);
-      const insertPoint = testXML.indexOf(targetItemXML) + targetItemXML.length;
-      testXML = testXML.slice(0, insertPoint) + `\n\n  ${newItemXML.trim()}` + testXML.slice(insertPoint);
+      insertIndex = insertAfterIndex + 1; // Insert after specified index
     }
     
-    return testXML;
+    // Parse the new item to add proper indentation
+    const newItemDoc = parser.parseFromString(`<root>${newItemXML.trim()}</root>`, 'text/xml');
+    const newItemElement = newItemDoc.querySelector('assessmentItem');
+    
+    if (!newItemElement) {
+      throw new Error('Invalid new item XML');
+    }
+    
+    // Import the new node into the target document
+    const importedNode = xmlDoc.importNode(newItemElement, true);
+    
+    // Insert the new item
+    if (insertIndex === 0) {
+      // Insert as first child
+      const firstItem = itemsInTest[0];
+      assessmentTest.insertBefore(importedNode, firstItem);
+      // Add some whitespace formatting
+      assessmentTest.insertBefore(xmlDoc.createTextNode('\n  '), firstItem);
+      assessmentTest.insertBefore(xmlDoc.createTextNode('\n\n  '), importedNode);
+    } else if (insertIndex >= itemsInTest.length) {
+      // Insert at the end
+      assessmentTest.appendChild(xmlDoc.createTextNode('\n\n  '));
+      assessmentTest.appendChild(importedNode);
+      assessmentTest.appendChild(xmlDoc.createTextNode('\n\n'));
+    } else {
+      // Insert after the specified item
+      const targetItem = itemsInTest[insertIndex - 1];
+      const nextItem = itemsInTest[insertIndex];
+      assessmentTest.insertBefore(xmlDoc.createTextNode('\n\n  '), nextItem);
+      assessmentTest.insertBefore(importedNode, nextItem);
+    }
+    
+    // Serialize back to string with proper formatting
+    const serializer = new XMLSerializer();
+    let result = serializer.serializeToString(xmlDoc);
+    
+    // Clean up the XML formatting
+    result = result.replace(/><assessmentItem/g, '>\n\n  <assessmentItem');
+    result = result.replace(/<\/assessmentItem></g, '</assessmentItem>\n\n  </');
+    result = result.replace(/>\s*<\/assessmentTest>/g, '>\n\n</assessmentTest>');
+    
+    return result;
   } else {
     // Standalone items - simple concatenation
     const insertIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
@@ -274,52 +305,24 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
         ? 0 
         : assessmentItems.length;
     
-    // Split content by items and reassemble
-    const lines = xmlContent.split('\n');
-    const result: string[] = [];
-    let currentItemLines: string[] = [];
-    let inItem = false;
-    let itemCount = 0;
+    // Split by items and reassemble
+    const xmlDeclarationMatch = xmlContent.match(/^<\?xml[^>]*>\s*/);
+    const xmlDeclaration = xmlDeclarationMatch ? xmlDeclarationMatch[0] : '';
+    const contentWithoutDeclaration = xmlContent.replace(/^<\?xml[^>]*>\s*/, '');
     
-    for (const line of lines) {
-      if (line.trim().startsWith('<?xml') || line.trim().startsWith('<assessmentItem')) {
-        if (inItem && currentItemLines.length > 0) {
-          // Finish previous item
-          if (itemCount === insertIndex) {
-            result.push(newItemXML.trim());
-          }
-          result.push(currentItemLines.join('\n'));
-          currentItemLines = [];
-          itemCount++;
-        }
-        inItem = line.trim().startsWith('<assessmentItem');
-        currentItemLines.push(line);
-      } else if (line.trim() === '</assessmentItem>') {
-        currentItemLines.push(line);
-        if (itemCount === insertIndex) {
-          result.push(newItemXML.trim());
-        }
-        result.push(currentItemLines.join('\n'));
-        currentItemLines = [];
-        itemCount++;
-        inItem = false;
-      } else {
-        currentItemLines.push(line);
-      }
-    }
+    // Split content into individual assessment items
+    const itemRegex = /<assessmentItem[\s\S]*?<\/assessmentItem>/g;
+    const itemMatches: string[] = contentWithoutDeclaration.match(itemRegex) || [];
     
-    // Handle any remaining content
-    if (currentItemLines.length > 0) {
-      result.push(currentItemLines.join('\n'));
-    }
-    
-    // If inserting at the end or at the beginning
+    // Insert new item at specified position
     if (insertIndex === 0) {
-      result.unshift(newItemXML.trim());
-    } else if (insertIndex >= assessmentItems.length) {
-      result.push(newItemXML.trim());
+      itemMatches.unshift(newItemXML.trim());
+    } else if (insertIndex >= itemMatches.length) {
+      itemMatches.push(newItemXML.trim());
+    } else {
+      itemMatches.splice(insertIndex, 0, newItemXML.trim());
     }
     
-    return result.filter(item => item.trim()).join('\n\n');
+    return xmlDeclaration + itemMatches.join('\n\n');
   }
 }
