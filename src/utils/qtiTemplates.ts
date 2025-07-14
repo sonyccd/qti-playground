@@ -291,7 +291,7 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
     
     return result;
   } else {
-    // Standalone items - need to handle namespaces properly
+    // Standalone items - when adding to a single item, we need to create an assessmentTest wrapper
     const firstItem = assessmentItems[0];
     const hasNamespaces = firstItem && firstItem.hasAttribute('xmlns');
     
@@ -324,7 +324,35 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
     const itemRegex = /<assessmentItem[\s\S]*?<\/assessmentItem>/g;
     const itemMatches: string[] = contentWithoutDeclaration.match(itemRegex) || [];
     
-    // Insert new item at specified position
+    // If we only have one existing item and we're adding another, wrap in assessmentTest
+    if (itemMatches.length === 1) {
+      const namespaceAttrs = hasNamespaces 
+        ? `xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"`
+        : '';
+      
+      // Remove namespaces from individual items since they'll be in the test wrapper
+      const cleanExistingItem = itemMatches[0].replace(
+        /xmlns="[^"]*"\s*xmlns:xsi="[^"]*"\s*xsi:schemaLocation="[^"]*"\s*/g, ''
+      );
+      const cleanNewItem = finalNewItemXML.replace(
+        /xmlns="[^"]*"\s*xmlns:xsi="[^"]*"\s*xsi:schemaLocation="[^"]*"\s*/g, ''
+      );
+      
+      let orderedItems: string[];
+      if (insertIndex === 0) {
+        orderedItems = [cleanNewItem, cleanExistingItem];
+      } else {
+        orderedItems = [cleanExistingItem, cleanNewItem];
+      }
+      
+      return `${xmlDeclaration}<assessmentTest ${namespaceAttrs} identifier="assessment_test" title="QTI Assessment">
+
+  ${orderedItems.join('\n\n  ')}
+
+</assessmentTest>`;
+    }
+    
+    // Multiple items already exist - just insert normally
     if (insertIndex === 0) {
       itemMatches.unshift(finalNewItemXML);
     } else if (insertIndex >= itemMatches.length) {
