@@ -73,26 +73,52 @@ export function formatXML(xml: string): string {
   try {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, 'text/xml');
+    
+    // Remove all text nodes that are just whitespace
+    function removeWhitespaceNodes(node: Node) {
+      for (let i = node.childNodes.length - 1; i >= 0; i--) {
+        const child = node.childNodes[i];
+        if (child.nodeType === Node.TEXT_NODE && /^\s*$/.test(child.textContent || '')) {
+          node.removeChild(child);
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          removeWhitespaceNodes(child);
+        }
+      }
+    }
+    
+    removeWhitespaceNodes(xmlDoc);
+    
     const serializer = new XMLSerializer();
     let formatted = serializer.serializeToString(xmlDoc);
     
-    // Simple formatting with indentation
+    // Simple but effective formatting
     formatted = formatted.replace(/></g, '>\n<');
+    
     const lines = formatted.split('\n');
     let indent = 0;
     const indentStr = '  ';
     
     return lines.map(line => {
       const trimmed = line.trim();
+      if (!trimmed) return '';
+      
+      // Decrease indent for closing tags
       if (trimmed.startsWith('</')) {
         indent = Math.max(0, indent - 1);
       }
+      
       const result = indentStr.repeat(indent) + trimmed;
-      if (trimmed.startsWith('<') && !trimmed.startsWith('</') && !trimmed.endsWith('/>')) {
+      
+      // Increase indent for opening tags (but not self-closing or if followed by closing tag)
+      if (trimmed.startsWith('<') && 
+          !trimmed.startsWith('</') && 
+          !trimmed.endsWith('/>') &&
+          !trimmed.includes('</')) {
         indent++;
       }
+      
       return result;
-    }).join('\n');
+    }).filter(line => line.trim()).join('\n');
   } catch (error) {
     console.error('Error formatting XML:', error);
     return xml;
