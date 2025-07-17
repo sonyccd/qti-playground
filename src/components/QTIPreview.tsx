@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { FileUpload } from './FileUpload';
-import { QTIItemRenderer } from './qti/QTIItemRenderer';
+import { SortableQTIItem } from './qti/SortableQTIItem';
 import { AddItemButton } from './qti/AddItemButton';
 import { parseQTIXML } from '@/utils/qtiParser';
 import { insertItemIntoXML } from '@/utils/qtiTemplates';
-import { updateQTIXMLWithCorrectResponse, formatXML } from '@/utils/xmlUpdater';
+import { updateQTIXMLWithCorrectResponse, formatXML, reorderQTIItems } from '@/utils/xmlUpdater';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, Typography, Box, Container, Button, Chip, Alert, AlertTitle, Avatar, ToggleButton, ToggleButtonGroup, useTheme, CircularProgress, Grid } from '@mui/material';
 import { Description, Warning, CheckCircle, MenuBook, Download, Code, Visibility, ViewColumn, ViewAgenda, ViewStream, Home, School, OpenInFull, Add } from '@mui/icons-material';
@@ -14,6 +14,21 @@ import { xml } from '@codemirror/lang-xml';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { EditorView } from '@codemirror/view';
 import { Link } from 'react-router-dom';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 export function QTIPreview() {
@@ -208,6 +223,32 @@ export function QTIPreview() {
     setXmlContent(formattedXML);
     // Re-parse to update the items
     parseXMLContent(formattedXML);
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = qtiItems.findIndex((item) => item.id === active.id);
+      const newIndex = qtiItems.findIndex((item) => item.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        // Update XML with new order
+        const updatedXML = reorderQTIItems(xmlContent, oldIndex, newIndex);
+        setXmlContent(updatedXML);
+        
+        // Update items state to reflect new order
+        const newItems = arrayMove(qtiItems, oldIndex, newIndex);
+        setQtiItems(newItems);
+      }
+    }
   };
 
   const getItemTypeLabel = (type: string) => {
@@ -536,27 +577,38 @@ export function QTIPreview() {
                             {/* Add item button at the beginning */}
                             <AddItemButton onAddItem={(itemXML) => handleAddItem(itemXML, -1)} />
                             
-                            {qtiItems.map((item, index) => (
-                              <Box key={item.id} sx={{ mb: 2 }}>
-                                <Box sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          mb: 2
-                        }}>
-                                  <Chip label={`#${index + 1}`} variant="outlined" size="small" />
-                                  <Chip label={getItemTypeLabel(item.type)} color={getItemTypeColor(item.type) as any} size="small" />
-                                </Box>
-                                <QTIItemRenderer 
-                                  item={item} 
-                                  isNewlyAdded={item.id === newlyAddedItemId}
-                                  onCorrectResponseChange={handleCorrectResponseChange}
-                                />
-                                
-                                {/* Add item button after each item */}
-                                <AddItemButton onAddItem={(itemXML) => handleAddItem(itemXML, index)} />
-                              </Box>
-                            ))}
+                             <DndContext
+                               sensors={sensors}
+                               collisionDetection={closestCenter}
+                               onDragEnd={handleDragEnd}
+                             >
+                               <SortableContext 
+                                 items={qtiItems.map(item => item.id)}
+                                 strategy={verticalListSortingStrategy}
+                               >
+                                 {qtiItems.map((item, index) => (
+                                   <Box key={item.id} sx={{ mb: 2 }}>
+                                     <Box sx={{
+                               display: 'flex',
+                               alignItems: 'center',
+                               gap: 1,
+                               mb: 2
+                             }}>
+                                       <Chip label={`#${index + 1}`} variant="outlined" size="small" />
+                                       <Chip label={getItemTypeLabel(item.type)} color={getItemTypeColor(item.type) as any} size="small" />
+                                     </Box>
+                                     <SortableQTIItem 
+                                       item={item} 
+                                       isNewlyAdded={item.id === newlyAddedItemId}
+                                       onCorrectResponseChange={handleCorrectResponseChange}
+                                     />
+                                     
+                                     {/* Add item button after each item */}
+                                     <AddItemButton onAddItem={(itemXML) => handleAddItem(itemXML, index)} />
+                                   </Box>
+                                 ))}
+                               </SortableContext>
+                             </DndContext>
                          </Box> : !errors.length && <Box sx={{
                    textAlign: 'center',
                    py: 6

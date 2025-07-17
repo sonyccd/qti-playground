@@ -69,6 +69,49 @@ export function updateQTIXMLWithCorrectResponse(
   }
 }
 
+export function reorderQTIItems(xmlContent: string, fromIndex: number, toIndex: number): string {
+  try {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+    
+    // Find all assessmentItem elements
+    const assessmentItems = Array.from(xmlDoc.querySelectorAll('assessmentItem'));
+    
+    if (fromIndex < 0 || fromIndex >= assessmentItems.length || 
+        toIndex < 0 || toIndex >= assessmentItems.length) {
+      return xmlContent;
+    }
+    
+    // Get the item to move
+    const itemToMove = assessmentItems[fromIndex];
+    const parent = itemToMove.parentNode;
+    
+    if (!parent) return xmlContent;
+    
+    // Remove the item from its current position
+    parent.removeChild(itemToMove);
+    
+    // Find the new position and insert
+    const remainingItems = Array.from(parent.querySelectorAll('assessmentItem'));
+    
+    if (toIndex >= remainingItems.length) {
+      // Insert at the end
+      parent.appendChild(itemToMove);
+    } else {
+      // Insert before the item at toIndex
+      const referenceItem = remainingItems[toIndex];
+      parent.insertBefore(itemToMove, referenceItem);
+    }
+    
+    const serializer = new XMLSerializer();
+    const result = serializer.serializeToString(xmlDoc);
+    return formatXML(result);
+  } catch (error) {
+    console.error('Error reordering QTI items:', error);
+    return xmlContent;
+  }
+}
+
 export function formatXML(xml: string): string {
   try {
     const parser = new DOMParser();
