@@ -14,7 +14,7 @@ const LandingPage = () => {
           {/* QTI 3 Coming Soon Stamp */}
           <Box sx={{
             position: 'absolute',
-            top: '20px',
+            top: { xs: '60px', md: '80px' },
             right: { xs: '10px', md: '40px' },
             transform: 'rotate(45deg)',
             bgcolor: 'rgba(255, 0, 0, 0.1)',
@@ -38,16 +38,6 @@ const LandingPage = () => {
               bottom: '-3px',
               border: '1px solid #d32f2f',
               borderRadius: '8px',
-            },
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '100%',
-              height: '1px',
-              bgcolor: '#d32f2f',
             }
           }}>
             QTI 3 Coming Soon!
