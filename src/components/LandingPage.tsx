@@ -10,7 +10,49 @@ const LandingPage = () => {
   }}>
       <Container maxWidth="lg">
         {/* Header */}
-        <Box textAlign="center" mb={8} className="animate-fade-in">
+        <Box textAlign="center" mb={8} className="animate-fade-in" sx={{ position: 'relative' }}>
+          {/* QTI 3 Coming Soon Stamp */}
+          <Box sx={{
+            position: 'absolute',
+            top: '20px',
+            right: { xs: '10px', md: '40px' },
+            transform: 'rotate(45deg)',
+            bgcolor: 'rgba(255, 0, 0, 0.1)',
+            border: '3px solid #d32f2f',
+            borderRadius: '8px',
+            padding: '8px 16px',
+            zIndex: 10,
+            fontFamily: 'monospace',
+            fontWeight: 'bold',
+            fontSize: { xs: '10px', md: '14px' },
+            color: '#d32f2f',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: '-3px',
+              left: '-3px',
+              right: '-3px',
+              bottom: '-3px',
+              border: '1px solid #d32f2f',
+              borderRadius: '8px',
+            },
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '100%',
+              height: '1px',
+              bgcolor: '#d32f2f',
+            }
+          }}>
+            QTI 3 Coming Soon!
+          </Box>
+          
           <Avatar sx={{
           width: 80,
           height: 80,
