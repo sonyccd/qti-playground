@@ -29,6 +29,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { posthog } from '@/lib/posthog';
 
 type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 export function QTIPreview() {
@@ -56,6 +57,14 @@ export function QTIPreview() {
       setXmlContent(text);
       setHasContent(true);
       parseXMLContent(text);
+      
+      // Track file upload event
+      posthog.capture('qti_file_uploaded', {
+        file_name: file.name,
+        file_size: file.size,
+        file_type: file.type
+      });
+      
       toast({
         title: "QTI file loaded",
         description: "File content loaded in editor"
@@ -110,6 +119,10 @@ export function QTIPreview() {
         type: 'text/xml'
       });
       setSelectedFile(mockFile);
+      
+      // Track example loading
+      posthog.capture('qti_example_loaded');
+      
       toast({
         title: "Example QTI file loaded",
         description: "Content loaded in editor"
@@ -171,6 +184,9 @@ export function QTIPreview() {
     setSelectedFile(undefined);
     parseXMLContent(blankQTITemplate);
     
+    // Track blank file creation
+    posthog.capture('qti_blank_file_created');
+    
     toast({
       title: "Blank QTI file created",
       description: "A new blank QTI template is ready for editing"
@@ -189,6 +205,12 @@ export function QTIPreview() {
     try {
       const prevItemCount = qtiItems.length;
       const updatedXML = insertItemIntoXML(xmlContent, itemXML, insertAfterIndex);
+      
+      // Track item addition
+      posthog.capture('qti_item_added', {
+        item_count: prevItemCount + 1,
+        insert_position: insertAfterIndex
+      });
       
       setXmlContent(updatedXML);
       parseXMLContent(updatedXML);
@@ -240,6 +262,13 @@ export function QTIPreview() {
       const newIndex = qtiItems.findIndex((item) => item.id === over.id);
 
       if (oldIndex !== -1 && newIndex !== -1) {
+        // Track item reordering
+        posthog.capture('qti_item_reordered', {
+          from_position: oldIndex,
+          to_position: newIndex,
+          total_items: qtiItems.length
+        });
+        
         // Update XML with new order
         const updatedXML = reorderQTIItems(xmlContent, oldIndex, newIndex);
         setXmlContent(updatedXML);
@@ -374,6 +403,12 @@ export function QTIPreview() {
                   variant="outlined" 
                   size="small" 
                   onClick={() => {
+                    // Track XML download
+                    posthog.capture('qti_xml_downloaded', {
+                      file_size: xmlContent.length,
+                      item_count: qtiItems.length
+                    });
+                    
                     const blob = new Blob([xmlContent], { type: 'application/xml' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
