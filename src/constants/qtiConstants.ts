@@ -1,13 +1,13 @@
 import { QTIParserFactory } from '@/parsers/QTIParserFactory';
 import { QTIVersion } from '@/types/qtiVersions';
 
-export const getItemTypeLabel = (type: string, version: QTIVersion = '2.1') => {
+export const getItemTypeLabel = (type: string, version: QTIVersion = '3.0') => {
   const parser = QTIParserFactory.getParser(version);
   const constants = parser.getConstants();
   return constants.itemTypeLabels[type] || 'Unknown';
 };
 
-export const getItemTypeColor = (type: string, version: QTIVersion = '2.1') => {
+export const getItemTypeColor = (type: string, version: QTIVersion = '3.0') => {
   const parser = QTIParserFactory.getParser(version);
   const constants = parser.getConstants();
   return constants.itemTypeColors[type] || 'error';

@@ -41,8 +41,8 @@ export class QTIParserFactory {
       }
     }
     
-    // Default to QTI 2.1 if no compatible parser found
-    return this.getParser('2.1');
+    // Default to QTI 3.0 if no compatible parser found
+    return this.getParser('3.0');
   }
   
   /**

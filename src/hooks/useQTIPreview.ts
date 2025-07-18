@@ -33,7 +33,7 @@ export function useQTIPreview() {
     layoutMode: 'split',
     unsupportedElements: [],
     newlyAddedItemId: null,
-    selectedVersion: '2.1',
+    selectedVersion: '3.0',
   });
   
   const { toast } = useToast();
