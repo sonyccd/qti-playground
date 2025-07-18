@@ -1,9 +1,8 @@
 import { useState, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
-import { parseQTIXML } from '@/utils/qtiParser';
-import { insertItemIntoXML } from '@/utils/qtiTemplates';
-import { updateQTIXMLWithCorrectResponse, formatXML, reorderQTIItems } from '@/utils/xmlUpdater';
 import { QTIItem, UnsupportedElement } from '@/types/qti';
+import { QTIVersion } from '@/types/qtiVersions';
+import { QTIParserFactory } from '@/parsers/QTIParserFactory';
 import { useToast } from '@/hooks/use-toast';
 import { posthog } from '@/lib/posthog';
 
@@ -19,45 +18,10 @@ export interface QTIPreviewState {
   layoutMode: LayoutMode;
   unsupportedElements: UnsupportedElement[];
   newlyAddedItemId: string | null;
+  selectedVersion: QTIVersion;
+  detectedVersion?: QTIVersion;
 }
 
-const BLANK_QTI_TEMPLATE = `<?xml version="1.0" encoding="UTF-8"?>
-<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
-                identifier="sample-item" 
-                title="New QTI Item" 
-                adaptive="false" 
-                timeDependent="false">
-  
-  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
-    <correctResponse>
-      <value>ChoiceA</value>
-    </correctResponse>
-  </responseDeclaration>
-  
-  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
-    <defaultValue>
-      <value>0</value>
-    </defaultValue>
-  </outcomeDeclaration>
-  
-  <itemBody>
-    <div>
-      <p>Enter your question text here.</p>
-      <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
-        <prompt>Select the correct answer:</prompt>
-        <simpleChoice identifier="ChoiceA">Option A</simpleChoice>
-        <simpleChoice identifier="ChoiceB">Option B</simpleChoice>
-        <simpleChoice identifier="ChoiceC">Option C</simpleChoice>
-        <simpleChoice identifier="ChoiceD">Option D</simpleChoice>
-      </choiceInteraction>
-    </div>
-  </itemBody>
-  
-  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
-  
-</assessmentItem>`;
 
 export function useQTIPreview() {
   const [state, setState] = useState<QTIPreviewState>({
@@ -69,6 +33,7 @@ export function useQTIPreview() {
     layoutMode: 'split',
     unsupportedElements: [],
     newlyAddedItemId: null,
+    selectedVersion: '2.1',
   });
   
   const { toast } = useToast();
@@ -77,13 +42,16 @@ export function useQTIPreview() {
     setState(prev => ({ ...prev, ...updates }));
   }, []);
 
-  const parseXMLContent = useCallback((xmlText: string) => {
+  const parseXMLContent = useCallback((xmlText: string, version?: QTIVersion) => {
     try {
-      const parseResult = parseQTIXML(xmlText);
+      const parser = version ? QTIParserFactory.getParser(version) : QTIParserFactory.getParserFromXML(xmlText);
+      const parseResult = parser.parse(xmlText);
+      
       updateState({
         qtiItems: parseResult.items,
         errors: parseResult.errors,
         unsupportedElements: parseResult.unsupportedElements,
+        detectedVersion: parseResult.version,
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'XML Parse Error';
@@ -109,7 +77,7 @@ export function useQTIPreview() {
         xmlContent: text,
         hasContent: true,
       });
-      parseXMLContent(text);
+      parseXMLContent(text, state.selectedVersion);
       
       posthog.capture('qti_file_uploaded', {
         file_name: file.name,
@@ -136,8 +104,8 @@ export function useQTIPreview() {
 
   const handleXmlChange = useCallback((value: string) => {
     updateState({ xmlContent: value });
-    parseXMLContent(value);
-  }, [updateState, parseXMLContent]);
+    parseXMLContent(value, state.selectedVersion);
+  }, [updateState, parseXMLContent, state.selectedVersion]);
 
   const handleLoadExample = useCallback(async () => {
     updateState({
@@ -160,7 +128,7 @@ export function useQTIPreview() {
         hasContent: true,
         selectedFile: mockFile,
       });
-      parseXMLContent(xmlText);
+      parseXMLContent(xmlText, state.selectedVersion);
       
       posthog.capture('qti_example_loaded');
       
@@ -182,20 +150,25 @@ export function useQTIPreview() {
   }, [updateState, parseXMLContent, toast]);
 
   const handleCreateBlankFile = useCallback(() => {
+    const parser = QTIParserFactory.getParser(state.selectedVersion);
+    const template = parser.getBlankTemplate();
+    
     updateState({
-      xmlContent: BLANK_QTI_TEMPLATE,
+      xmlContent: template,
       hasContent: true,
       selectedFile: undefined,
     });
-    parseXMLContent(BLANK_QTI_TEMPLATE);
+    parseXMLContent(template, state.selectedVersion);
     
-    posthog.capture('qti_blank_file_created');
+    posthog.capture('qti_blank_file_created', {
+      version: state.selectedVersion
+    });
     
     toast({
       title: "Blank QTI file created",
-      description: "A new blank QTI template is ready for editing"
+      description: `A new blank QTI ${state.selectedVersion} template is ready for editing`
     });
-  }, [updateState, parseXMLContent, toast]);
+  }, [updateState, parseXMLContent, toast, state.selectedVersion]);
 
   const handleClearFile = useCallback(() => {
     updateState({
@@ -210,16 +183,18 @@ export function useQTIPreview() {
 
   const handleAddItem = useCallback((itemXML: string, insertAfterIndex?: number) => {
     try {
+      const parser = QTIParserFactory.getParser(state.selectedVersion);
       const prevItemCount = state.qtiItems.length;
-      const updatedXML = insertItemIntoXML(state.xmlContent, itemXML, insertAfterIndex);
+      const updatedXML = parser.insertItem(state.xmlContent, itemXML, insertAfterIndex);
       
       posthog.capture('qti_item_added', {
         item_count: prevItemCount + 1,
-        insert_position: insertAfterIndex
+        insert_position: insertAfterIndex,
+        version: state.selectedVersion
       });
       
       updateState({ xmlContent: updatedXML });
-      parseXMLContent(updatedXML);
+      parseXMLContent(updatedXML, state.selectedVersion);
       
       const newItemIndex = insertAfterIndex !== undefined && insertAfterIndex >= 0 
         ? insertAfterIndex + 1 
@@ -228,7 +203,7 @@ export function useQTIPreview() {
           : prevItemCount;
       
       setTimeout(() => {
-        const parseResult = parseQTIXML(updatedXML);
+        const parseResult = parser.parse(updatedXML);
         if (parseResult.items[newItemIndex]) {
           updateState({ newlyAddedItemId: parseResult.items[newItemIndex].id });
           
@@ -240,14 +215,15 @@ export function useQTIPreview() {
     } catch (error) {
       console.error('Error adding item:', error);
     }
-  }, [state.qtiItems.length, state.xmlContent, updateState, parseXMLContent]);
+  }, [state.qtiItems.length, state.xmlContent, state.selectedVersion, updateState, parseXMLContent]);
 
   const handleCorrectResponseChange = useCallback((itemId: string, correctResponse: string | string[] | number) => {
-    const updatedXML = updateQTIXMLWithCorrectResponse(state.xmlContent, itemId, correctResponse);
-    const formattedXML = formatXML(updatedXML);
+    const parser = QTIParserFactory.getParser(state.selectedVersion);
+    const updatedXML = parser.updateCorrectResponse(state.xmlContent, itemId, correctResponse);
+    const formattedXML = parser.formatXML(updatedXML);
     updateState({ xmlContent: formattedXML });
-    parseXMLContent(formattedXML);
-  }, [state.xmlContent, updateState, parseXMLContent]);
+    parseXMLContent(formattedXML, state.selectedVersion);
+  }, [state.xmlContent, state.selectedVersion, updateState, parseXMLContent]);
 
   const handleDragEnd = useCallback((event: { active: { id: string }; over: { id: string } | null }) => {
     const { active, over } = event;
@@ -263,29 +239,40 @@ export function useQTIPreview() {
           total_items: state.qtiItems.length
         });
         
-        const updatedXML = reorderQTIItems(state.xmlContent, oldIndex, newIndex);
+        const parser = QTIParserFactory.getParser(state.selectedVersion);
+        const updatedXML = parser.reorderItems(state.xmlContent, oldIndex, newIndex);
         updateState({ xmlContent: updatedXML });
-        parseXMLContent(updatedXML);
+        parseXMLContent(updatedXML, state.selectedVersion);
       }
     }
-  }, [state.qtiItems, state.xmlContent, updateState, parseXMLContent]);
+  }, [state.qtiItems, state.xmlContent, state.selectedVersion, updateState, parseXMLContent]);
 
   const downloadXML = useCallback(() => {
     posthog.capture('qti_xml_downloaded', {
       file_size: state.xmlContent.length,
-      item_count: state.qtiItems.length
+      item_count: state.qtiItems.length,
+      version: state.selectedVersion
     });
     
     const blob = new Blob([state.xmlContent], { type: 'application/xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'qti-item.xml';
+    a.download = `qti-${state.selectedVersion}-item.xml`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [state.xmlContent, state.qtiItems.length]);
+  }, [state.xmlContent, state.qtiItems.length, state.selectedVersion]);
+
+  const handleVersionChange = useCallback((version: QTIVersion) => {
+    updateState({ selectedVersion: version });
+    
+    // Re-parse current content with new version if content exists
+    if (state.xmlContent) {
+      parseXMLContent(state.xmlContent, version);
+    }
+  }, [state.xmlContent, updateState, parseXMLContent]);
 
   return {
     state,
@@ -300,6 +287,7 @@ export function useQTIPreview() {
       handleCorrectResponseChange,
       handleDragEnd,
       downloadXML,
+      handleVersionChange,
     },
   };
 }

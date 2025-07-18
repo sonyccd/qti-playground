@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, useTheme } from '@mui/material';
+import { Box, Container, useTheme, Alert, AlertTitle, Typography } from '@mui/material';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -14,6 +14,7 @@ import { FileUploadSection } from './sections/FileUploadSection';
 import { LoadingCard } from './sections/LoadingCard';
 import { MainContent } from './sections/MainContent';
 import { ErrorBoundary } from './ErrorBoundary';
+import { QTIVersionSelector } from './QTIVersionSelector';
 
 
 export function QTIPreview() {
@@ -35,6 +36,24 @@ export function QTIPreview() {
         px: 2
       }}>
         <Container maxWidth="xl">
+          <QTIVersionSelector
+            selectedVersion={state.selectedVersion}
+            onVersionChange={actions.handleVersionChange}
+            disabled={state.isLoading}
+          />
+
+          {state.detectedVersion && state.detectedVersion !== state.selectedVersion && (
+            <Box sx={{ mb: 2 }}>
+              <Alert severity="info">
+                <AlertTitle>Version Mismatch Detected</AlertTitle>
+                <Typography variant="body2">
+                  The uploaded file appears to be QTI {state.detectedVersion}, but you have QTI {state.selectedVersion} selected.
+                  Consider switching to QTI {state.detectedVersion} for better compatibility.
+                </Typography>
+              </Alert>
+            </Box>
+          )}
+
           {!state.hasContent && (
             <FileUploadSection 
               onFileSelect={actions.handleFileSelect}
@@ -59,8 +78,8 @@ export function QTIPreview() {
               onCorrectResponseChange={actions.handleCorrectResponseChange}
               onDragEnd={actions.handleDragEnd}
               sensors={sensors}
-              getItemTypeLabel={getItemTypeLabel}
-              getItemTypeColor={getItemTypeColor}
+              getItemTypeLabel={(type) => getItemTypeLabel(type, state.selectedVersion)}
+              getItemTypeColor={(type) => getItemTypeColor(type, state.selectedVersion)}
             />
           )}
         </Container>
