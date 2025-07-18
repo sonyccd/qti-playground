@@ -6,7 +6,8 @@
       "Bash(npm run test:run:*)",
       "Bash(rm:*)",
       "Bash(mv:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm run lint)"
     ],
     "deny": []
   }
