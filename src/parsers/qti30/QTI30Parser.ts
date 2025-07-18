@@ -1,16 +1,36 @@
 import { QTIParserInterface, QTIParseResult } from '../base/QTIParserInterface';
 import { QTIVersion } from '@/types/qtiVersions';
 import { QTIItem, QTIChoice, QTIHottextChoice, QTIOrderChoice, QTISliderConfig, UnsupportedElement } from '@/types/qti';
+import { detectFormat, jsonToXml } from '@/utils/jsonXmlConverter';
+import { ContentFormat } from '@/types/contentFormat';
+import { getBlankJsonTemplate } from '@/utils/qtiJsonTemplates';
 
 export class QTI30Parser implements QTIParserInterface {
   readonly version: QTIVersion = '3.0';
 
-  parse(xmlContent: string): QTIParseResult {
+  parse(content: string): QTIParseResult {
     const errors: string[] = [];
     const items: QTIItem[] = [];
     const unsupportedElements: Map<string, UnsupportedElement> = new Map();
 
     try {
+      // Auto-detect format and convert JSON to XML if needed
+      const format = detectFormat(content);
+      let xmlContent = content;
+      
+      if (format === 'json') {
+        try {
+          xmlContent = jsonToXml(content);
+        } catch (jsonError) {
+          return {
+            items: [],
+            errors: ['Invalid JSON format: ' + (jsonError as Error).message],
+            unsupportedElements: [],
+            version: this.version
+          };
+        }
+      }
+
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
 
@@ -62,14 +82,34 @@ export class QTI30Parser implements QTIParserInterface {
     }
   }
 
-  isCompatible(xmlContent: string): boolean {
-    // Check for QTI 3.0 specific namespace or schema
-    return xmlContent.includes('imsqti_v3p0') || 
-           xmlContent.includes('qtiv3p0') ||
-           xmlContent.includes('qti-3-0');
+  isCompatible(content: string): boolean {
+    // Check for QTI 3.0 specific namespace or schema in XML
+    const hasQTI30Xml = content.includes('imsqti_v3p0') || 
+                        content.includes('qtiv3p0') ||
+                        content.includes('qti-3-0');
+    
+    // Check for QTI 3.0 JSON format
+    const format = detectFormat(content);
+    if (format === 'json') {
+      try {
+        const jsonData = JSON.parse(content);
+        return jsonData['@type'] === 'assessmentItem' || jsonData['@type'] === 'assessmentTest';
+      } catch {
+        return false;
+      }
+    }
+    
+    return hasQTI30Xml;
   }
 
-  getBlankTemplate(): string {
+  getBlankTemplate(format: ContentFormat = 'xml'): string {
+    if (format === 'json') {
+      return JSON.stringify(getBlankJsonTemplate(), null, 2);
+    }
+    return this.getBlankXmlTemplate();
+  }
+
+  getBlankXmlTemplate(): string {
     return `<?xml version="1.0" encoding="UTF-8"?>
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v3p0" 
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

@@ -12,7 +12,8 @@
       "Bash(mkdir:*)",
       "Bash(touch:*)",
       "Bash(node:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }

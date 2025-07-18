@@ -1,25 +1,37 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Card, CardContent, Typography, Button } from '@mui/material';
 import { Code, OpenInFull } from '@mui/icons-material';
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
+import { json } from '@codemirror/lang-json';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { EditorView } from '@codemirror/view';
 import { LayoutMode } from '@/hooks/useQTIPreview';
+import { ContentFormat } from '@/types/contentFormat';
 
 interface XMLEditorProps {
   layoutMode: LayoutMode;
   xmlContent: string;
   onXmlChange: (value: string) => void;
   onLayoutModeChange: (mode: LayoutMode) => void;
+  contentFormat: ContentFormat;
 }
 
 export const XMLEditor: React.FC<XMLEditorProps> = ({
   layoutMode,
   xmlContent,
   onXmlChange,
-  onLayoutModeChange
-}) => (
+  onLayoutModeChange,
+  contentFormat
+}) => {
+  const extensions = useMemo(() => {
+    const languageExtension = contentFormat === 'json' ? json() : xml();
+    return [languageExtension, EditorView.lineWrapping];
+  }, [contentFormat]);
+
+  const editorTitle = contentFormat === 'json' ? 'QTI JSON Editor' : 'QTI XML Editor';
+
+  return (
   <Box sx={{ flex: 1, minWidth: 0 }}>
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardContent sx={{ pb: 1 }}>
@@ -32,7 +44,7 @@ export const XMLEditor: React.FC<XMLEditorProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Code fontSize="small" />
             <Typography variant="h6" component="h3">
-              QTI XML Editor
+              {editorTitle}
             </Typography>
           </Box>
           <Button 
@@ -49,7 +61,7 @@ export const XMLEditor: React.FC<XMLEditorProps> = ({
         <CodeMirror 
           value={xmlContent} 
           onChange={onXmlChange} 
-          extensions={[xml(), EditorView.lineWrapping]} 
+          extensions={extensions} 
           theme={oneDark} 
           style={{ height: '100%' }} 
           basicSetup={{
@@ -65,3 +77,4 @@ export const XMLEditor: React.FC<XMLEditorProps> = ({
     </Card>
   </Box>
 );
+};

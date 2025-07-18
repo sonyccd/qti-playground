@@ -49,6 +49,7 @@ export const MainContent: React.FC<MainContentProps> = ({
       qtiItems={state.qtiItems}
       unsupportedElements={state.unsupportedElements}
       newlyAddedItemId={state.newlyAddedItemId}
+      contentFormat={state.selectedFormat}
       onXmlChange={onXmlChange}
       onLayoutModeChange={onLayoutModeChange}
       onAddItem={onAddItem}

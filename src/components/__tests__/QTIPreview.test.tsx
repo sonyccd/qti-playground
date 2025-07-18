@@ -59,6 +59,11 @@ vi.mock('@mui/material', () => ({
   Alert: ({ children, severity }: any) => <div data-testid={`alert-${severity}`}>{children}</div>,
   AlertTitle: ({ children }: any) => <div>{children}</div>,
   CircularProgress: () => <div data-testid="loading">Loading...</div>,
+  FormControl: ({ children }: any) => <div>{children}</div>,
+  InputLabel: ({ children }: any) => <label>{children}</label>,
+  Select: ({ children, value, onChange }: any) => <select value={value} onChange={onChange}>{children}</select>,
+  MenuItem: ({ children, value }: any) => <option value={value}>{children}</option>,
+  Tooltip: ({ children }: any) => <div>{children}</div>,
   useTheme: () => ({ palette: { background: { default: '#fff' }, grey: { 50: '#f5f5f5' } } })
 }));
 
@@ -68,7 +73,10 @@ vi.mock('@mui/icons-material', () => ({
   Code: () => <span>Code</span>,
   Visibility: () => <span>Visibility</span>,
   OpenInFull: () => <span>OpenInFull</span>,
-  Add: () => <span>Add</span>
+  Add: () => <span>Add</span>,
+  DataObject: () => <span>DataObject</span>,
+  Lock: () => <span>Lock</span>,
+  Error: () => <span>Error</span>
 }));
 
 vi.mock('@uiw/react-codemirror', () => ({
@@ -117,6 +125,21 @@ vi.mock('../QTIVersionSelector', () => ({
       >
         <option value="2.1">QTI 2.1</option>
         <option value="3.0">QTI 3.0</option>
+      </select>
+    </div>
+  )
+}));
+
+vi.mock('../ContentFormatSelector', () => ({
+  default: ({ selectedFormat, onFormatChange }: any) => (
+    <div data-testid="format-selector">
+      <select 
+        value={selectedFormat} 
+        onChange={(e) => onFormatChange(e.target.value)}
+        data-testid="format-select"
+      >
+        <option value="xml">XML</option>
+        <option value="json">JSON</option>
       </select>
     </div>
   )

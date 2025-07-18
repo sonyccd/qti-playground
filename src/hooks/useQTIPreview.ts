@@ -5,6 +5,7 @@ import { QTIVersion } from '@/types/qtiVersions';
 import { QTIParserFactory } from '@/parsers/QTIParserFactory';
 import { useToast } from '@/hooks/use-toast';
 import { posthog } from '@/lib/posthog';
+import { ContentFormat, detectContentFormat } from '@/types/contentFormat';
 
 export type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 
@@ -20,6 +21,9 @@ export interface QTIPreviewState {
   newlyAddedItemId: string | null;
   selectedVersion: QTIVersion;
   detectedVersion?: QTIVersion;
+  selectedFormat: ContentFormat;
+  detectedFormat?: ContentFormat;
+  isFormatLocked: boolean;
 }
 
 
@@ -34,6 +38,8 @@ export function useQTIPreview() {
     unsupportedElements: [],
     newlyAddedItemId: null,
     selectedVersion: '3.0',
+    selectedFormat: 'xml',
+    isFormatLocked: false,
   });
   
   const { toast } = useToast();
@@ -42,19 +48,25 @@ export function useQTIPreview() {
     setState(prev => ({ ...prev, ...updates }));
   }, []);
 
-  const parseXMLContent = useCallback((xmlText: string, version?: QTIVersion) => {
+  const parseXMLContent = useCallback((content: string, version?: QTIVersion) => {
     try {
-      const parser = version ? QTIParserFactory.getParser(version) : QTIParserFactory.getParserFromXML(xmlText);
-      const parseResult = parser.parse(xmlText);
+      const parser = version ? QTIParserFactory.getParser(version) : QTIParserFactory.getParserFromXML(content);
+      const parseResult = parser.parse(content);
+      
+      // Detect format and lock it if content exists
+      const detectedFormat = detectContentFormat(content);
       
       updateState({
         qtiItems: parseResult.items,
         errors: parseResult.errors,
         unsupportedElements: parseResult.unsupportedElements,
         detectedVersion: parseResult.version,
+        detectedFormat,
+        isFormatLocked: content.trim().length > 0,
+        selectedFormat: detectedFormat,
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'XML Parse Error';
+      const errorMessage = error instanceof Error ? error.message : 'Parse Error';
       updateState({
         errors: [errorMessage],
         qtiItems: [],
@@ -149,26 +161,51 @@ export function useQTIPreview() {
     }
   }, [updateState, parseXMLContent, toast]);
 
-  const handleCreateBlankFile = useCallback(() => {
+  const handleCreateBlankFile = useCallback((format?: ContentFormat) => {
     const parser = QTIParserFactory.getParser(state.selectedVersion);
-    const template = parser.getBlankTemplate();
+    const useFormat = format || state.selectedFormat;
+    
+    let template: string;
+    if (state.selectedVersion === '3.0' && parser.getBlankTemplate) {
+      template = parser.getBlankTemplate(useFormat);
+    } else {
+      template = parser.getBlankTemplate();
+    }
     
     updateState({
       xmlContent: template,
       hasContent: true,
       selectedFile: undefined,
+      selectedFormat: useFormat,
+      isFormatLocked: true,
     });
     parseXMLContent(template, state.selectedVersion);
     
     posthog.capture('qti_blank_file_created', {
-      version: state.selectedVersion
+      version: state.selectedVersion,
+      format: useFormat
     });
     
     toast({
       title: "Blank QTI file created",
-      description: `A new blank QTI ${state.selectedVersion} template is ready for editing`
+      description: `A new blank QTI ${state.selectedVersion} ${useFormat.toUpperCase()} template is ready for editing`
     });
-  }, [updateState, parseXMLContent, toast, state.selectedVersion]);
+  }, [updateState, parseXMLContent, toast, state.selectedVersion, state.selectedFormat]);
+
+  const handleFormatChange = useCallback((format: ContentFormat) => {
+    if (state.isFormatLocked) {
+      toast({
+        title: "Format locked",
+        description: "Format cannot be changed once content is created. Create a new file to use a different format.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    updateState({
+      selectedFormat: format
+    });
+  }, [updateState, state.isFormatLocked, toast]);
 
   const handleClearFile = useCallback(() => {
     updateState({
@@ -178,6 +215,8 @@ export function useQTIPreview() {
       xmlContent: '',
       hasContent: false,
       unsupportedElements: [],
+      isFormatLocked: false,
+      selectedFormat: 'xml'
     });
   }, [updateState]);
 
@@ -288,6 +327,7 @@ export function useQTIPreview() {
       handleDragEnd,
       downloadXML,
       handleVersionChange,
+      handleFormatChange,
     },
   };
 }

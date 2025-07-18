@@ -4,6 +4,7 @@ import { DragEndEvent } from '@dnd-kit/core';
 import { useSensors } from '@dnd-kit/core';
 import { QTIItem, UnsupportedElement } from '@/types/qti';
 import { LayoutMode } from '@/hooks/useQTIPreview';
+import { ContentFormat } from '@/types/contentFormat';
 import { XMLEditor } from './XMLEditor';
 import { PreviewPanel } from './PreviewPanel';
 
@@ -14,6 +15,7 @@ interface EditorLayoutProps {
   qtiItems: QTIItem[];
   unsupportedElements: UnsupportedElement[];
   newlyAddedItemId: string | null;
+  contentFormat: ContentFormat;
   onXmlChange: (value: string) => void;
   onLayoutModeChange: (mode: LayoutMode) => void;
   onAddItem: (itemXML: string, insertAfterIndex?: number) => void;
@@ -31,6 +33,7 @@ export const EditorLayout: React.FC<EditorLayoutProps> = ({
   qtiItems,
   unsupportedElements,
   newlyAddedItemId,
+  contentFormat,
   onXmlChange,
   onLayoutModeChange,
   onAddItem,
@@ -47,6 +50,7 @@ export const EditorLayout: React.FC<EditorLayoutProps> = ({
         xmlContent={xmlContent}
         onXmlChange={onXmlChange}
         onLayoutModeChange={onLayoutModeChange}
+        contentFormat={contentFormat}
       />
     )}
 
