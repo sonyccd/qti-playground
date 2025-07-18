@@ -1,4 +1,4 @@
-import { QTIItem, UnsupportedElement } from '@/types/qti';
+import { QTIItem, UnsupportedElement, QTIAssessmentTest } from '@/types/qti';
 import { QTIVersion } from '@/types/qtiVersions';
 
 export interface QTIParseResult {
@@ -6,6 +6,7 @@ export interface QTIParseResult {
   errors: string[];
   unsupportedElements: UnsupportedElement[];
   version: QTIVersion;
+  assessmentTest?: QTIAssessmentTest;
 }
 
 export interface QTIParserInterface {

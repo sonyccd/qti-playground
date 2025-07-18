@@ -13,7 +13,8 @@ export class QTI21Parser implements QTIParserInterface {
       items: result.items,
       errors: result.errors,
       unsupportedElements: result.unsupportedElements,
-      version: this.version
+      version: this.version,
+      assessmentTest: undefined // QTI 2.1 doesn't support assessmentTest parsing in this implementation
     };
   }
 

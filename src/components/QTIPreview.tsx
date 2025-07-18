@@ -91,6 +91,7 @@ export function QTIPreview() {
               sensors={sensors}
               getItemTypeLabel={(type) => getItemTypeLabel(type, state.selectedVersion)}
               getItemTypeColor={(type) => getItemTypeColor(type, state.selectedVersion)}
+              onResponseChange={actions.handleItemResponse}
             />
           )}
         </Container>

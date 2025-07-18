@@ -1,467 +1,690 @@
 {
   "@type": "assessmentTest",
-  "identifier": "sample_assessment",
-  "title": "Sample QTI Assessment",
-  "items": [
+  "identifier": "comprehensive_assessment_test",
+  "title": "Comprehensive QTI 3.0 Assessment with Advanced Scoring",
+  "outcomeDeclarations": [
     {
-      "@type": "assessmentItem",
-      "identifier": "choice_item_1",
-      "title": "Basic Geography Question",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "single",
-        "baseType": "identifier",
-        "correctResponse": {
-          "value": "choice_c"
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "What is the capital city of France?"
-          },
-          {
-            "@type": "choiceInteraction",
-            "responseIdentifier": "RESPONSE",
-            "shuffle": false,
-            "maxChoices": 1,
-            "choices": [
-              {
-                "identifier": "choice_a",
-                "text": "London"
-              },
-              {
-                "identifier": "choice_b",
-                "text": "Berlin"
-              },
-              {
-                "identifier": "choice_c",
-                "text": "Paris"
-              },
-              {
-                "identifier": "choice_d",
-                "text": "Madrid"
-              }
-            ]
-          }
-        ]
-      }
+      "identifier": "TOTAL_SCORE",
+      "cardinality": "single",
+      "baseType": "float",
+      "defaultValue": 0.0
     },
     {
-      "@type": "assessmentItem",
-      "identifier": "multiple_response_1",
-      "title": "Programming Languages",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "multiple",
-        "baseType": "identifier",
-        "correctResponse": {
-          "value": ["choice_a", "choice_c", "choice_d"]
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "Which of the following are programming languages? (Select all that apply)"
-          },
-          {
-            "@type": "choiceInteraction",
-            "responseIdentifier": "RESPONSE",
-            "shuffle": false,
-            "maxChoices": 0,
-            "choices": [
-              {
-                "identifier": "choice_a",
-                "text": "Python"
-              },
-              {
-                "identifier": "choice_b",
-                "text": "HTML"
-              },
-              {
-                "identifier": "choice_c",
-                "text": "JavaScript"
-              },
-              {
-                "identifier": "choice_d",
-                "text": "Java"
-              },
-              {
-                "identifier": "choice_e",
-                "text": "CSS"
-              }
-            ]
-          }
-        ]
-      }
+      "identifier": "SECTION_SCORE",
+      "cardinality": "single",
+      "baseType": "float",
+      "defaultValue": 0.0
     },
     {
-      "@type": "assessmentItem",
-      "identifier": "text_entry_1",
-      "title": "Simple Math",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "single",
-        "baseType": "string",
-        "correctResponse": {
-          "value": "12"
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "What is the result of 8 + 4?"
-          },
-          {
-            "@type": "textEntryInteraction",
-            "responseIdentifier": "RESPONSE",
-            "attributes": {
-              "expectedLength": "10"
-            }
-          }
-        ]
-      }
-    },
+      "identifier": "PASS_FAIL",
+      "cardinality": "single",
+      "baseType": "identifier",
+      "defaultValue": "fail"
+    }
+  ],
+  "testParts": [
     {
-      "@type": "assessmentItem",
-      "identifier": "fill_blank_1",
-      "title": "Science Fill-in-the-Blank",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "single",
-        "baseType": "string",
-        "correctResponse": {
-          "value": "oxygen"
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "Water (H₂O) is composed of hydrogen and ________."
-          },
-          {
-            "@type": "textEntryInteraction",
-            "responseIdentifier": "RESPONSE",
-            "attributes": {
-              "expectedLength": "15"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "@type": "assessmentItem",
-      "identifier": "extended_text_1",
-      "title": "Essay Question: Climate Change",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "single",
-        "baseType": "string",
-        "correctResponse": {
-          "value": "Climate change refers to long-term shifts in global temperatures and weather patterns, primarily caused by human activities such as burning fossil fuels, which increase greenhouse gas concentrations in the atmosphere."
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "Climate change is one of the most pressing issues of our time. In a well-structured essay of at least 200 words, explain what climate change is, identify its primary causes, and discuss at least two potential solutions that individuals or governments can implement to address this challenge."
-          },
-          {
-            "@type": "paragraph",
-            "text": "Your response should include:",
-            "children": [
-              {
-                "@type": "list",
-                "items": [
-                  "A clear definition of climate change",
-                  "At least two main causes",
-                  "At least two proposed solutions",
-                  "Supporting details and examples"
-                ]
-              }
-            ]
-          },
-          {
-            "@type": "extendedTextInteraction",
-            "responseIdentifier": "RESPONSE",
-            "attributes": {
-              "expectedLength": "1000"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "@type": "assessmentItem",
-      "identifier": "hottext_1",
-      "title": "Grammar Exercise: Identifying Parts of Speech",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "multiple",
-        "baseType": "identifier",
-        "correctResponse": {
-          "value": ["noun1", "verb1", "adjective1"]
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "In the following sentence, identify the nouns, verbs, and adjectives by clicking on them:"
-          },
-          {
-            "@type": "hottextInteraction",
-            "responseIdentifier": "RESPONSE",
-            "attributes": {
-              "maxChoices": "0"
-            },
-            "content": [
-              {
-                "@type": "paragraph",
-                "text": "The ",
-                "children": [
+      "identifier": "main_test_part",
+      "navigationMode": "linear",
+      "submissionMode": "individual",
+      "scoreAggregation": "sum",
+      "assessmentSections": [
+        {
+          "identifier": "multiple_choice_section",
+          "title": "Multiple Choice Questions",
+          "visible": true,
+          "assessmentItems": [
+            {
+              "@type": "assessmentItem",
+              "identifier": "geography_q1",
+              "title": "World Geography",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "single",
+                "baseType": "identifier",
+                "correctResponse": {
+                  "value": "paris"
+                }
+              },
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
+              },
+              "itemBody": {
+                "content": [
                   {
-                    "@type": "hottext",
-                    "text": "beautiful",
-                    "attributes": {
-                      "identifier": "adjective1"
-                    }
+                    "@type": "paragraph",
+                    "text": "What is the capital of France?"
                   },
                   {
-                    "@type": "text",
-                    "text": " "
-                  },
-                  {
-                    "@type": "hottext",
-                    "text": "garden",
-                    "attributes": {
-                      "identifier": "noun1"
-                    }
-                  },
-                  {
-                    "@type": "text",
-                    "text": " "
-                  },
-                  {
-                    "@type": "hottext",
-                    "text": "bloomed",
-                    "attributes": {
-                      "identifier": "verb1"
-                    }
-                  },
-                  {
-                    "@type": "text",
-                    "text": " with "
-                  },
-                  {
-                    "@type": "hottext",
-                    "text": "colorful",
-                    "attributes": {
-                      "identifier": "adjective2"
-                    }
-                  },
-                  {
-                    "@type": "text",
-                    "text": " "
-                  },
-                  {
-                    "@type": "hottext",
-                    "text": "flowers",
-                    "attributes": {
-                      "identifier": "noun2"
-                    }
-                  },
-                  {
-                    "@type": "text",
-                    "text": " during the "
-                  },
-                  {
-                    "@type": "hottext",
-                    "text": "warm",
-                    "attributes": {
-                      "identifier": "adjective3"
-                    }
-                  },
-                  {
-                    "@type": "text",
-                    "text": " "
-                  },
-                  {
-                    "@type": "hottext",
-                    "text": "spring",
-                    "attributes": {
-                      "identifier": "noun3"
-                    }
-                  },
-                  {
-                    "@type": "text",
-                    "text": " "
-                  },
-                  {
-                    "@type": "hottext",
-                    "text": "season",
-                    "attributes": {
-                      "identifier": "noun4"
-                    }
-                  },
-                  {
-                    "@type": "text",
-                    "text": "."
+                    "@type": "choiceInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "shuffle": false,
+                    "maxChoices": 1,
+                    "prompt": "Select the correct answer:",
+                    "choices": [
+                      {
+                        "identifier": "london",
+                        "text": "London"
+                      },
+                      {
+                        "identifier": "berlin",
+                        "text": "Berlin"
+                      },
+                      {
+                        "identifier": "paris",
+                        "text": "Paris"
+                      },
+                      {
+                        "identifier": "madrid",
+                        "text": "Madrid"
+                      }
+                    ]
                   }
                 ]
+              },
+              "responseProcessing": {
+                "template": "http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"
               }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "@type": "assessmentItem",
-      "identifier": "slider_1",
-      "title": "Customer Satisfaction Rating",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "single",
-        "baseType": "float",
-        "correctResponse": {
-          "value": "7.5"
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "On a scale from 1 to 10, how would you rate your overall satisfaction with our service?"
-          },
-          {
-            "@type": "paragraph",
-            "text": "1 = Very Dissatisfied, 10 = Very Satisfied"
-          },
-          {
-            "@type": "sliderInteraction",
-            "responseIdentifier": "RESPONSE",
-            "attributes": {
-              "lowerBound": "1",
-              "upperBound": "10",
-              "step": "0.5",
-              "stepLabel": "true"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "@type": "assessmentItem",
-      "identifier": "order_1",
-      "title": "Historical Events Sequence",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "ordered",
-        "baseType": "identifier",
-        "correctResponse": {
-          "value": ["event_a", "event_b", "event_c", "event_d"]
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "Arrange the following historical events in chronological order (earliest to latest):"
-          },
-          {
-            "@type": "orderInteraction",
-            "responseIdentifier": "RESPONSE",
-            "attributes": {
-              "shuffle": "true"
             },
-            "choices": [
-              {
-                "identifier": "event_a",
-                "text": "World War I begins (1914)"
+            {
+              "@type": "assessmentItem",
+              "identifier": "programming_q2",
+              "title": "Programming Languages",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "multiple",
+                "baseType": "identifier",
+                "correctResponse": {
+                  "value": ["python", "javascript", "java"]
+                }
               },
-              {
-                "identifier": "event_b",
-                "text": "Russian Revolution (1917)"
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
               },
-              {
-                "identifier": "event_c",
-                "text": "Treaty of Versailles signed (1919)"
+              "itemBody": {
+                "content": [
+                  {
+                    "@type": "paragraph",
+                    "text": "Which of the following are programming languages? (Select all that apply)"
+                  },
+                  {
+                    "@type": "choiceInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "shuffle": false,
+                    "maxChoices": 5,
+                    "prompt": "Select all correct answers:",
+                    "choices": [
+                      {
+                        "identifier": "python",
+                        "text": "Python"
+                      },
+                      {
+                        "identifier": "html",
+                        "text": "HTML"
+                      },
+                      {
+                        "identifier": "javascript",
+                        "text": "JavaScript"
+                      },
+                      {
+                        "identifier": "java",
+                        "text": "Java"
+                      },
+                      {
+                        "identifier": "css",
+                        "text": "CSS"
+                      }
+                    ]
+                  }
+                ]
               },
-              {
-                "identifier": "event_d",
-                "text": "League of Nations established (1920)"
+              "responseProcessing": {
+                "customLogic": {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "if": "exact_match",
+                      "score": 2.0
+                    },
+                    {
+                      "if": "partial_match",
+                      "requirement": ["python", "javascript"],
+                      "score": 1.0
+                    },
+                    {
+                      "else": 0.0
+                    }
+                  ]
+                }
               }
-            ]
-          }
-        ]
+            },
+            {
+              "@type": "assessmentItem",
+              "identifier": "science_q3",
+              "title": "Basic Science",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "single",
+                "baseType": "identifier",
+                "correctResponse": {
+                  "value": "oxygen"
+                },
+                "mapping": {
+                  "defaultValue": 0,
+                  "mapEntries": [
+                    {
+                      "mapKey": "oxygen",
+                      "mappedValue": 3.0
+                    },
+                    {
+                      "mapKey": "carbon",
+                      "mappedValue": 1.0
+                    },
+                    {
+                      "mapKey": "hydrogen",
+                      "mappedValue": 1.0
+                    },
+                    {
+                      "mapKey": "nitrogen",
+                      "mappedValue": 0.5
+                    }
+                  ]
+                }
+              },
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
+              },
+              "itemBody": {
+                "content": [
+                  {
+                    "@type": "paragraph",
+                    "text": "Which gas is essential for human respiration?"
+                  },
+                  {
+                    "@type": "choiceInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "shuffle": false,
+                    "maxChoices": 1,
+                    "prompt": "Select the best answer:",
+                    "choices": [
+                      {
+                        "identifier": "oxygen",
+                        "text": "Oxygen"
+                      },
+                      {
+                        "identifier": "carbon",
+                        "text": "Carbon Dioxide"
+                      },
+                      {
+                        "identifier": "hydrogen",
+                        "text": "Hydrogen"
+                      },
+                      {
+                        "identifier": "nitrogen",
+                        "text": "Nitrogen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "responseProcessing": {
+                "template": "http://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response"
+              }
+            }
+          ]
+        },
+        {
+          "identifier": "interactive_section",
+          "title": "Interactive Questions",
+          "visible": true,
+          "assessmentItems": [
+            {
+              "@type": "assessmentItem",
+              "identifier": "slider_q4",
+              "title": "Temperature Assessment",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "single",
+                "baseType": "float",
+                "correctResponse": {
+                  "value": 100.0
+                }
+              },
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
+              },
+              "itemBody": {
+                "content": [
+                  {
+                    "@type": "paragraph",
+                    "text": "At what temperature (°C) does water boil at sea level?"
+                  },
+                  {
+                    "@type": "sliderInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "prompt": "Move the slider to select the temperature:",
+                    "attributes": {
+                      "lowerBound": "90",
+                      "upperBound": "110",
+                      "step": "1",
+                      "orientation": "horizontal"
+                    }
+                  }
+                ]
+              },
+              "responseProcessing": {
+                "customLogic": {
+                  "type": "range_scoring",
+                  "exact_value": 100.0,
+                  "score_ranges": [
+                    {
+                      "condition": "exact",
+                      "value": 100.0,
+                      "score": 2.0
+                    },
+                    {
+                      "condition": "range",
+                      "min": 98.0,
+                      "max": 102.0,
+                      "score": 1.5
+                    },
+                    {
+                      "condition": "range",
+                      "min": 95.0,
+                      "max": 105.0,
+                      "score": 1.0
+                    },
+                    {
+                      "condition": "default",
+                      "score": 0.0
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "@type": "assessmentItem",
+              "identifier": "text_q5",
+              "title": "Chemical Formula",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "single",
+                "baseType": "string",
+                "correctResponse": {
+                  "value": "H2O"
+                }
+              },
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
+              },
+              "itemBody": {
+                "content": [
+                  {
+                    "@type": "paragraph",
+                    "text": "What is the chemical formula for water?"
+                  },
+                  {
+                    "@type": "textEntryInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "prompt": "Enter the chemical formula:",
+                    "attributes": {
+                      "expectedLength": "10"
+                    }
+                  }
+                ]
+              },
+              "responseProcessing": {
+                "customLogic": {
+                  "type": "string_match",
+                  "caseSensitive": false,
+                  "acceptable_values": ["H2O", "H₂O"],
+                  "score": 1.5
+                }
+              }
+            },
+            {
+              "@type": "assessmentItem",
+              "identifier": "order_q6",
+              "title": "Historical Timeline",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "ordered",
+                "baseType": "identifier",
+                "correctResponse": {
+                  "value": ["wwi", "revolution", "treaty", "league"]
+                }
+              },
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
+              },
+              "itemBody": {
+                "content": [
+                  {
+                    "@type": "paragraph",
+                    "text": "Arrange the following historical events in chronological order (earliest to latest):"
+                  },
+                  {
+                    "@type": "orderInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "prompt": "Drag and drop to arrange in chronological order:",
+                    "attributes": {
+                      "shuffle": "true"
+                    },
+                    "choices": [
+                      {
+                        "identifier": "wwi",
+                        "text": "World War I begins (1914)"
+                      },
+                      {
+                        "identifier": "revolution",
+                        "text": "Russian Revolution (1917)"
+                      },
+                      {
+                        "identifier": "treaty",
+                        "text": "Treaty of Versailles signed (1919)"
+                      },
+                      {
+                        "identifier": "league",
+                        "text": "League of Nations established (1920)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "responseProcessing": {
+                "template": "http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct",
+                "score": 2.5
+              }
+            },
+            {
+              "@type": "assessmentItem",
+              "identifier": "hottext_q7",
+              "title": "Grammar Exercise",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "multiple",
+                "baseType": "identifier",
+                "correctResponse": {
+                  "value": ["noun1", "verb1", "adjective1"]
+                }
+              },
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
+              },
+              "itemBody": {
+                "content": [
+                  {
+                    "@type": "paragraph",
+                    "text": "Identify the nouns, verbs, and adjectives in the sentence below:"
+                  },
+                  {
+                    "@type": "hottextInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "prompt": "Click on the words that are nouns, verbs, or adjectives:",
+                    "attributes": {
+                      "maxChoices": "8"
+                    },
+                    "content": [
+                      {
+                        "@type": "paragraph",
+                        "text": "The ",
+                        "children": [
+                          {
+                            "@type": "hottext",
+                            "text": "beautiful",
+                            "identifier": "adjective1"
+                          },
+                          {
+                            "@type": "text",
+                            "text": " "
+                          },
+                          {
+                            "@type": "hottext",
+                            "text": "garden",
+                            "identifier": "noun1"
+                          },
+                          {
+                            "@type": "text",
+                            "text": " "
+                          },
+                          {
+                            "@type": "hottext",
+                            "text": "bloomed",
+                            "identifier": "verb1"
+                          },
+                          {
+                            "@type": "text",
+                            "text": " with "
+                          },
+                          {
+                            "@type": "hottext",
+                            "text": "colorful",
+                            "identifier": "adjective2"
+                          },
+                          {
+                            "@type": "text",
+                            "text": " "
+                          },
+                          {
+                            "@type": "hottext",
+                            "text": "flowers",
+                            "identifier": "noun2"
+                          },
+                          {
+                            "@type": "text",
+                            "text": " during the "
+                          },
+                          {
+                            "@type": "hottext",
+                            "text": "warm",
+                            "identifier": "adjective3"
+                          },
+                          {
+                            "@type": "text",
+                            "text": " "
+                          },
+                          {
+                            "@type": "hottext",
+                            "text": "spring",
+                            "identifier": "noun3"
+                          },
+                          {
+                            "@type": "text",
+                            "text": " "
+                          },
+                          {
+                            "@type": "hottext",
+                            "text": "season",
+                            "identifier": "noun4"
+                          },
+                          {
+                            "@type": "text",
+                            "text": "."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "responseProcessing": {
+                "template": "http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct",
+                "score": 2.0
+              }
+            }
+          ]
+        },
+        {
+          "identifier": "text_section",
+          "title": "Text-Based Questions",
+          "visible": true,
+          "assessmentItems": [
+            {
+              "@type": "assessmentItem",
+              "identifier": "fill_blank_q8",
+              "title": "Biology Fill-in-the-Blank",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "single",
+                "baseType": "string",
+                "correctResponse": {
+                  "value": "mitochondria"
+                }
+              },
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
+              },
+              "itemBody": {
+                "content": [
+                  {
+                    "@type": "paragraph",
+                    "text": "The _______ is known as the powerhouse of the cell."
+                  },
+                  {
+                    "@type": "textEntryInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "prompt": "Fill in the blank:",
+                    "attributes": {
+                      "expectedLength": "20"
+                    }
+                  }
+                ]
+              },
+              "responseProcessing": {
+                "customLogic": {
+                  "type": "string_match",
+                  "caseSensitive": false,
+                  "acceptable_values": ["mitochondria", "mitochondrion"],
+                  "score": 1.0
+                }
+              }
+            },
+            {
+              "@type": "assessmentItem",
+              "identifier": "essay_q9",
+              "title": "Environmental Science Essay",
+              "adaptive": false,
+              "timeDependent": false,
+              "responseDeclaration": {
+                "identifier": "RESPONSE",
+                "cardinality": "single",
+                "baseType": "string",
+                "correctResponse": {
+                  "value": "Climate change refers to long-term shifts in global temperatures and weather patterns. Key causes include greenhouse gas emissions from burning fossil fuels, deforestation, and industrial processes. Solutions include renewable energy adoption, carbon pricing, reforestation, and international cooperation through agreements like the Paris Climate Accord."
+                }
+              },
+              "outcomeDeclaration": {
+                "identifier": "SCORE",
+                "cardinality": "single",
+                "baseType": "float",
+                "defaultValue": 0
+              },
+              "itemBody": {
+                "content": [
+                  {
+                    "@type": "paragraph",
+                    "text": "Essay Question: Explain what climate change is, identify its main causes, and propose at least two solutions."
+                  },
+                  {
+                    "@type": "paragraph",
+                    "text": "Your response should be at least 150 words and include specific examples."
+                  },
+                  {
+                    "@type": "extendedTextInteraction",
+                    "responseIdentifier": "RESPONSE",
+                    "prompt": "Write your essay here:",
+                    "attributes": {
+                      "expectedLength": "1000"
+                    }
+                  }
+                ]
+              },
+              "responseProcessing": {
+                "customLogic": {
+                  "type": "length_based_scoring",
+                  "score_ranges": [
+                    {
+                      "condition": "length_gte",
+                      "value": 150,
+                      "score": 3.0
+                    },
+                    {
+                      "condition": "length_gte",
+                      "value": 50,
+                      "score": 1.5
+                    },
+                    {
+                      "condition": "default",
+                      "score": 0.0
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "testFeedback": [
+    {
+      "outcome": "TOTAL_SCORE",
+      "identifier": "pass_feedback",
+      "showHide": "show",
+      "access": "atEnd",
+      "content": {
+        "@type": "paragraph",
+        "text": "Congratulations! You have successfully completed the assessment."
       }
     },
     {
-      "@type": "assessmentItem",
-      "identifier": "choice_item_2",
-      "title": "Literature Question",
-      "adaptive": false,
-      "timeDependent": false,
-      "responseDeclaration": {
-        "identifier": "RESPONSE",
-        "cardinality": "single",
-        "baseType": "identifier",
-        "correctResponse": {
-          "value": "choice_b"
-        }
-      },
-      "itemBody": {
-        "content": [
-          {
-            "@type": "paragraph",
-            "text": "Who wrote the novel \"To Kill a Mockingbird\"?"
-          },
-          {
-            "@type": "choiceInteraction",
-            "responseIdentifier": "RESPONSE",
-            "shuffle": false,
-            "maxChoices": 1,
-            "choices": [
-              {
-                "identifier": "choice_a",
-                "text": "Mark Twain"
-              },
-              {
-                "identifier": "choice_b",
-                "text": "Harper Lee"
-              },
-              {
-                "identifier": "choice_c",
-                "text": "F. Scott Fitzgerald"
-              },
-              {
-                "identifier": "choice_d",
-                "text": "Ernest Hemingway"
-              }
-            ]
-          }
-        ]
+      "outcome": "TOTAL_SCORE",
+      "identifier": "fail_feedback",
+      "showHide": "show",
+      "access": "atEnd",
+      "content": {
+        "@type": "paragraph",
+        "text": "Assessment Complete. Review your answers and consider retaking the test."
       }
     }
   ]

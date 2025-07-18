@@ -6,6 +6,7 @@ import { useSensors } from '@dnd-kit/core';
 import { QTIItem, UnsupportedElement } from '@/types/qti';
 import { LayoutMode } from '@/hooks/useQTIPreview';
 import { PreviewContent } from './PreviewContent';
+import { ItemScore } from '@/scoring/types';
 
 interface PreviewPanelProps {
   layoutMode: LayoutMode;
@@ -20,6 +21,18 @@ interface PreviewPanelProps {
   sensors: ReturnType<typeof useSensors>;
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
+  // Scoring props
+  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  itemScores?: Record<string, ItemScore>;
+  totalScore?: {
+    score: number;
+    maxScore: number;
+    percentage: number;
+    correctItems: number;
+    totalItems: number;
+    requiresManualScoring: boolean;
+  };
+  scoringEnabled?: boolean;
 }
 
 export const PreviewPanel: React.FC<PreviewPanelProps> = ({
@@ -34,7 +47,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   onDragEnd,
   sensors,
   getItemTypeLabel,
-  getItemTypeColor
+  getItemTypeColor,
+  onResponseChange,
+  itemScores,
+  totalScore,
+  scoringEnabled = false
 }) => (
   <Box sx={{ flex: 1, minWidth: 0 }}>
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -73,6 +90,10 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           sensors={sensors}
           getItemTypeLabel={getItemTypeLabel}
           getItemTypeColor={getItemTypeColor}
+          onResponseChange={onResponseChange}
+          itemScores={itemScores}
+          totalScore={totalScore}
+          scoringEnabled={scoringEnabled}
         />
       </CardContent>
     </Card>

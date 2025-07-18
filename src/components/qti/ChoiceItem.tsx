@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -6,13 +6,24 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Edit3, Save, X } from 'lucide-react';
+import { ScoreDisplay } from '@/components/preview/ScoreDisplay';
+import { ItemScore } from '@/scoring/types';
 
 interface ChoiceItemProps {
   item: QTIItem;
   onCorrectResponseChange?: (itemId: string, correctResponse: string | string[]) => void;
+  onResponseChange?: (itemId: string, responseId: string, value: string | string[]) => void;
+  itemScore?: ItemScore;
+  scoringEnabled?: boolean;
 }
 
-export function ChoiceItem({ item, onCorrectResponseChange }: ChoiceItemProps) {
+export function ChoiceItem({ 
+  item, 
+  onCorrectResponseChange, 
+  onResponseChange, 
+  itemScore, 
+  scoringEnabled = false 
+}: ChoiceItemProps) {
   const [selectedChoices, setSelectedChoices] = useState<string[]>([]);
   const [isEditingCorrect, setIsEditingCorrect] = useState(false);
   const [tempCorrectAnswers, setTempCorrectAnswers] = useState<string[]>(
@@ -33,14 +44,22 @@ export function ChoiceItem({ item, onCorrectResponseChange }: ChoiceItemProps) {
   const isMultipleChoice = item.type === 'choice';
 
   const handleChoiceChange = (choiceId: string, checked: boolean) => {
+    let newSelection: string[];
+    
     if (isMultipleChoice) {
-      setSelectedChoices(checked ? [choiceId] : []);
+      newSelection = checked ? [choiceId] : [];
     } else {
-      setSelectedChoices(prev => 
-        checked 
-          ? [...prev, choiceId]
-          : prev.filter(id => id !== choiceId)
-      );
+      newSelection = checked 
+        ? [...selectedChoices, choiceId]
+        : selectedChoices.filter(id => id !== choiceId);
+    }
+    
+    setSelectedChoices(newSelection);
+    
+    // Emit response to scoring system
+    if (onResponseChange && scoringEnabled) {
+      const responseValue = isMultipleChoice ? newSelection[0] || '' : newSelection;
+      onResponseChange(item.id || item.identifier, item.responseIdentifier || 'RESPONSE', responseValue);
     }
   };
 
@@ -174,13 +193,20 @@ export function ChoiceItem({ item, onCorrectResponseChange }: ChoiceItemProps) {
           );
         })}
         
-        <div className="mt-4 pt-4 border-t border-border">
+        <div className="mt-4 pt-4 border-t border-border space-y-3">
           <div className="text-xs text-muted-foreground">
             {isEditingCorrect 
               ? `Select the correct answer${isMultipleChoice ? '' : 's'} above`
               : `${isMultipleChoice ? 'Select one option' : 'Select one or more options'}`
             }
           </div>
+          
+          {/* Score Display */}
+          {scoringEnabled && itemScore && selectedChoices.length > 0 && (
+            <div className="mt-3">
+              <ScoreDisplay score={itemScore} compact={true} />
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -7,35 +7,94 @@ import { SliderItem } from './SliderItem';
 import { OrderItem } from './OrderItem';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
+import { ItemScore } from '@/scoring/types';
 
 interface QTIItemRendererProps {
   item: QTIItem;
   isNewlyAdded?: boolean;
   onCorrectResponseChange?: (itemId: string, correctResponse: string | string[] | number) => void;
+  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  itemScore?: ItemScore;
+  scoringEnabled?: boolean;
 }
 
-export function QTIItemRenderer({ item, isNewlyAdded = false, onCorrectResponseChange }: QTIItemRendererProps) {
+export function QTIItemRenderer({ 
+  item, 
+  isNewlyAdded = false, 
+  onCorrectResponseChange, 
+  onResponseChange, 
+  itemScore, 
+  scoringEnabled = false 
+}: QTIItemRendererProps) {
   const animationClass = isNewlyAdded ? "animate-slide-in-right" : "";
   const renderItem = () => {
     switch (item.type) {
       case 'choice':
       case 'multipleResponse':
-        return <ChoiceItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
+        return (
+          <ChoiceItem 
+            item={item} 
+            onCorrectResponseChange={onCorrectResponseChange} 
+            onResponseChange={onResponseChange}
+            itemScore={itemScore}
+            scoringEnabled={scoringEnabled}
+          />
+        );
       
       case 'textEntry':
-        return <TextEntryItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
+        return (
+          <TextEntryItem 
+            item={item} 
+            onCorrectResponseChange={onCorrectResponseChange} 
+            onResponseChange={onResponseChange}
+            itemScore={itemScore}
+            scoringEnabled={scoringEnabled}
+          />
+        );
       
       case 'extendedText':
-        return <ExtendedTextItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
+        return (
+          <ExtendedTextItem 
+            item={item} 
+            onCorrectResponseChange={onCorrectResponseChange} 
+            onResponseChange={onResponseChange}
+            itemScore={itemScore}
+            scoringEnabled={scoringEnabled}
+          />
+        );
       
       case 'hottext':
-        return <HottextItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
+        return (
+          <HottextItem 
+            item={item} 
+            onCorrectResponseChange={onCorrectResponseChange} 
+            onResponseChange={onResponseChange}
+            itemScore={itemScore}
+            scoringEnabled={scoringEnabled}
+          />
+        );
       
       case 'slider':
-        return <SliderItem item={item} onCorrectResponseChange={onCorrectResponseChange} />;
+        return (
+          <SliderItem 
+            item={item} 
+            onCorrectResponseChange={onCorrectResponseChange} 
+            onResponseChange={onResponseChange}
+            itemScore={itemScore}
+            scoringEnabled={scoringEnabled}
+          />
+        );
       
       case 'order':
-        return <OrderItem item={item} />;
+        return (
+          <OrderItem 
+            item={item} 
+            onCorrectResponseChange={onCorrectResponseChange}
+            onResponseChange={onResponseChange}
+            itemScore={itemScore}
+            scoringEnabled={scoringEnabled}
+          />
+        );
       
       case 'unknown':
       default:

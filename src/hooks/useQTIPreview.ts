@@ -6,6 +6,8 @@ import { QTIParserFactory } from '@/parsers/QTIParserFactory';
 import { useToast } from '@/hooks/use-toast';
 import { posthog } from '@/lib/posthog';
 import { ContentFormat, detectContentFormat } from '@/types/contentFormat';
+import { ItemResponse, ItemScore } from '@/scoring/types';
+import { ScoringEngine } from '@/scoring/ScoringEngine';
 
 export type LayoutMode = 'split' | 'editor-only' | 'preview-only';
 
@@ -24,6 +26,18 @@ export interface QTIPreviewState {
   selectedFormat: ContentFormat;
   detectedFormat?: ContentFormat;
   isFormatLocked: boolean;
+  // Scoring-related state
+  itemResponses: Record<string, ItemResponse>;
+  itemScores: Record<string, ItemScore>;
+  totalScore: {
+    score: number;
+    maxScore: number;
+    percentage: number;
+    correctItems: number;
+    totalItems: number;
+    requiresManualScoring: boolean;
+  };
+  scoringEnabled: boolean;
 }
 
 
@@ -40,9 +54,22 @@ export function useQTIPreview() {
     selectedVersion: '3.0',
     selectedFormat: 'xml',
     isFormatLocked: false,
+    // Scoring-related state
+    itemResponses: {},
+    itemScores: {},
+    totalScore: {
+      score: 0,
+      maxScore: 0,
+      percentage: 0,
+      correctItems: 0,
+      totalItems: 0,
+      requiresManualScoring: false,
+    },
+    scoringEnabled: true,
   });
   
   const { toast } = useToast();
+  const scoringEngine = ScoringEngine.getInstance();
 
   const updateState = useCallback((updates: Partial<QTIPreviewState>) => {
     setState(prev => ({ ...prev, ...updates }));
@@ -321,6 +348,128 @@ export function useQTIPreview() {
     }
   }, [state.xmlContent, updateState, parseXMLContent]);
 
+  // Scoring-related functions
+  const handleItemResponse = useCallback((itemId: string, responseId: string, value: any) => {
+    const response: ItemResponse = {
+      itemId,
+      responseId,
+      value,
+      timestamp: Date.now(),
+    };
+
+    const updatedResponses = {
+      ...state.itemResponses,
+      [itemId]: response,
+    };
+
+    // Calculate score for this item
+    const item = state.qtiItems.find(item => item.id === itemId || item.identifier === itemId);
+    if (item && state.scoringEnabled) {
+      const itemScore = scoringEngine.calculateItemScore(item, response);
+      const updatedScores = {
+        ...state.itemScores,
+        [itemId]: itemScore,
+      };
+
+      // Calculate total score
+      const totalScore = scoringEngine.calculateTotalScore(Object.values(updatedScores));
+
+      updateState({
+        itemResponses: updatedResponses,
+        itemScores: updatedScores,
+        totalScore: {
+          score: totalScore.totalScore,
+          maxScore: totalScore.maxTotalScore,
+          percentage: totalScore.percentageScore,
+          correctItems: totalScore.correctItems,
+          totalItems: totalScore.totalItems,
+          requiresManualScoring: totalScore.requiresManualScoring,
+        },
+      });
+    } else {
+      updateState({
+        itemResponses: updatedResponses,
+      });
+    }
+  }, [state.itemResponses, state.itemScores, state.qtiItems, state.scoringEnabled, updateState, scoringEngine]);
+
+  const handleManualScore = useCallback((itemId: string, score: number, feedback?: string) => {
+    const existingScore = state.itemScores[itemId];
+    if (!existingScore) return;
+
+    const updatedScore: ItemScore = {
+      ...existingScore,
+      score,
+      feedback,
+      requiresManualScoring: false,
+      isCorrect: score === existingScore.maxScore,
+      partialCredit: score > 0 && score < existingScore.maxScore,
+    };
+
+    const updatedScores = {
+      ...state.itemScores,
+      [itemId]: updatedScore,
+    };
+
+    // Recalculate total score
+    const totalScore = scoringEngine.calculateTotalScore(Object.values(updatedScores));
+
+    updateState({
+      itemScores: updatedScores,
+      totalScore: {
+        score: totalScore.totalScore,
+        maxScore: totalScore.maxTotalScore,
+        percentage: totalScore.percentageScore,
+        correctItems: totalScore.correctItems,
+        totalItems: totalScore.totalItems,
+        requiresManualScoring: totalScore.requiresManualScoring,
+      },
+    });
+  }, [state.itemScores, updateState, scoringEngine]);
+
+  const toggleScoring = useCallback((enabled: boolean) => {
+    updateState({ scoringEnabled: enabled });
+    
+    if (enabled) {
+      // Recalculate all scores
+      const updatedScores: Record<string, ItemScore> = {};
+      Object.entries(state.itemResponses).forEach(([itemId, response]) => {
+        const item = state.qtiItems.find(item => item.id === itemId || item.identifier === itemId);
+        if (item) {
+          updatedScores[itemId] = scoringEngine.calculateItemScore(item, response);
+        }
+      });
+
+      const totalScore = scoringEngine.calculateTotalScore(Object.values(updatedScores));
+      updateState({
+        itemScores: updatedScores,
+        totalScore: {
+          score: totalScore.totalScore,
+          maxScore: totalScore.maxTotalScore,
+          percentage: totalScore.percentageScore,
+          correctItems: totalScore.correctItems,
+          totalItems: totalScore.totalItems,
+          requiresManualScoring: totalScore.requiresManualScoring,
+        },
+      });
+    }
+  }, [state.itemResponses, state.qtiItems, updateState, scoringEngine]);
+
+  const resetScoring = useCallback(() => {
+    updateState({
+      itemResponses: {},
+      itemScores: {},
+      totalScore: {
+        score: 0,
+        maxScore: 0,
+        percentage: 0,
+        correctItems: 0,
+        totalItems: 0,
+        requiresManualScoring: false,
+      },
+    });
+  }, [updateState]);
+
   return {
     state,
     actions: {
@@ -336,6 +485,11 @@ export function useQTIPreview() {
       downloadXML,
       handleVersionChange,
       handleFormatChange,
+      // Scoring functions
+      handleItemResponse,
+      handleManualScore,
+      toggleScoring,
+      resetScoring,
     },
   };
 }

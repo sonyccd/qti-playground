@@ -7,6 +7,7 @@ import { LayoutMode } from '@/hooks/useQTIPreview';
 import { ContentFormat } from '@/types/contentFormat';
 import { XMLEditor } from './XMLEditor';
 import { PreviewPanel } from './PreviewPanel';
+import { ItemScore } from '@/scoring/types';
 
 interface EditorLayoutProps {
   layoutMode: LayoutMode;
@@ -24,6 +25,18 @@ interface EditorLayoutProps {
   sensors: ReturnType<typeof useSensors>;
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
+  // Scoring props
+  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  itemScores?: Record<string, ItemScore>;
+  totalScore?: {
+    score: number;
+    maxScore: number;
+    percentage: number;
+    correctItems: number;
+    totalItems: number;
+    requiresManualScoring: boolean;
+  };
+  scoringEnabled?: boolean;
 }
 
 export const EditorLayout: React.FC<EditorLayoutProps> = ({
@@ -41,7 +54,11 @@ export const EditorLayout: React.FC<EditorLayoutProps> = ({
   onDragEnd,
   sensors,
   getItemTypeLabel,
-  getItemTypeColor
+  getItemTypeColor,
+  onResponseChange,
+  itemScores,
+  totalScore,
+  scoringEnabled = false
 }) => (
   <Box sx={{ display: 'flex', gap: 2, height: 'calc(100vh - 200px)' }}>
     {(layoutMode === 'editor-only' || layoutMode === 'split') && (
@@ -68,6 +85,10 @@ export const EditorLayout: React.FC<EditorLayoutProps> = ({
         sensors={sensors}
         getItemTypeLabel={getItemTypeLabel}
         getItemTypeColor={getItemTypeColor}
+        onResponseChange={onResponseChange}
+        itemScores={itemScores}
+        totalScore={totalScore}
+        scoringEnabled={scoringEnabled}
       />
     )}
   </Box>

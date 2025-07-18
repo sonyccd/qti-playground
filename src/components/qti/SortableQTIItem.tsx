@@ -5,17 +5,24 @@ import { QTIItemRenderer } from './QTIItemRenderer';
 import { QTIItem } from '@/types/qti';
 import { Card } from '@/components/ui/card';
 import { GripVertical } from 'lucide-react';
+import { ItemScore } from '@/scoring/types';
 
 interface SortableQTIItemProps {
   item: QTIItem;
   isNewlyAdded?: boolean;
   onCorrectResponseChange?: (itemId: string, correctResponse: string | string[] | number) => void;
+  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  itemScore?: ItemScore;
+  scoringEnabled?: boolean;
 }
 
 export function SortableQTIItem({ 
   item, 
   isNewlyAdded = false, 
-  onCorrectResponseChange 
+  onCorrectResponseChange,
+  onResponseChange,
+  itemScore,
+  scoringEnabled = false
 }: SortableQTIItemProps) {
   const {
     attributes,
@@ -47,6 +54,9 @@ export function SortableQTIItem({
             item={item}
             isNewlyAdded={isNewlyAdded}
             onCorrectResponseChange={onCorrectResponseChange}
+            onResponseChange={onResponseChange}
+            itemScore={itemScore}
+            scoringEnabled={scoringEnabled}
           />
         </div>
       </Card>

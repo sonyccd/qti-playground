@@ -18,6 +18,7 @@ interface MainContentProps {
   sensors: ReturnType<typeof useSensors>;
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
+  onResponseChange: (itemId: string, responseId: string, value: any) => void;
 }
 
 export const MainContent: React.FC<MainContentProps> = ({
@@ -31,7 +32,8 @@ export const MainContent: React.FC<MainContentProps> = ({
   onDragEnd,
   sensors,
   getItemTypeLabel,
-  getItemTypeColor
+  getItemTypeColor,
+  onResponseChange
 }) => (
   <Box sx={{ mb: 4 }}>
     <ControlBar
@@ -58,6 +60,11 @@ export const MainContent: React.FC<MainContentProps> = ({
       sensors={sensors}
       getItemTypeLabel={getItemTypeLabel}
       getItemTypeColor={getItemTypeColor}
+      // Scoring props
+      onResponseChange={onResponseChange}
+      itemScores={state.itemScores}
+      totalScore={state.totalScore}
+      scoringEnabled={state.scoringEnabled}
     />
   </Box>
 );

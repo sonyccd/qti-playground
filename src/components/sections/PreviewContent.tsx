@@ -14,6 +14,8 @@ import {
 import { QTIItem, UnsupportedElement } from '@/types/qti';
 import { SortableQTIItem } from '../qti/SortableQTIItem';
 import { AddItemButton } from '../qti/AddItemButton';
+import { TotalScoreDisplay } from '../preview/ScoreDisplay';
+import { ItemScore } from '@/scoring/types';
 
 interface PreviewContentProps {
   errors: string[];
@@ -26,6 +28,18 @@ interface PreviewContentProps {
   sensors: ReturnType<typeof useSensors>;
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
+  // Scoring props
+  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  itemScores?: Record<string, ItemScore>;
+  totalScore?: {
+    score: number;
+    maxScore: number;
+    percentage: number;
+    correctItems: number;
+    totalItems: number;
+    requiresManualScoring: boolean;
+  };
+  scoringEnabled?: boolean;
 }
 
 export const PreviewContent: React.FC<PreviewContentProps> = ({
@@ -38,7 +52,11 @@ export const PreviewContent: React.FC<PreviewContentProps> = ({
   onDragEnd,
   sensors,
   getItemTypeLabel,
-  getItemTypeColor
+  getItemTypeColor,
+  onResponseChange,
+  itemScores,
+  totalScore,
+  scoringEnabled = false
 }) => (
   <>
     {errors.length > 0 && (
@@ -61,16 +79,35 @@ export const PreviewContent: React.FC<PreviewContentProps> = ({
     )}
 
     {qtiItems.length > 0 ? (
-      <ItemsList
-        qtiItems={qtiItems}
-        newlyAddedItemId={newlyAddedItemId}
-        onAddItem={onAddItem}
-        onCorrectResponseChange={onCorrectResponseChange}
-        onDragEnd={onDragEnd}
-        sensors={sensors}
-        getItemTypeLabel={getItemTypeLabel}
-        getItemTypeColor={getItemTypeColor}
-      />
+      <>
+        <ItemsList
+          qtiItems={qtiItems}
+          newlyAddedItemId={newlyAddedItemId}
+          onAddItem={onAddItem}
+          onCorrectResponseChange={onCorrectResponseChange}
+          onDragEnd={onDragEnd}
+          sensors={sensors}
+          getItemTypeLabel={getItemTypeLabel}
+          getItemTypeColor={getItemTypeColor}
+          onResponseChange={onResponseChange}
+          itemScores={itemScores}
+          scoringEnabled={scoringEnabled}
+        />
+        
+        {/* Total Score Display */}
+        {scoringEnabled && totalScore && Object.keys(itemScores || {}).length > 0 && (
+          <Box sx={{ mt: 4, mb: 2 }}>
+            <TotalScoreDisplay
+              totalScore={totalScore.score}
+              maxTotalScore={totalScore.maxScore}
+              correctItems={totalScore.correctItems}
+              totalItems={totalScore.totalItems}
+              percentageScore={totalScore.percentage}
+              requiresManualScoring={totalScore.requiresManualScoring}
+            />
+          </Box>
+        )}
+      </>
     ) : !errors.length ? (
       <EmptyState onAddItem={onAddItem} />
     ) : null}
@@ -140,6 +177,9 @@ interface ItemsListProps {
   sensors: ReturnType<typeof useSensors>;
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
+  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  itemScores?: Record<string, ItemScore>;
+  scoringEnabled?: boolean;
 }
 
 const ItemsList: React.FC<ItemsListProps> = ({
@@ -150,7 +190,10 @@ const ItemsList: React.FC<ItemsListProps> = ({
   onDragEnd,
   sensors,
   getItemTypeLabel,
-  getItemTypeColor
+  getItemTypeColor,
+  onResponseChange,
+  itemScores,
+  scoringEnabled = false
 }) => (
   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
     <AddItemButton onAddItem={(itemXML) => onAddItem(itemXML, -1)} />
@@ -183,6 +226,9 @@ const ItemsList: React.FC<ItemsListProps> = ({
               item={item} 
               isNewlyAdded={item.id === newlyAddedItemId}
               onCorrectResponseChange={onCorrectResponseChange}
+              onResponseChange={onResponseChange}
+              itemScore={itemScores?.[item.id || item.identifier]}
+              scoringEnabled={scoringEnabled}
             />
             
             <AddItemButton onAddItem={(itemXML) => onAddItem(itemXML, index)} />

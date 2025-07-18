@@ -14,7 +14,8 @@
       "Bash(node:*)",
       "Bash(grep:*)",
       "Bash(npm install:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": []
   }

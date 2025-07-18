@@ -1,6 +1,6 @@
 import { QTIParserInterface, QTIParseResult } from '../base/QTIParserInterface';
 import { QTIVersion } from '@/types/qtiVersions';
-import { QTIItem, QTIChoice, QTIHottextChoice, QTIOrderChoice, QTISliderConfig, UnsupportedElement } from '@/types/qti';
+import { QTIItem, QTIChoice, QTIHottextChoice, QTIOrderChoice, QTISliderConfig, UnsupportedElement, QTIAssessmentTest, QTITestPart, QTIAssessmentSection, QTIOutcomeDeclaration } from '@/types/qti';
 import { detectFormat, jsonToXml } from '@/utils/jsonXmlConverter';
 import { ContentFormat } from '@/types/contentFormat';
 import { getBlankJsonTemplate } from '@/utils/qtiJsonTemplates';
@@ -45,32 +45,61 @@ export class QTI30Parser implements QTIParserInterface {
         };
       }
 
-      // Find all assessmentItem elements (QTI 3.0 uses the same structure)
-      const assessmentItems = xmlDoc.querySelectorAll('assessmentItem');
+      // Check if this is an assessmentTest or individual assessmentItem
+      const assessmentTest = xmlDoc.querySelector('assessmentTest');
+      let assessmentTestData: QTIAssessmentTest | undefined;
       
-      if (assessmentItems.length === 0) {
-        errors.push('No assessment items found in the QTI 3.0 file');
+      if (assessmentTest) {
+        // Parse full assessment test
+        assessmentTestData = this.parseAssessmentTest(assessmentTest, unsupportedElements);
+        // Extract all items from test structure
+        assessmentTestData.testParts.forEach(testPart => {
+          testPart.assessmentSections.forEach(section => {
+            items.push(...section.assessmentItems);
+          });
+        });
+        
+        // Also check for direct assessmentItem elements under assessmentTest (non-standard but common)
+        const directItems = assessmentTest.querySelectorAll(':scope > assessmentItem');
+        directItems.forEach((itemElement, index) => {
+          try {
+            const item = this.parseAssessmentItem(itemElement, unsupportedElements);
+            if (item) {
+              items.push(item);
+            }
+          } catch (error) {
+            errors.push(`Error parsing direct item ${index + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          }
+        });
+      } else {
+        // Find all assessmentItem elements (individual items)
+        const assessmentItems = xmlDoc.querySelectorAll('assessmentItem');
+        
+        if (assessmentItems.length === 0) {
+          errors.push('No assessment items found in the QTI 3.0 file');
+        }
+
+        assessmentItems.forEach((itemElement, index) => {
+          try {
+            const item = this.parseAssessmentItem(itemElement, unsupportedElements);
+            if (item) {
+              items.push(item);
+            }
+          } catch (error) {
+            errors.push(`Error parsing item ${index + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          }
+        });
       }
 
       // Scan for unsupported elements
       this.scanForUnsupportedElements(xmlDoc, unsupportedElements);
 
-      assessmentItems.forEach((itemElement, index) => {
-        try {
-          const item = this.parseAssessmentItem(itemElement, unsupportedElements);
-          if (item) {
-            items.push(item);
-          }
-        } catch (error) {
-          errors.push(`Error parsing item ${index + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        }
-      });
-
       return {
         items,
         errors,
         unsupportedElements: Array.from(unsupportedElements.values()),
-        version: this.version
+        version: this.version,
+        assessmentTest: assessmentTestData
       };
     } catch (error) {
       return {
@@ -209,6 +238,131 @@ export class QTI30Parser implements QTIParserInterface {
     };
   }
 
+  private parseAssessmentTest(testElement: Element, unsupportedElements: Map<string, UnsupportedElement>): QTIAssessmentTest {
+    const identifier = testElement.getAttribute('identifier') || `test-${Date.now()}`;
+    const title = testElement.getAttribute('title') || 'Untitled Test';
+    
+    // Parse outcome declarations at test level
+    const outcomeDeclarations = this.parseOutcomeDeclarations(testElement);
+    
+    // Parse test parts
+    const testParts: QTITestPart[] = [];
+    const testPartElements = testElement.querySelectorAll('testPart');
+    
+    testPartElements.forEach(testPartElement => {
+      const testPart = this.parseTestPart(testPartElement, unsupportedElements);
+      if (testPart) {
+        testParts.push(testPart);
+      }
+    });
+    
+    // If no testParts found, create a default one for non-standard structure
+    if (testParts.length === 0) {
+      testParts.push({
+        identifier: 'default-testpart',
+        navigationMode: 'linear',
+        submissionMode: 'individual',
+        assessmentSections: [{
+          identifier: 'default-section',
+          title: 'Default Section',
+          visible: true,
+          assessmentItems: [] // Items will be added as direct children
+        }]
+      });
+    }
+    
+    return {
+      identifier,
+      title,
+      testParts,
+      outcomeDeclarations
+    };
+  }
+
+  private parseTestPart(testPartElement: Element, unsupportedElements: Map<string, UnsupportedElement>): QTITestPart | null {
+    const identifier = testPartElement.getAttribute('identifier') || `testPart-${Date.now()}`;
+    const navigationMode = testPartElement.getAttribute('navigationMode') as 'linear' | 'nonlinear' || 'linear';
+    const submissionMode = testPartElement.getAttribute('submissionMode') as 'individual' | 'simultaneous' || 'individual';
+    const scoreAggregation = testPartElement.getAttribute('scoreAggregation') as 'sum' | 'avg' | 'max' | 'min' || undefined;
+    
+    // Parse assessment sections
+    const assessmentSections: QTIAssessmentSection[] = [];
+    const sectionElements = testPartElement.querySelectorAll('assessmentSection');
+    
+    sectionElements.forEach(sectionElement => {
+      const section = this.parseAssessmentSection(sectionElement, unsupportedElements);
+      if (section) {
+        assessmentSections.push(section);
+      }
+    });
+    
+    return {
+      identifier,
+      navigationMode,
+      submissionMode,
+      scoreAggregation,
+      assessmentSections
+    };
+  }
+
+  private parseAssessmentSection(sectionElement: Element, unsupportedElements: Map<string, UnsupportedElement>): QTIAssessmentSection | null {
+    const identifier = sectionElement.getAttribute('identifier') || `section-${Date.now()}`;
+    const title = sectionElement.getAttribute('title') || 'Untitled Section';
+    const visible = sectionElement.getAttribute('visible') !== 'false';
+    
+    // Parse assessment items within this section
+    const assessmentItems: QTIItem[] = [];
+    const itemElements = sectionElement.querySelectorAll('assessmentItem');
+    
+    itemElements.forEach(itemElement => {
+      const item = this.parseAssessmentItem(itemElement, unsupportedElements);
+      if (item) {
+        assessmentItems.push(item);
+      }
+    });
+    
+    return {
+      identifier,
+      title,
+      visible,
+      assessmentItems
+    };
+  }
+
+  private parseOutcomeDeclarations(element: Element): QTIOutcomeDeclaration[] {
+    const declarations: QTIOutcomeDeclaration[] = [];
+    const outcomeElements = element.querySelectorAll(':scope > outcomeDeclaration');
+    
+    outcomeElements.forEach(outcomeElement => {
+      const identifier = outcomeElement.getAttribute('identifier') || '';
+      const cardinality = outcomeElement.getAttribute('cardinality') as 'single' | 'multiple' | 'ordered' | 'record' || 'single';
+      const baseType = outcomeElement.getAttribute('baseType') as QTIOutcomeDeclaration['baseType'] || 'float';
+      
+      // Parse default value
+      let defaultValue: string | number | undefined;
+      const defaultValueElement = outcomeElement.querySelector('defaultValue value');
+      if (defaultValueElement && defaultValueElement.textContent) {
+        const textValue = defaultValueElement.textContent.trim();
+        if (baseType === 'float' || baseType === 'integer') {
+          defaultValue = parseFloat(textValue);
+        } else {
+          defaultValue = textValue;
+        }
+      }
+      
+      if (identifier) {
+        declarations.push({
+          identifier,
+          cardinality,
+          baseType,
+          defaultValue
+        });
+      }
+    });
+    
+    return declarations;
+  }
+
   private parseAssessmentItem(itemElement: Element, unsupportedElements: Map<string, UnsupportedElement>): QTIItem | null {
     const id = itemElement.getAttribute('identifier') || `item-${Date.now()}`;
     const title = itemElement.getAttribute('title') || 'Untitled Item';
@@ -246,9 +400,13 @@ export class QTI30Parser implements QTIParserInterface {
 
     return {
       id,
+      identifier: id,
       title,
       type: 'unknown',
+      interactionType: 'unknown',
       prompt,
+      maxScore: this.parseMaxScore(itemElement),
+      responseProcessing: this.parseResponseProcessing(itemElement)
     };
   }
 
@@ -284,12 +442,17 @@ export class QTI30Parser implements QTIParserInterface {
 
     return {
       id,
+      identifier: id,
       title,
       type: maxChoices === 1 ? 'choice' : 'multipleResponse',
+      interactionType: maxChoices === 1 ? 'choice' : 'multipleResponse',
       prompt,
       choices,
       correctResponse,
-      responseIdentifier
+      responseIdentifier,
+      maxScore: this.parseMaxScore(itemElement),
+      mapping: this.parseMapping(itemElement, responseIdentifier),
+      responseProcessing: this.parseResponseProcessing(itemElement)
     };
   }
 
@@ -305,11 +468,16 @@ export class QTI30Parser implements QTIParserInterface {
 
     return {
       id,
+      identifier: id,
       title,
       type: 'textEntry',
+      interactionType: 'textEntry',
       prompt,
       correctResponse,
-      responseIdentifier
+      responseIdentifier,
+      maxScore: this.parseMaxScore(itemElement),
+      mapping: this.parseMapping(itemElement, responseIdentifier),
+      responseProcessing: this.parseResponseProcessing(itemElement)
     };
   }
 
@@ -325,11 +493,16 @@ export class QTI30Parser implements QTIParserInterface {
 
     return {
       id,
+      identifier: id,
       title,
       type: 'extendedText',
+      interactionType: 'extendedText',
       prompt,
       correctResponse,
-      responseIdentifier
+      responseIdentifier,
+      maxScore: this.parseMaxScore(itemElement),
+      mapping: this.parseMapping(itemElement, responseIdentifier),
+      responseProcessing: this.parseResponseProcessing(itemElement)
     };
   }
 
@@ -357,12 +530,17 @@ export class QTI30Parser implements QTIParserInterface {
 
     return {
       id,
+      identifier: id,
       title,
       type: 'hottext',
+      interactionType: 'hottext',
       prompt: hottextInteraction.innerHTML,
       hottextChoices,
       correctResponse,
-      responseIdentifier
+      responseIdentifier,
+      maxScore: this.parseMaxScore(itemElement),
+      mapping: this.parseMapping(itemElement, responseIdentifier),
+      responseProcessing: this.parseResponseProcessing(itemElement)
     };
   }
 
@@ -392,12 +570,17 @@ export class QTI30Parser implements QTIParserInterface {
 
     return {
       id,
+      identifier: id,
       title,
       type: 'slider',
+      interactionType: 'slider',
       prompt,
       sliderConfig,
       correctResponse,
-      responseIdentifier
+      responseIdentifier,
+      maxScore: this.parseMaxScore(itemElement),
+      mapping: this.parseMapping(itemElement, responseIdentifier),
+      responseProcessing: this.parseResponseProcessing(itemElement)
     };
   }
 
@@ -425,12 +608,17 @@ export class QTI30Parser implements QTIParserInterface {
 
     return {
       id,
+      identifier: id,
       title,
       type: 'order',
+      interactionType: 'order',
       prompt,
       orderChoices,
       correctResponse,
-      responseIdentifier
+      responseIdentifier,
+      maxScore: this.parseMaxScore(itemElement),
+      mapping: this.parseMapping(itemElement, responseIdentifier),
+      responseProcessing: this.parseResponseProcessing(itemElement)
     };
   }
 
@@ -449,6 +637,73 @@ export class QTI30Parser implements QTIParserInterface {
     } else {
       return Array.from(values).map(value => value.textContent?.trim() || '');
     }
+  }
+
+  private parseMapping(itemElement: Element, responseIdentifier: string): Record<string, number> | undefined {
+    const responseDeclaration = itemElement.querySelector(`responseDeclaration[identifier="${responseIdentifier}"]`);
+    if (!responseDeclaration) return undefined;
+
+    const mapping = responseDeclaration.querySelector('mapping');
+    if (!mapping) return undefined;
+
+    const mappingObj: Record<string, number> = {};
+    const mapEntries = mapping.querySelectorAll('mapEntry');
+    
+    mapEntries.forEach(entry => {
+      const mapKey = entry.getAttribute('mapKey');
+      const mappedValue = entry.getAttribute('mappedValue');
+      
+      if (mapKey && mappedValue) {
+        mappingObj[mapKey] = parseFloat(mappedValue);
+      }
+    });
+
+    return Object.keys(mappingObj).length > 0 ? mappingObj : undefined;
+  }
+
+  private parseMaxScore(itemElement: Element): number | undefined {
+    const outcomeDeclaration = itemElement.querySelector('outcomeDeclaration[identifier="SCORE"]');
+    if (!outcomeDeclaration) return undefined;
+
+    // Check for explicit max score in defaultValue
+    const defaultValue = outcomeDeclaration.querySelector('defaultValue value');
+    if (defaultValue && defaultValue.textContent) {
+      const maxScore = parseFloat(defaultValue.textContent.trim());
+      if (!isNaN(maxScore) && maxScore > 0) {
+        return maxScore;
+      }
+    }
+
+    // Check for max score in other common patterns
+    const maxScoreAttr = outcomeDeclaration.getAttribute('maxScore');
+    if (maxScoreAttr) {
+      const maxScore = parseFloat(maxScoreAttr);
+      if (!isNaN(maxScore) && maxScore > 0) {
+        return maxScore;
+      }
+    }
+
+    // Default to 1 if no explicit max score found
+    return 1;
+  }
+
+  private parseResponseProcessing(itemElement: Element): { template?: string; customLogic?: unknown } | undefined {
+    const responseProcessing = itemElement.querySelector('responseProcessing');
+    if (!responseProcessing) return undefined;
+
+    const template = responseProcessing.getAttribute('template');
+    if (template) {
+      return { template };
+    }
+
+    // For custom logic, we could parse responseCondition elements
+    // For now, we'll just indicate that custom logic exists
+    const responseConditions = responseProcessing.querySelectorAll('responseCondition');
+    if (responseConditions.length > 0) {
+      return { customLogic: true };
+    }
+
+    return undefined;
   }
 
   private scanForUnsupportedElements(xmlDoc: Document, unsupportedElements: Map<string, UnsupportedElement>) {
