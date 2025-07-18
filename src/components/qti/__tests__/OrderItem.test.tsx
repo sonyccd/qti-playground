@@ -588,7 +588,7 @@ describe('OrderItem', () => {
       
       // Move World War II up (to position 1)
       let upButtons = screen.getAllByTestId('arrow-up-icon');
-      let upButton = upButtons[1].closest('button')!; // World War II button
+      const upButton = upButtons[1].closest('button')!; // World War II button
       await user.click(upButton);
       
       // Move Cold War up twice (to position 1) - now it's at index 2 after previous move
