@@ -23,12 +23,4 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   disconnect: vi.fn(),
 }));
 
-// Mock XMLSerializer
-global.XMLSerializer = vi.fn().mockImplementation(() => ({
-  serializeToString: vi.fn().mockImplementation((node: Node) => {
-    if (node && 'outerHTML' in node) {
-      return (node as Element).outerHTML;
-    }
-    return '<mock-xml/>';
-  }),
-}));
+// Note: XMLSerializer is provided by jsdom, no need to mock it
