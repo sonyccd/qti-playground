@@ -433,7 +433,7 @@ export function useQTIPreview() {
     if (enabled) {
       // Recalculate all scores
       const updatedScores: Record<string, ItemScore> = {};
-      Object.entries(state.itemResponses).forEach(([itemId, response]) => {
+      Object.entries(state.itemResponses || {}).forEach(([itemId, response]) => {
         const item = state.qtiItems.find(item => item.id === itemId || item.identifier === itemId);
         if (item) {
           updatedScores[itemId] = scoringEngine.calculateItemScore(item, response);

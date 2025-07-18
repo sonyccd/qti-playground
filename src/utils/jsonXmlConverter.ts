@@ -70,7 +70,24 @@ export interface QTIJsonTest {
   '@type': 'assessmentTest';
   identifier: string;
   title: string;
-  items: QTIJsonItem[];
+  outcomeDeclarations?: QTIJsonOutcomeDeclaration[];
+  testParts?: QTIJsonTestPart[];
+  items?: QTIJsonItem[]; // For backward compatibility
+}
+
+export interface QTIJsonTestPart {
+  identifier: string;
+  navigationMode: 'linear' | 'nonlinear';
+  submissionMode: 'individual' | 'simultaneous';
+  scoreAggregation?: 'sum' | 'avg' | 'max' | 'min';
+  assessmentSections: QTIJsonAssessmentSection[];
+}
+
+export interface QTIJsonAssessmentSection {
+  identifier: string;
+  title: string;
+  visible: boolean;
+  assessmentItems: QTIJsonItem[];
 }
 
 /**
@@ -275,7 +292,7 @@ const convertJsonItemToXml = (jsonItem: QTIJsonItem): string => {
   }
 
   // Add outcome declarations
-  if (jsonItem.outcomeDeclaration) {
+  if (jsonItem.outcomeDeclaration && Array.isArray(jsonItem.outcomeDeclaration)) {
     jsonItem.outcomeDeclaration.forEach(outcome => {
       xml += `  <outcomeDeclaration identifier="${outcome.identifier}" cardinality="${outcome.cardinality}" baseType="${outcome.baseType}">\n`;
       if (outcome.defaultValue) {
@@ -312,11 +329,59 @@ const convertJsonTestToXml = (jsonTest: QTIJsonTest): string => {
   xml += `                identifier="${jsonTest.identifier}"\n`;
   xml += `                title="${jsonTest.title}">\n\n`;
 
-  // Add items
-  jsonTest.items.forEach(item => {
-    xml += convertJsonItemToXml(item).replace(/^<\?xml.*?\n/, '').replace(/xmlns[^>]*>/g, '>');
-    xml += '\n\n';
-  });
+  // Add outcome declarations
+  if (jsonTest.outcomeDeclarations && Array.isArray(jsonTest.outcomeDeclarations)) {
+    jsonTest.outcomeDeclarations.forEach(outcome => {
+      xml += `  <outcomeDeclaration identifier="${outcome.identifier}" cardinality="${outcome.cardinality}" baseType="${outcome.baseType}">\n`;
+      if (outcome.defaultValue) {
+        xml += `    <defaultValue>\n`;
+        xml += `      <value>${outcome.defaultValue.value}</value>\n`;
+        xml += `    </defaultValue>\n`;
+      }
+      xml += `  </outcomeDeclaration>\n\n`;
+    });
+  }
+
+  // Add test parts structure
+  if (jsonTest.testParts && Array.isArray(jsonTest.testParts)) {
+    jsonTest.testParts.forEach(testPart => {
+      xml += `  <testPart identifier="${testPart.identifier}" navigationMode="${testPart.navigationMode}" submissionMode="${testPart.submissionMode}"`;
+      if (testPart.scoreAggregation) {
+        xml += ` scoreAggregation="${testPart.scoreAggregation}"`;
+      }
+      xml += `>\n`;
+      
+      // Add assessment sections
+      if (testPart.assessmentSections && Array.isArray(testPart.assessmentSections)) {
+        testPart.assessmentSections.forEach(section => {
+          xml += `    <assessmentSection identifier="${section.identifier}" title="${section.title}" visible="${section.visible}">\n`;
+          
+          // Add assessment items
+          if (section.assessmentItems && Array.isArray(section.assessmentItems)) {
+            section.assessmentItems.forEach(item => {
+              const itemXml = convertJsonItemToXml(item).replace(/^<\?xml.*?\n/, '').replace(/xmlns[^>]*>/g, '>');
+              // Indent the item XML
+              const indentedItemXml = itemXml.split('\n').map(line => line ? `      ${line}` : line).join('\n');
+              xml += indentedItemXml;
+              xml += '\n';
+            });
+          }
+          
+          xml += `    </assessmentSection>\n`;
+        });
+      }
+      
+      xml += `  </testPart>\n\n`;
+    });
+  }
+
+  // Add items directly (for backward compatibility)
+  if (jsonTest.items && Array.isArray(jsonTest.items)) {
+    jsonTest.items.forEach(item => {
+      xml += convertJsonItemToXml(item).replace(/^<\?xml.*?\n/, '').replace(/xmlns[^>]*>/g, '>');
+      xml += '\n\n';
+    });
+  }
 
   xml += `</assessmentTest>`;
   return xml;
@@ -329,7 +394,8 @@ const convertJsonItemBodyToXml = (itemBody: QTIJsonItemBody, indent: number = 0)
   let xml = '';
   const spaces = ' '.repeat(indent);
 
-  itemBody.content.forEach(element => {
+  if (itemBody.content && Array.isArray(itemBody.content)) {
+    itemBody.content.forEach(element => {
     if (element['@type'] === 'choiceInteraction') {
       const choice = element as QTIJsonChoiceInteraction;
       xml += `${spaces}<choiceInteraction responseIdentifier="${choice.responseIdentifier}" shuffle="${choice.shuffle}" maxChoices="${choice.maxChoices}">\n`;
@@ -338,9 +404,11 @@ const convertJsonItemBodyToXml = (itemBody: QTIJsonItemBody, indent: number = 0)
         xml += `${spaces}  <prompt>${choice.prompt}</prompt>\n`;
       }
       
-      choice.choices.forEach(simpleChoice => {
-        xml += `${spaces}  <simpleChoice identifier="${simpleChoice.identifier}">${simpleChoice.text}</simpleChoice>\n`;
-      });
+      if (choice.choices && Array.isArray(choice.choices)) {
+        choice.choices.forEach(simpleChoice => {
+          xml += `${spaces}  <simpleChoice identifier="${simpleChoice.identifier}">${simpleChoice.text}</simpleChoice>\n`;
+        });
+      }
       
       xml += `${spaces}</choiceInteraction>\n`;
     } else if (element['@type'] === 'paragraph') {
@@ -348,7 +416,8 @@ const convertJsonItemBodyToXml = (itemBody: QTIJsonItemBody, indent: number = 0)
     } else {
       xml += `${spaces}<${element['@type']}>${element.text}</${element['@type']}>\n`;
     }
-  });
+    });
+  }
 
   return xml;
 };

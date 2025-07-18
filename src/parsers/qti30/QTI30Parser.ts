@@ -53,11 +53,17 @@ export class QTI30Parser implements QTIParserInterface {
         // Parse full assessment test
         assessmentTestData = this.parseAssessmentTest(assessmentTest, unsupportedElements);
         // Extract all items from test structure
-        assessmentTestData.testParts.forEach(testPart => {
-          testPart.assessmentSections.forEach(section => {
-            items.push(...section.assessmentItems);
+        if (assessmentTestData.testParts && Array.isArray(assessmentTestData.testParts)) {
+          assessmentTestData.testParts.forEach(testPart => {
+            if (testPart.assessmentSections && Array.isArray(testPart.assessmentSections)) {
+              testPart.assessmentSections.forEach(section => {
+                if (section.assessmentItems && Array.isArray(section.assessmentItems)) {
+                  items.push(...section.assessmentItems);
+                }
+              });
+            }
           });
-        });
+        }
         
         // Also check for direct assessmentItem elements under assessmentTest (non-standard but common)
         const directItems = assessmentTest.querySelectorAll(':scope > assessmentItem');

@@ -56,6 +56,10 @@ export function QTIPreview() {
               onCreateBlank={actions.handleCreateBlankFile}
               selectedFile={state.selectedFile}
               isLoading={state.isLoading}
+              selectedVersion={state.selectedVersion}
+              selectedFormat={state.selectedFormat}
+              onVersionChange={actions.handleVersionChange}
+              onFormatChange={actions.handleFormatChange}
             />
           )}
 
