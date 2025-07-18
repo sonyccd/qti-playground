@@ -44,7 +44,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
         startIcon={<Download />}
         disabled={!xmlContent.trim()}
       >
-        Download XML
+        Download
       </Button>
       <Button variant="outlined" size="small" onClick={onClearFile} startIcon={<Description />}>
         New File

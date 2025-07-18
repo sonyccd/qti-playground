@@ -1,21 +1,26 @@
 import CodeMirror from '@uiw/react-codemirror';
 import { xml } from '@codemirror/lang-xml';
+import { json } from '@codemirror/lang-json';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { EditorView } from '@codemirror/view';
+import { ContentFormat } from '@/types/contentFormat';
 
 interface XmlCodeBlockProps {
   code: string;
   className?: string;
+  format?: ContentFormat;
 }
 
-export const XmlCodeBlock = ({ code, className = "mb-6" }: XmlCodeBlockProps) => {
+export const XmlCodeBlock = ({ code, className = "mb-6", format = 'xml' }: XmlCodeBlockProps) => {
+  const languageExtension = format === 'json' ? json() : xml();
+  
   return (
     <div className={`${className} w-full overflow-x-auto`}>
       <div className="min-w-0">
         <CodeMirror
           value={code}
           extensions={[
-            xml(),
+            languageExtension,
             EditorView.lineWrapping
           ]}
           theme={oneDark}

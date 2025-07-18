@@ -1,4 +1,5 @@
 import { XmlCodeBlock } from '../XmlCodeBlock';
+import { DualFormatCodeBlock } from '../DualFormatCodeBlock';
 
 export default function ItemBody() {
   return (
@@ -19,7 +20,9 @@ export default function ItemBody() {
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🧾 General Structure of &lt;itemBody&gt;</h2>
       
-      <XmlCodeBlock code={`<itemBody>
+      <DualFormatCodeBlock
+        title="Basic Item Body Structure"
+        xmlCode={`<itemBody>
   <p>Your question prompt goes here.</p>
   <choiceInteraction responseIdentifier="RESPONSE" maxChoices="1" shuffle="false">
     <simpleChoice identifier="A">Option A</simpleChoice>
@@ -27,7 +30,42 @@ export default function ItemBody() {
     <simpleChoice identifier="C">Option C</simpleChoice>
     <simpleChoice identifier="D">Option D</simpleChoice>
   </choiceInteraction>
-</itemBody>`} />
+</itemBody>`}
+        jsonCode={`{
+  "itemBody": {
+    "content": [
+      {
+        "@type": "paragraph",
+        "text": "Your question prompt goes here."
+      },
+      {
+        "@type": "choiceInteraction",
+        "responseIdentifier": "RESPONSE",
+        "maxChoices": 1,
+        "shuffle": false,
+        "choices": [
+          {
+            "identifier": "A",
+            "text": "Option A"
+          },
+          {
+            "identifier": "B",
+            "text": "Option B"
+          },
+          {
+            "identifier": "C",
+            "text": "Option C"
+          },
+          {
+            "identifier": "D",
+            "text": "Option D"
+          }
+        ]
+      }
+    ]
+  }
+}`}
+      />
       
       <p className="text-lg leading-relaxed mb-2">
         The structure typically includes:
@@ -49,25 +87,78 @@ export default function ItemBody() {
         Used for multiple-choice or single-select items.
       </p>
       
-      <XmlCodeBlock code={`<choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <DualFormatCodeBlock
+        title="Choice Interaction Example"
+        xmlCode={`<choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
   <simpleChoice identifier="A">Apple</simpleChoice>
   <simpleChoice identifier="B">Banana</simpleChoice>
-</choiceInteraction>`} />
+</choiceInteraction>`}
+        jsonCode={`{
+  "@type": "choiceInteraction",
+  "responseIdentifier": "RESPONSE",
+  "shuffle": true,
+  "maxChoices": 1,
+  "choices": [
+    {
+      "identifier": "A",
+      "text": "Apple"
+    },
+    {
+      "identifier": "B",
+      "text": "Banana"
+    }
+  ]
+}`}
+      />
       
       <h3 className="text-xl font-semibold mt-6 mb-3">2. textEntryInteraction</h3>
       <p className="text-lg leading-relaxed mb-4">
         Used for short answers where learners type a brief response.
       </p>
       
-      <XmlCodeBlock code={`<p>What is 2 + 2? <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="4"/></p>`} />
+      <DualFormatCodeBlock
+        title="Text Entry Interaction Example"
+        xmlCode={`<p>What is 2 + 2? <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="4"/></p>`}
+        jsonCode={`{
+  "@type": "paragraph",
+  "text": "What is 2 + 2? ",
+  "children": [
+    {
+      "@type": "textEntryInteraction",
+      "responseIdentifier": "RESPONSE",
+      "attributes": {
+        "expectedLength": "4"
+      }
+    }
+  ]
+}`}
+      />
       
       <h3 className="text-xl font-semibold mt-6 mb-3">3. extendedTextInteraction</h3>
       <p className="text-lg leading-relaxed mb-4">
         Used for essays or longer written responses.
       </p>
       
-      <XmlCodeBlock code={`<p>Explain the difference between weather and climate:</p>
-<extendedTextInteraction responseIdentifier="RESPONSE" expectedLines="5"/>`} />
+      <DualFormatCodeBlock
+        title="Extended Text Interaction Example"
+        xmlCode={`<p>Explain the difference between weather and climate:</p>
+<extendedTextInteraction responseIdentifier="RESPONSE" expectedLines="5"/>`}
+        jsonCode={`{
+  "content": [
+    {
+      "@type": "paragraph",
+      "text": "Explain the difference between weather and climate:"
+    },
+    {
+      "@type": "extendedTextInteraction",
+      "responseIdentifier": "RESPONSE",
+      "attributes": {
+        "expectedLines": "5"
+      }
+    }
+  ]
+}`}
+      />
       
       <h3 className="text-xl font-semibold mt-6 mb-3">4. matchInteraction</h3>
       <p className="text-lg leading-relaxed mb-4">
@@ -109,7 +200,9 @@ export default function ItemBody() {
       
       <h3 className="text-xl font-semibold mt-6 mb-3">Example:</h3>
       
-      <XmlCodeBlock code={`<itemBody>
+      <DualFormatCodeBlock
+        title="Multimedia Item Body Example"
+        xmlCode={`<itemBody>
   <p>Listen to the audio clip and choose the correct answer.</p>
   <audio controls>
     <source src="media/clip.mp3" type="audio/mpeg"/>
@@ -118,7 +211,45 @@ export default function ItemBody() {
     <simpleChoice identifier="A">Option A</simpleChoice>
     <simpleChoice identifier="B">Option B</simpleChoice>
   </choiceInteraction>
-</itemBody>`} />
+</itemBody>`}
+        jsonCode={`{
+  "itemBody": {
+    "content": [
+      {
+        "@type": "paragraph",
+        "text": "Listen to the audio clip and choose the correct answer."
+      },
+      {
+        "@type": "audio",
+        "attributes": {
+          "controls": true
+        },
+        "sources": [
+          {
+            "src": "media/clip.mp3",
+            "type": "audio/mpeg"
+          }
+        ]
+      },
+      {
+        "@type": "choiceInteraction",
+        "responseIdentifier": "RESPONSE",
+        "maxChoices": 1,
+        "choices": [
+          {
+            "identifier": "A",
+            "text": "Option A"
+          },
+          {
+            "identifier": "B",
+            "text": "Option B"
+          }
+        ]
+      }
+    ]
+  }
+}`}
+      />
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🧭 Authoring Tips</h2>
       

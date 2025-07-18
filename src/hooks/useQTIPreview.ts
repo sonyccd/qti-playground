@@ -128,25 +128,33 @@ export function useQTIPreview() {
     });
     
     try {
-      const response = await fetch('/sample-qti.xml');
+      const fileExtension = state.selectedFormat === 'json' ? 'json' : 'xml';
+      const mimeType = state.selectedFormat === 'json' ? 'application/json' : 'text/xml';
+      const response = await fetch(`/sample-qti.${fileExtension}`);
+      
       if (!response.ok) {
         throw new Error('Failed to load example file');
       }
-      const xmlText = await response.text();
+      const content = await response.text();
       
-      const mockFile = new File([xmlText], 'sample-qti.xml', { type: 'text/xml' });
+      const mockFile = new File([content], `sample-qti.${fileExtension}`, { type: mimeType });
       updateState({
-        xmlContent: xmlText,
+        xmlContent: content,
         hasContent: true,
         selectedFile: mockFile,
+        selectedFormat: state.selectedFormat,
+        isFormatLocked: true,
       });
-      parseXMLContent(xmlText, state.selectedVersion);
+      parseXMLContent(content, state.selectedVersion);
       
-      posthog.capture('qti_example_loaded');
+      posthog.capture('qti_example_loaded', {
+        format: state.selectedFormat,
+        version: state.selectedVersion
+      });
       
       toast({
         title: "Example QTI file loaded",
-        description: "Content loaded in editor"
+        description: `Content loaded in editor (${state.selectedFormat.toUpperCase()} format)`
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -159,7 +167,7 @@ export function useQTIPreview() {
     } finally {
       updateState({ isLoading: false });
     }
-  }, [updateState, parseXMLContent, toast]);
+  }, [updateState, parseXMLContent, toast, state.selectedFormat, state.selectedVersion]);
 
   const handleCreateBlankFile = useCallback((format?: ContentFormat) => {
     const parser = QTIParserFactory.getParser(state.selectedVersion);

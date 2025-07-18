@@ -1,4 +1,5 @@
 import { XmlCodeBlock } from '../XmlCodeBlock';
+import { DualFormatCodeBlock } from '../DualFormatCodeBlock';
 
 export default function AssessmentItem() {
   return (
@@ -74,9 +75,11 @@ export default function AssessmentItem() {
         <li><code>&lt;stylesheet&gt;</code>: Allows for basic presentation customization (though many platforms do not support or allow this for security reasons).</li>
       </ul>
       
-      <h2 className="text-2xl font-bold mt-8 mb-4">🧮 Example With Optional Elements</h2>
+      <h2 className="text-2xl font-bold mt-8 mb-4">🧮 Complete Assessment Item Example</h2>
       
-      <XmlCodeBlock code={`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+      <DualFormatCodeBlock
+        title="Capital Cities Question - Complete Structure"
+        xmlCode={`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v3p0"
                 identifier="item1" title="Capital Cities Question"
                 adaptive="false" timeDependent="false">
 
@@ -97,7 +100,58 @@ export default function AssessmentItem() {
   </itemBody>
 
   <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
-</assessmentItem>`} />
+</assessmentItem>`}
+        jsonCode={`{
+  "@type": "assessmentItem",
+  "identifier": "item1",
+  "title": "Capital Cities Question",
+  "adaptive": false,
+  "timeDependent": false,
+  "responseDeclaration": {
+    "identifier": "RESPONSE",
+    "cardinality": "single",
+    "baseType": "identifier",
+    "correctResponse": {
+      "value": "choiceA"
+    }
+  },
+  "itemBody": {
+    "content": [
+      {
+        "@type": "paragraph",
+        "text": "What is the capital of France?"
+      },
+      {
+        "@type": "choiceInteraction",
+        "responseIdentifier": "RESPONSE",
+        "shuffle": true,
+        "maxChoices": 1,
+        "choices": [
+          {
+            "identifier": "choiceA",
+            "text": "Paris"
+          },
+          {
+            "identifier": "choiceB",
+            "text": "London"
+          },
+          {
+            "identifier": "choiceC",
+            "text": "Berlin"
+          },
+          {
+            "identifier": "choiceD",
+            "text": "Rome"
+          }
+        ]
+      }
+    ]
+  },
+  "responseProcessing": {
+    "template": "http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"
+  }
+}`}
+      />
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🧭 Authoring Tips</h2>
       

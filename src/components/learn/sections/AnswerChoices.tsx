@@ -1,4 +1,5 @@
 import { XmlCodeBlock } from '../XmlCodeBlock';
+import { DualFormatCodeBlock } from '../DualFormatCodeBlock';
 
 export default function AnswerChoices() {
   return (
@@ -19,10 +20,29 @@ export default function AnswerChoices() {
         The <code>&lt;choiceInteraction&gt;</code> element defines a container for a set of choices. It must include a responseIdentifier attribute that matches a <code>&lt;responseDeclaration&gt;</code> and should contain one or more <code>&lt;simpleChoice&gt;</code> elements.
       </p>
 
-      <XmlCodeBlock code={`<choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <DualFormatCodeBlock
+        title="Basic Choice Interaction Structure"
+        xmlCode={`<choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
   <simpleChoice identifier="choiceA">Option A</simpleChoice>
   <simpleChoice identifier="choiceB">Option B</simpleChoice>
-</choiceInteraction>`} />
+</choiceInteraction>`}
+        jsonCode={`{
+  "@type": "choiceInteraction",
+  "responseIdentifier": "RESPONSE",
+  "shuffle": true,
+  "maxChoices": 1,
+  "choices": [
+    {
+      "identifier": "choiceA",
+      "text": "Option A"
+    },
+    {
+      "identifier": "choiceB",
+      "text": "Option B"
+    }
+  ]
+}`}
+      />
 
       <p className="text-lg leading-relaxed mb-4">
         <strong>Key Attributes:</strong>
@@ -53,12 +73,54 @@ export default function AnswerChoices() {
         <strong>Content:</strong> Text, or optionally, rich media such as images, audio, or video.
       </p>
 
-      <h3 className="text-2xl font-semibold mb-4">Example:</h3>
+      <h3 className="text-2xl font-semibold mb-4">Example: Geography Question</h3>
 
-      <XmlCodeBlock code={`<simpleChoice identifier="choiceA">Paris</simpleChoice>
-<simpleChoice identifier="choiceB">London</simpleChoice>
-<simpleChoice identifier="choiceC">Berlin</simpleChoice>
-<simpleChoice identifier="choiceD">Rome</simpleChoice>`} />
+      <DualFormatCodeBlock
+        title="Complete Geography Question Example"
+        xmlCode={`<itemBody>
+  <p>What is the capital city of France?</p>
+  <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
+    <simpleChoice identifier="choiceA">London</simpleChoice>
+    <simpleChoice identifier="choiceB">Berlin</simpleChoice>
+    <simpleChoice identifier="choiceC">Paris</simpleChoice>
+    <simpleChoice identifier="choiceD">Rome</simpleChoice>
+  </choiceInteraction>
+</itemBody>`}
+        jsonCode={`{
+  "itemBody": {
+    "content": [
+      {
+        "@type": "paragraph",
+        "text": "What is the capital city of France?"
+      },
+      {
+        "@type": "choiceInteraction",
+        "responseIdentifier": "RESPONSE",
+        "shuffle": false,
+        "maxChoices": 1,
+        "choices": [
+          {
+            "identifier": "choiceA",
+            "text": "London"
+          },
+          {
+            "identifier": "choiceB",
+            "text": "Berlin"
+          },
+          {
+            "identifier": "choiceC",
+            "text": "Paris"
+          },
+          {
+            "identifier": "choiceD",
+            "text": "Rome"
+          }
+        ]
+      }
+    ]
+  }
+}`}
+      />
 
       <p className="text-lg leading-relaxed mb-4">You can enhance each choice with media:</p>
 

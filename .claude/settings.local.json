@@ -13,7 +13,8 @@
       "Bash(touch:*)",
       "Bash(node:*)",
       "Bash(grep:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

@@ -1,4 +1,5 @@
 import { XmlCodeBlock } from '../XmlCodeBlock';
+import { DualFormatCodeBlock } from '../DualFormatCodeBlock';
 
 export default function AssessmentTest() {
   return (
@@ -26,7 +27,9 @@ export default function AssessmentTest() {
 
       <h2 className="text-3xl font-semibold mb-4">🧱 Basic Structure of &lt;assessmentTest&gt;</h2>
 
-      <XmlCodeBlock code={`<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+      <DualFormatCodeBlock
+        title="Basic Assessment Test Structure"
+        xmlCode={`<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v3p0"
                 identifier="sampleTest" title="Sample Test">
 
   <testPart identifier="part1" navigationMode="nonlinear" submissionMode="individual">
@@ -36,7 +39,36 @@ export default function AssessmentTest() {
     </assessmentSection>
   </testPart>
 
-</assessmentTest>`} />
+</assessmentTest>`}
+        jsonCode={`{
+  "@type": "assessmentTest",
+  "identifier": "sampleTest",
+  "title": "Sample Test",
+  "testParts": [
+    {
+      "identifier": "part1",
+      "navigationMode": "nonlinear",
+      "submissionMode": "individual",
+      "assessmentSections": [
+        {
+          "identifier": "section1",
+          "title": "Reading Section",
+          "assessmentItemRefs": [
+            {
+              "identifier": "item1",
+              "href": "item1.xml"
+            },
+            {
+              "identifier": "item2",
+              "href": "item2.xml"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}`}
+      />
 
       <p className="text-lg leading-relaxed mb-6">
         At a glance:
