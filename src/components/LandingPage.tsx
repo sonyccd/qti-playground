@@ -65,45 +65,12 @@ const createIconStyle = (size: number) => ({
 });
 
 // Sub-components
-const QTI3ComingSoonStamp: React.FC = () => (
-  <Box sx={{
-    position: 'absolute',
-    top: { xs: '60px', md: '80px' },
-    right: { xs: '10px', md: '40px' },
-    transform: 'rotate(45deg)',
-    bgcolor: 'rgba(255, 0, 0, 0.1)',
-    border: '3px solid #d32f2f',
-    borderRadius: '8px',
-    padding: '8px 16px',
-    zIndex: 10,
-    fontFamily: 'monospace',
-    fontWeight: 'bold',
-    fontSize: { xs: '10px', md: '14px' },
-    color: '#d32f2f',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: '-3px',
-      left: '-3px',
-      right: '-3px',
-      bottom: '-3px',
-      border: '1px solid #d32f2f',
-      borderRadius: '8px',
-    }
-  }}>
-    QTI 3 Coming Soon!
-  </Box>
-);
 
 const HeroSection: React.FC = () => {
   const theme = useTheme();
   
   return (
-    <Box textAlign="center" mb={8} className="animate-fade-in" sx={{ position: 'relative' }}>
-      <QTI3ComingSoonStamp />
+    <Box textAlign="center" mb={8} className="animate-fade-in">
       
       <Avatar sx={createAvatarStyle(80, theme.palette.primary.light)}>
         <BeachAccess sx={createIconStyle(40)} />
