@@ -35,21 +35,21 @@ export default function ResponseProcessing() {
         Gives full credit only if the response exactly matches the defined correct response(s).
       </p>
 
-      <XmlCodeBlock code={`<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>`} />
+      <XmlCodeBlock code={`<responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>`} />
 
       <h4 className="text-xl font-semibold mb-3">2. map_response</h4>
       <p className="text-lg leading-relaxed mb-4">
         Supports partial credit based on a scoring map defined in the <code>&lt;responseDeclaration&gt;</code>.
       </p>
 
-      <XmlCodeBlock code={`<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"/>`} />
+      <XmlCodeBlock code={`<responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response"/>`} />
 
       <h4 className="text-xl font-semibold mb-3">3. match_none</h4>
       <p className="text-lg leading-relaxed mb-4">
         Used for unscored or practice items. No points are awarded regardless of the response.
       </p>
 
-      <XmlCodeBlock code={`<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_none"/>`} />
+      <XmlCodeBlock code={`<responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_none"/>`} />
 
       <h3 className="text-2xl font-semibold mb-4">Benefits of Templates</h3>
       

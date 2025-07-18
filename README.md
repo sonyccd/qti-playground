@@ -1,25 +1,25 @@
 # QTI Playground
 
-A modern web application for viewing, editing, and understanding QTI (Question and Test Interoperability) XML content. This tool provides an interactive environment for working with QTI assessment items and comprehensive documentation to learn about the QTI standard.
+A modern web application for viewing, editing, and understanding QTI (Question and Test Interoperability) 3.0 XML content. This tool provides an interactive environment for working with QTI assessment items and comprehensive documentation to learn about the QTI 3.0 standard.
 
 ## What is this app?
 
 QTI Playground is an educational tool that allows users to:
 
-- **View and Preview QTI Content**: Load QTI XML files and see how they render as interactive assessments
-- **Edit QTI XML**: Use a built-in code editor with syntax highlighting to modify QTI content
-- **Learn QTI**: Access comprehensive documentation covering all aspects of the QTI standard
-- **Experiment**: Try sample QTI content and modify it to understand how different components work
+- **View and Preview QTI 3.0 Content**: Load QTI XML files and see how they render as interactive assessments
+- **Edit QTI XML**: Use a built-in code editor with syntax highlighting to modify QTI 3.0 content
+- **Learn QTI 3.0**: Access comprehensive documentation covering all aspects of the QTI 3.0 standard
+- **Experiment**: Try sample QTI 3.0 content and modify it to understand how different components work
 
 ## How it works
 
 The application consists of three main sections:
 
 1. **Home Page**: Landing page with navigation to all features
-2. **Playground**: Interactive editor where you can load, edit, and preview QTI XML files
-3. **Learn**: Comprehensive documentation system with 13 sections covering everything from QTI basics to advanced topics
+2. **Playground**: Interactive editor where you can load, edit, and preview QTI 3.0 XML files
+3. **Learn**: Comprehensive documentation system with 13 sections covering everything from QTI 3.0 basics to advanced topics
 
-The playground uses a split-pane interface with a code editor on the left and a live preview on the right, allowing real-time visualization of QTI content changes.
+The playground uses a split-pane interface with a code editor on the left and a live preview on the right, allowing real-time visualization of QTI 3.0 content changes.
 
 ## Technologies Used
 

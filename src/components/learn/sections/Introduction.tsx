@@ -8,6 +8,10 @@ export default function Introduction() {
       </p>
       
       <p className="text-lg leading-relaxed mb-6">
+        This documentation focuses on <strong>QTI 3.0</strong>, the latest version of the standard, which includes enhanced features, improved accessibility support, and better compatibility with modern learning environments.
+      </p>
+      
+      <p className="text-lg leading-relaxed mb-6">
         QTI was developed by the IMS Global Learning Consortium and is widely used in education, certification, and training environments. Whether you're creating a single quiz question or an entire exam with branching logic and scoring conditions, QTI provides a flexible framework for defining it.
       </p>
       

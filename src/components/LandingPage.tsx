@@ -97,7 +97,7 @@ const HeroSection: React.FC = () => {
         color="text.secondary" 
         sx={{ maxWidth: '600px', mx: 'auto' }}
       >
-        Explore, create, and test QTI (Question & Test Interoperability) content with our interactive playground
+        Explore, create, and test QTI (Question & Test Interoperability) 3.0 content with our interactive playground
       </Typography>
     </Box>
   );
@@ -181,7 +181,7 @@ const QTIFeaturesSection: React.FC = () => (
       fontWeight="bold" 
       sx={{ mb: 4 }}
     >
-      Currently Supported QTI Features
+      Currently Supported QTI 3.0 Features
     </Typography>
     
     <Box sx={{
@@ -219,7 +219,7 @@ const QTIFeaturesSection: React.FC = () => (
           Coming Soon
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-          We're continuously expanding QTI support. Future releases will include:
+          We're continuously expanding QTI 3.0 support. Future releases will include:
         </Typography>
         <Box sx={{
           display: 'flex',
@@ -287,7 +287,7 @@ const GitHubCTA: React.FC = () => {
             mx: 'auto'
           }}>
             QTI Playground is completely open source. Join our community, contribute features, 
-            report issues, or help improve QTI support for everyone.
+            report issues, or help improve QTI 3.0 support for everyone.
           </Typography>
           <Button 
             variant="contained" 
@@ -320,15 +320,15 @@ const LandingPage: React.FC = () => {
     {
       icon: <Toys sx={createIconStyle(30)} />,
       title: 'Start Playing',
-      description: 'Jump right into the playground and start experimenting with QTI content',
+      description: 'Jump right into the playground and start experimenting with QTI 3.0 content',
       buttonText: 'Go to Playground',
       to: '/playground',
       bgColor: theme.palette.primary.light
     },
     {
       icon: <MenuBook sx={createIconStyle(30)} />,
-      title: 'Learn QTI',
-      description: 'New to QTI? Learn the basics and discover what\'s possible',
+      title: 'Learn QTI 3.0',
+      description: 'New to QTI 3.0? Learn the basics and discover what\'s possible',
       buttonText: 'Start Learning',
       to: '/learn',
       bgColor: theme.palette.secondary.light
@@ -339,19 +339,19 @@ const LandingPage: React.FC = () => {
     {
       icon: <Code sx={createIconStyle(30)} />,
       title: 'Live Editor',
-      description: 'Write and edit QTI XML with syntax highlighting and real-time preview',
+      description: 'Write and edit QTI 3.0 XML with syntax highlighting and real-time preview',
       color: theme.palette.info.light
     },
     {
       icon: <Description sx={createIconStyle(30)} />,
       title: 'Interactive Preview',
-      description: 'See how your QTI content will render and behave in real-time',
+      description: 'See how your QTI 3.0 content will render and behave in real-time',
       color: theme.palette.success.light
     },
     {
       icon: <Lightbulb sx={createIconStyle(30)} />,
       title: 'Examples & Samples',
-      description: 'Start with built-in examples or upload your own QTI files',
+      description: 'Start with built-in examples or upload your own QTI 3.0 files',
       color: theme.palette.warning.light
     }
   ];

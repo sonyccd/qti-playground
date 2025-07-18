@@ -23,7 +23,7 @@ export default function Anatomy() {
         Here's a complete XML file for a single assessment item:
       </p>
       
-      <XmlCodeBlock code={`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+      <XmlCodeBlock code={`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v3p0"
                 identifier="item1" title="Example Multiple Choice"
                 adaptive="false" timeDependent="false">
 
@@ -43,7 +43,7 @@ export default function Anatomy() {
     </choiceInteraction>
   </itemBody>
 
-  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
 </assessmentItem>`} />
       
       <p className="text-lg leading-relaxed mb-6">
@@ -149,7 +149,7 @@ export default function Anatomy() {
       </p>
       
       <pre className="bg-gray-100 p-4 rounded-lg mb-4 overflow-x-auto text-xs sm:text-sm break-all whitespace-pre-wrap">
-        <code>&lt;responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/&gt;</code>
+        <code>&lt;responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/&gt;</code>
       </pre>
       
       <p className="text-lg leading-relaxed mb-6">

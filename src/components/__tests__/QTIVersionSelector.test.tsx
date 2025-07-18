@@ -126,7 +126,7 @@ describe('QTIVersionSelector', () => {
       />
     );
 
-    expect(screen.getByText('Question & Test Interoperability 3.0')).toBeInTheDocument();
+    expect(screen.getByText(/Question & Test Interoperability 3\.0.*\(Recommended\)/)).toBeInTheDocument();
   });
 
   it('should render version options', () => {

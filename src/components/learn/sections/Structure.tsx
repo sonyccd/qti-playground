@@ -116,7 +116,7 @@ export default function Structure() {
       </p>
       
       <pre className="bg-gray-100 p-4 rounded-lg mb-6 overflow-x-auto text-xs sm:text-sm break-all whitespace-pre-wrap">
-        <code>&lt;responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/&gt;</code>
+        <code>&lt;responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/&gt;</code>
       </pre>
       
       <p className="text-lg leading-relaxed mb-6">

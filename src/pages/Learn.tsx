@@ -72,7 +72,7 @@ const Learn = () => {
             color="text.secondary"
             sx={{ maxWidth: '600px', mx: 'auto' }}
           >
-            Question & Test Interoperability (QTI) is a standard for creating portable, interoperable assessment content
+            Question & Test Interoperability (QTI) 3.0 is the latest standard for creating portable, interoperable assessment content
           </Typography>
         </Box>
 
@@ -86,12 +86,13 @@ const Learn = () => {
               </Typography>
             </Box>
             <Typography variant="body1" paragraph>
-              QTI (Question & Test Interoperability) is an international standard that defines how assessment content 
+              QTI (Question & Test Interoperability) 3.0 is the latest international standard that defines how assessment content 
               should be structured and exchanged between different learning management systems and assessment platforms.
             </Typography>
             <Typography variant="body1">
-              With QTI, you can create questions and assessments that work across different platforms without 
-              modification, ensuring your educational content is truly portable and interoperable.
+              With QTI 3.0, you can create questions and assessments that work across different platforms without 
+              modification, ensuring your educational content is truly portable and interoperable. QTI 3.0 includes enhanced 
+              features, improved accessibility support, and better compatibility with modern learning environments.
             </Typography>
           </CardContent>
         </Card>

@@ -58,6 +58,7 @@ export const QTIVersionSelector: React.FC<QTIVersionSelectorProps> = ({
             
             <Typography variant="caption" color="text.secondary" sx={{ ml: 2 }}>
               {QTI_VERSIONS[selectedVersion].description}
+              {selectedVersion === '3.0' && ' (Recommended)'}
             </Typography>
           </Box>
         </CardContent>

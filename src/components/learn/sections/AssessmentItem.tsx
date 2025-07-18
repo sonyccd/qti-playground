@@ -96,7 +96,7 @@ export default function AssessmentItem() {
     </choiceInteraction>
   </itemBody>
 
-  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
 </assessmentItem>`} />
       
       <h2 className="text-2xl font-bold mt-8 mb-4">🧭 Authoring Tips</h2>
