@@ -1,4 +1,5 @@
 import { XmlCodeBlock } from '../XmlCodeBlock';
+import { DualFormatCodeBlock } from '../DualFormatCodeBlock';
 
 export default function Anatomy() {
   return (
@@ -17,13 +18,15 @@ export default function Anatomy() {
         Let's start with a common use case: a single multiple-choice question. This is one of the simplest types of items in QTI and a great starting point for learning.
       </p>
       
-      <h2 className="text-2xl font-bold mt-8 mb-4">🧾 Full XML Example: A Simple Multiple-Choice Item</h2>
+      <h2 className="text-2xl font-bold mt-8 mb-4">🧾 Complete Example: A Simple Multiple-Choice Item</h2>
       
       <p className="text-lg leading-relaxed mb-4">
-        Here's a complete XML file for a single assessment item:
+        Here's a complete assessment item file in both XML and JSON formats:
       </p>
       
-      <XmlCodeBlock code={`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v3p0"
+      <DualFormatCodeBlock
+        title="Complete Multiple-Choice Item - Both Formats"
+        xmlCode={`<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v3p0"
                 identifier="item1" title="Example Multiple Choice"
                 adaptive="false" timeDependent="false">
 
@@ -44,7 +47,58 @@ export default function Anatomy() {
   </itemBody>
 
   <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
-</assessmentItem>`} />
+</assessmentItem>`}
+        jsonCode={`{
+  "@type": "assessmentItem",
+  "identifier": "item1",
+  "title": "Example Multiple Choice",
+  "adaptive": false,
+  "timeDependent": false,
+  "responseDeclaration": {
+    "identifier": "RESPONSE",
+    "cardinality": "single",
+    "baseType": "identifier",
+    "correctResponse": {
+      "value": "choiceA"
+    }
+  },
+  "itemBody": {
+    "content": [
+      {
+        "@type": "paragraph",
+        "text": "What is the capital of France?"
+      },
+      {
+        "@type": "choiceInteraction",
+        "responseIdentifier": "RESPONSE",
+        "shuffle": false,
+        "maxChoices": 1,
+        "choices": [
+          {
+            "identifier": "choiceA",
+            "text": "Paris"
+          },
+          {
+            "identifier": "choiceB",
+            "text": "London"
+          },
+          {
+            "identifier": "choiceC",
+            "text": "Rome"
+          },
+          {
+            "identifier": "choiceD",
+            "text": "Berlin"
+          }
+        ]
+      }
+    ]
+  },
+  "responseProcessing": {
+    "template": "http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"
+  }
+}`}
+      />
       
       <p className="text-lg leading-relaxed mb-6">
         This is a fully functional assessment item. Let's break it down into its core components and understand their purpose in more detail.
