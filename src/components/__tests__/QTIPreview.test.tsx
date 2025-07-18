@@ -11,23 +11,40 @@ vi.mock('@/hooks/use-toast', () => ({
   useToast: () => ({ toast: vi.fn() })
 }));
 
-vi.mock('@/utils/qtiParser', () => ({
-  parseQTIXML: vi.fn().mockReturnValue({
-    success: true,
-    items: [],
-    errors: [],
-    unsupportedElements: []
-  })
+// Mock the new parser factory
+vi.mock('@/parsers/QTIParserFactory', () => ({
+  QTIParserFactory: {
+    getParser: vi.fn().mockReturnValue({
+      parse: vi.fn().mockReturnValue({
+        items: [],
+        errors: [],
+        unsupportedElements: [],
+        version: '2.1'
+      }),
+      getBlankTemplate: vi.fn().mockReturnValue('<blank>template</blank>'),
+      insertItem: vi.fn().mockReturnValue('<updated>xml</updated>'),
+      updateCorrectResponse: vi.fn().mockReturnValue('<updated>xml</updated>'),
+      formatXML: vi.fn().mockReturnValue('<formatted>xml</formatted>'),
+      reorderItems: vi.fn().mockReturnValue('<reordered>xml</reordered>'),
+      getConstants: vi.fn().mockReturnValue({
+        itemTypeLabels: { choice: 'Multiple Choice' },
+        itemTypeColors: { choice: 'primary' }
+      })
+    }),
+    getParserFromXML: vi.fn().mockReturnValue({
+      parse: vi.fn().mockReturnValue({
+        items: [],
+        errors: [],
+        unsupportedElements: [],
+        version: '2.1'
+      })
+    })
+  }
 }));
 
-vi.mock('@/utils/qtiTemplates', () => ({
-  insertItemIntoXML: vi.fn().mockReturnValue('<updated>xml</updated>')
-}));
-
-vi.mock('@/utils/xmlUpdater', () => ({
-  updateQTIXMLWithCorrectResponse: vi.fn().mockReturnValue('<updated>xml</updated>'),
-  formatXML: vi.fn().mockReturnValue('<formatted>xml</formatted>'),
-  reorderQTIItems: vi.fn().mockReturnValue('<reordered>xml</reordered>')
+vi.mock('@/constants/qtiConstants', () => ({
+  getItemTypeLabel: vi.fn().mockReturnValue('Multiple Choice'),
+  getItemTypeColor: vi.fn().mockReturnValue('primary')
 }));
 
 // Simple mocks that don't cause prop warnings
@@ -90,6 +107,21 @@ vi.mock('../qti/AddItemButton', () => ({
   AddItemButton: () => <button data-testid="add-item-button">Add Item</button>
 }));
 
+vi.mock('../QTIVersionSelector', () => ({
+  QTIVersionSelector: ({ selectedVersion, onVersionChange }: any) => (
+    <div data-testid="version-selector">
+      <select 
+        value={selectedVersion} 
+        onChange={(e) => onVersionChange(e.target.value)}
+        data-testid="version-select"
+      >
+        <option value="2.1">QTI 2.1</option>
+        <option value="3.0">QTI 3.0</option>
+      </select>
+    </div>
+  )
+}));
+
 describe('QTIPreview - Basic Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -113,5 +145,17 @@ describe('QTIPreview - Basic Tests', () => {
   it('should render file upload component initially', () => {
     render(<QTIPreview />);
     expect(screen.getByTestId('file-upload')).toBeInTheDocument();
+  });
+
+  it('should render version selector', () => {
+    render(<QTIPreview />);
+    expect(screen.getByTestId('version-selector')).toBeInTheDocument();
+    expect(screen.getByTestId('version-select')).toBeInTheDocument();
+  });
+
+  it('should default to QTI 2.1 version', () => {
+    render(<QTIPreview />);
+    const versionSelect = screen.getByTestId('version-select') as HTMLSelectElement;
+    expect(versionSelect.value).toBe('2.1');
   });
 });
