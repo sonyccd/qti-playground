@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v3p0"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
+                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v3p0 http://www.imsglobal.org/xsd/qti/qtiv3p0/imsqti_v3p0.xsd"
                 identifier="sample_assessment"
                 title="Sample QTI Assessment">
 

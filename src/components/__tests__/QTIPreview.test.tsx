@@ -19,7 +19,7 @@ vi.mock('@/parsers/QTIParserFactory', () => ({
         items: [],
         errors: [],
         unsupportedElements: [],
-        version: '2.1'
+        version: '3.0'
       }),
       getBlankTemplate: vi.fn().mockReturnValue('<blank>template</blank>'),
       insertItem: vi.fn().mockReturnValue('<updated>xml</updated>'),
@@ -36,7 +36,7 @@ vi.mock('@/parsers/QTIParserFactory', () => ({
         items: [],
         errors: [],
         unsupportedElements: [],
-        version: '2.1'
+        version: '3.0'
       })
     })
   }
@@ -153,9 +153,9 @@ describe('QTIPreview - Basic Tests', () => {
     expect(screen.getByTestId('version-select')).toBeInTheDocument();
   });
 
-  it('should default to QTI 2.1 version', () => {
+  it('should default to QTI 3.0 version', () => {
     render(<QTIPreview />);
     const versionSelect = screen.getByTestId('version-select') as HTMLSelectElement;
-    expect(versionSelect.value).toBe('2.1');
+    expect(versionSelect.value).toBe('3.0');
   });
 });

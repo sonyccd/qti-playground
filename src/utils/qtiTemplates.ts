@@ -29,7 +29,7 @@ export const QTI_ITEM_TEMPLATES = {
       </div>
     </itemBody>
     
-    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
     
   </assessmentItem>`,
 
@@ -64,7 +64,7 @@ export const QTI_ITEM_TEMPLATES = {
       </div>
     </itemBody>
     
-    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
     
   </assessmentItem>`,
 
@@ -91,7 +91,7 @@ export const QTI_ITEM_TEMPLATES = {
       </div>
     </itemBody>
     
-    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
     
   </assessmentItem>`,
 
@@ -116,7 +116,7 @@ export const QTI_ITEM_TEMPLATES = {
       </div>
     </itemBody>
     
-    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
     
   </assessmentItem>`,
 
@@ -146,7 +146,7 @@ export const QTI_ITEM_TEMPLATES = {
       </div>
     </itemBody>
     
-    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
     
   </assessmentItem>`,
 
@@ -174,7 +174,7 @@ export const QTI_ITEM_TEMPLATES = {
       </div>
     </itemBody>
     
-    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
     
   </assessmentItem>`,
 
@@ -209,7 +209,7 @@ export const QTI_ITEM_TEMPLATES = {
       </div>
     </itemBody>
     
-    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
     
   </assessmentItem>`
 };
@@ -327,7 +327,7 @@ export function insertItemIntoXML(xmlContent: string, newItemXML: string, insert
     // If we only have one existing item and we're adding another, wrap in assessmentTest
     if (itemMatches.length === 1) {
       const namespaceAttrs = hasNamespaces 
-        ? `xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"`
+        ? `xmlns="http://www.imsglobal.org/xsd/imsqti_v3p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v3p0 http://www.imsglobal.org/xsd/qti/qtiv3p0/imsqti_v3p0.xsd"`
         : '';
       
       // Remove namespaces from individual items since they'll be in the test wrapper

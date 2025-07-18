@@ -11,7 +11,9 @@ vi.mock('../qti21/QTI21Parser', () => ({
       unsupportedElements: [],
       version: '2.1'
     }),
-    isCompatible: vi.fn().mockReturnValue(true),
+    isCompatible: vi.fn().mockImplementation((xml) => 
+      xml.includes('imsqti_v2p1') || xml.includes('qtiv2p1')
+    ),
     getBlankTemplate: vi.fn().mockReturnValue('<qti21>template</qti21>'),
     getConstants: vi.fn().mockReturnValue({
       itemTypeLabels: { choice: 'Multiple Choice' },
@@ -29,7 +31,9 @@ vi.mock('../qti30/QTI30Parser', () => ({
       unsupportedElements: [],
       version: '3.0'
     }),
-    isCompatible: vi.fn().mockReturnValue(true),
+    isCompatible: vi.fn().mockImplementation((xml) => 
+      xml.includes('imsqti_v3p0') || xml.includes('qtiv3p0') || xml.includes('qti-3-0')
+    ),
     getBlankTemplate: vi.fn().mockReturnValue('<qti30>template</qti30>'),
     getConstants: vi.fn().mockReturnValue({
       itemTypeLabels: { choice: 'Multiple Choice', match: 'Match Interaction' },
@@ -78,10 +82,10 @@ describe('QTIParserFactory', () => {
       expect(parser.version).toBe('2.1');
     });
 
-    it('should default to QTI 2.1 for unknown XML', () => {
+    it('should default to QTI 3.0 for unknown XML', () => {
       const xml = '<assessmentItem></assessmentItem>';
       const parser = QTIParserFactory.getParserFromXML(xml);
-      expect(parser.version).toBe('2.1');
+      expect(parser.version).toBe('3.0');
     });
   });
 

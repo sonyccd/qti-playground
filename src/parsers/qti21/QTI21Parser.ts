@@ -20,8 +20,7 @@ export class QTI21Parser implements QTIParserInterface {
   isCompatible(xmlContent: string): boolean {
     // Check for QTI 2.1 specific namespace or schema
     return xmlContent.includes('imsqti_v2p1') || 
-           xmlContent.includes('qtiv2p1') ||
-           (xmlContent.includes('assessmentItem') && !xmlContent.includes('imsqti_v3p0'));
+           xmlContent.includes('qtiv2p1');
   }
 
   getBlankTemplate(): string {

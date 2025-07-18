@@ -93,7 +93,7 @@ describe('qtiConstants', () => {
       expect(getItemTypeLabel('unsupported', '2.1')).toBe('Unknown');
     });
 
-    it('should default to QTI 2.1 when no version specified', () => {
+    it('should default to QTI 3.0 when no version specified', () => {
       expect(getItemTypeLabel('choice')).toBe('Multiple Choice');
     });
   });
@@ -114,7 +114,7 @@ describe('qtiConstants', () => {
       expect(getItemTypeColor('unsupported', '2.1')).toBe('error');
     });
 
-    it('should default to QTI 2.1 when no version specified', () => {
+    it('should default to QTI 3.0 when no version specified', () => {
       expect(getItemTypeColor('choice')).toBe('primary');
     });
   });

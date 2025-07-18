@@ -29,7 +29,7 @@ vi.mock('@/parsers/QTIParserFactory', () => ({
         ],
         errors: [],
         unsupportedElements: [],
-        version: '2.1'
+        version: '3.0'
       }),
       getBlankTemplate: vi.fn().mockReturnValue('<blank>template</blank>'),
       insertItem: vi.fn().mockReturnValue('<updated>xml</updated>'),
@@ -46,7 +46,7 @@ vi.mock('@/parsers/QTIParserFactory', () => ({
         items: [],
         errors: [],
         unsupportedElements: [],
-        version: '2.1'
+        version: '3.0'
       })
     })
   }
@@ -78,7 +78,7 @@ describe('useQTIPreview', () => {
   it('should initialize with default state', () => {
     const { result } = renderHook(() => useQTIPreview());
     
-    expect(result.current.state.selectedVersion).toBe('2.1');
+    expect(result.current.state.selectedVersion).toBe('3.0');
     expect(result.current.state.qtiItems).toEqual([]);
     expect(result.current.state.errors).toEqual([]);
     expect(result.current.state.hasContent).toBe(false);

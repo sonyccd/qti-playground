@@ -72,9 +72,9 @@ describe('QTI21Parser', () => {
       expect(parser.isCompatible(xml)).toBe(false);
     });
 
-    it('should return true for generic assessmentItem without version info', () => {
+    it('should return false for generic assessmentItem without version info', () => {
       const xml = '<assessmentItem></assessmentItem>';
-      expect(parser.isCompatible(xml)).toBe(true);
+      expect(parser.isCompatible(xml)).toBe(false);
     });
   });
 
