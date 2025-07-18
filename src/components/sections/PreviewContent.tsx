@@ -14,7 +14,6 @@ import {
 import { QTIItem, UnsupportedElement } from '@/types/qti';
 import { SortableQTIItem } from '../qti/SortableQTIItem';
 import { AddItemButton } from '../qti/AddItemButton';
-import { TotalScoreDisplay } from '../preview/ScoreDisplay';
 import { ItemScore } from '@/scoring/types';
 
 interface PreviewContentProps {
@@ -70,103 +69,26 @@ export const PreviewContent: React.FC<PreviewContentProps> = ({
       </Alert>
     )}
 
-    {qtiItems.length > 0 && (
-      <ItemTypeSummary qtiItems={qtiItems} getItemTypeLabel={getItemTypeLabel} getItemTypeColor={getItemTypeColor} />
-    )}
-
-    {unsupportedElements.length > 0 && (
-      <UnsupportedElementsAlert unsupportedElements={unsupportedElements} />
-    )}
-
     {qtiItems.length > 0 ? (
-      <>
-        <ItemsList
-          qtiItems={qtiItems}
-          newlyAddedItemId={newlyAddedItemId}
-          onAddItem={onAddItem}
-          onCorrectResponseChange={onCorrectResponseChange}
-          onDragEnd={onDragEnd}
-          sensors={sensors}
-          getItemTypeLabel={getItemTypeLabel}
-          getItemTypeColor={getItemTypeColor}
-          onResponseChange={onResponseChange}
-          itemScores={itemScores}
-          scoringEnabled={scoringEnabled}
-        />
-        
-        {/* Total Score Display */}
-        {scoringEnabled && totalScore && Object.keys(itemScores || {}).length > 0 && (
-          <Box sx={{ mt: 4, mb: 2 }}>
-            <TotalScoreDisplay
-              totalScore={totalScore.score}
-              maxTotalScore={totalScore.maxScore}
-              correctItems={totalScore.correctItems}
-              totalItems={totalScore.totalItems}
-              percentageScore={totalScore.percentage}
-              requiresManualScoring={totalScore.requiresManualScoring}
-            />
-          </Box>
-        )}
-      </>
+      <ItemsList
+        qtiItems={qtiItems}
+        newlyAddedItemId={newlyAddedItemId}
+        onAddItem={onAddItem}
+        onCorrectResponseChange={onCorrectResponseChange}
+        onDragEnd={onDragEnd}
+        sensors={sensors}
+        getItemTypeLabel={getItemTypeLabel}
+        getItemTypeColor={getItemTypeColor}
+        onResponseChange={onResponseChange}
+        itemScores={itemScores}
+        scoringEnabled={scoringEnabled}
+      />
     ) : !errors.length ? (
       <EmptyState onAddItem={onAddItem} />
     ) : null}
   </>
 );
 
-interface ItemTypeSummaryProps {
-  qtiItems: QTIItem[];
-  getItemTypeLabel: (type: string) => string;
-  getItemTypeColor: (type: string) => string;
-}
-
-const ItemTypeSummary: React.FC<ItemTypeSummaryProps> = ({ qtiItems, getItemTypeLabel, getItemTypeColor }) => (
-  <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-    <Typography variant="subtitle2" gutterBottom>
-      Parsed Items
-    </Typography>
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-      {Array.from(new Set(qtiItems.map(item => item.type))).map(type => {
-        const count = qtiItems.filter(item => item.type === type).length;
-        return (
-          <Chip 
-            key={type} 
-            label={`${count} ${getItemTypeLabel(type)}`} 
-            color={getItemTypeColor(type) as 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'default' | 'error'} 
-            size="small" 
-          />
-        );
-      })}
-    </Box>
-  </Box>
-);
-
-interface UnsupportedElementsAlertProps {
-  unsupportedElements: UnsupportedElement[];
-}
-
-const UnsupportedElementsAlert: React.FC<UnsupportedElementsAlertProps> = ({ unsupportedElements }) => (
-  <Alert severity="warning" sx={{ mb: 3 }}>
-    <AlertTitle>Unsupported Elements Found</AlertTitle>
-    <Box sx={{ mt: 1 }}>
-      {unsupportedElements.map((element, index) => (
-        <Box key={index} sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Typography variant="body2">
-            {element.description}
-          </Typography>
-          <Chip label={element.count} size="small" variant="outlined" />
-        </Box>
-      ))}
-    </Box>
-    <Typography variant="caption" sx={{ mt: 1, display: 'block' }}>
-      These elements were found but are not currently supported by the previewer.
-    </Typography>
-  </Alert>
-);
 
 interface ItemsListProps {
   qtiItems: QTIItem[];

@@ -14,8 +14,6 @@ import { FileUploadSection } from './sections/FileUploadSection';
 import { LoadingCard } from './sections/LoadingCard';
 import { MainContent } from './sections/MainContent';
 import { ErrorBoundary } from './ErrorBoundary';
-import { QTIVersionSelector } from './QTIVersionSelector';
-import ContentFormatSelector from './ContentFormatSelector';
 
 
 export function QTIPreview() {
@@ -37,21 +35,6 @@ export function QTIPreview() {
         px: 2
       }}>
         <Container maxWidth="xl">
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <QTIVersionSelector
-              selectedVersion={state.selectedVersion}
-              onVersionChange={actions.handleVersionChange}
-              disabled={state.isLoading}
-            />
-            <ContentFormatSelector
-              selectedFormat={state.selectedFormat}
-              onFormatChange={actions.handleFormatChange}
-              qtiVersion={state.selectedVersion}
-              disabled={state.isLoading}
-              isLocked={state.isFormatLocked}
-              hasContent={state.hasContent}
-            />
-          </Box>
 
           {state.detectedVersion && state.detectedVersion !== state.selectedVersion && (
             <Box sx={{ mb: 2 }}>
@@ -92,6 +75,8 @@ export function QTIPreview() {
               getItemTypeLabel={(type) => getItemTypeLabel(type, state.selectedVersion)}
               getItemTypeColor={(type) => getItemTypeColor(type, state.selectedVersion)}
               onResponseChange={actions.handleItemResponse}
+              onVersionChange={actions.handleVersionChange}
+              onFormatChange={actions.handleFormatChange}
             />
           )}
         </Container>

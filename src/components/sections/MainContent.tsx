@@ -3,8 +3,10 @@ import { Box } from '@mui/material';
 import { DragEndEvent } from '@dnd-kit/core';
 import { useSensors } from '@dnd-kit/core';
 import { QTIPreviewState, LayoutMode } from '@/hooks/useQTIPreview';
-import { ControlBar } from './ControlBar';
 import { EditorLayout } from './EditorLayout';
+import { AssessmentDetailsAccordion } from './AssessmentDetailsAccordion';
+import { QTIVersion } from '@/types/qtiVersions';
+import { ContentFormat } from '@/types/contentFormat';
 
 interface MainContentProps {
   state: QTIPreviewState;
@@ -19,6 +21,8 @@ interface MainContentProps {
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
   onResponseChange: (itemId: string, responseId: string, value: any) => void;
+  onVersionChange: (version: QTIVersion) => void;
+  onFormatChange: (format: ContentFormat) => void;
 }
 
 export const MainContent: React.FC<MainContentProps> = ({
@@ -33,13 +37,29 @@ export const MainContent: React.FC<MainContentProps> = ({
   sensors,
   getItemTypeLabel,
   getItemTypeColor,
-  onResponseChange
+  onResponseChange,
+  onVersionChange,
+  onFormatChange
 }) => (
   <Box sx={{ mb: 4 }}>
-    <ControlBar
-      selectedFile={state.selectedFile}
+    {/* Assessment Details Accordion - Global View */}
+    <AssessmentDetailsAccordion
       qtiItems={state.qtiItems}
+      unsupportedElements={state.unsupportedElements}
+      getItemTypeLabel={getItemTypeLabel}
+      getItemTypeColor={getItemTypeColor}
+      itemScores={state.itemScores}
+      totalScore={state.totalScore}
+      scoringEnabled={state.scoringEnabled}
+      selectedFile={state.selectedFile}
+      selectedVersion={state.selectedVersion}
+      selectedFormat={state.selectedFormat}
       xmlContent={state.xmlContent}
+      isLoading={state.isLoading}
+      isFormatLocked={state.isFormatLocked}
+      hasContent={state.hasContent}
+      onVersionChange={onVersionChange}
+      onFormatChange={onFormatChange}
       onDownloadXml={onDownloadXml}
       onClearFile={onClearFile}
     />
