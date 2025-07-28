@@ -1,0 +1,475 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for qti-playground/src/components/learn/sections/Structure.tsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../../../index.html">All files</a> / <a href="index.html">qti-playground/src/components/learn/sections</a> Structure.tsx</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/54</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/54</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >export default function Structure() {<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cstat-no" title="statement not covered" >  return (</span>
+<span class="cstat-no" title="statement not covered" >    &lt;div className="prose prose-slate max-w-none w-full overflow-hidden"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;h1 className="text-4xl font-bold mb-6 break-words"&gt;📊 Section 1: Understanding QTI Assessment Structure&lt;/h1&gt;</span>
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        Before diving into code, it's essential to grasp the overall structure and hierarchy that QTI XML is based on. Think of QTI as a framework for describing digital assessments that can be interpreted by any QTI-compliant system. These systems include learning management systems, test delivery platforms, and analytics tools. The format is designed to separate content from presentation and logic, making it highly portable and reusable.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        At its core, QTI represents an assessment in a modular, layered way. Each layer builds on the previous to define:
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;ul className="text-lg space-y-2 mb-6 list-disc pl-6"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;What the test is (overall structure)&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;How the test is organized (sections and parts)&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;What questions are asked (individual items)&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;How responses are collected (interactions)&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;How responses are evaluated (scoring and feedback)&lt;/li&gt;</span>
+      &lt;/ul&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        Let's break down each major building block of a QTI assessment:
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;h2 className="text-2xl font-bold mt-8 mb-4"&gt;1. Assessment Test (&amp;lt;assessmentTest&amp;gt;)&lt;/h2&gt;</span>
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        This is the top-level container and represents the entire test. It doesn't hold content directly—it links to sections and items. It can define global behaviors like navigation, submission rules, timing, and outcome reporting.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        Think of this as the "table of contents" or controller that references all other parts of the test. You can create one test file that includes many items, split across multiple sections, with defined flow logic if needed.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;h2 className="text-2xl font-bold mt-8 mb-4"&gt;2. Test Part (&amp;lt;testPart&amp;gt;) and Assessment Section (&amp;lt;assessmentSection&amp;gt;)&lt;/h2&gt;</span>
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-4"&gt;</span>
+        Each test can be divided into one or more parts. A part is a major segment of the test (e.g., Reading, Listening). Within each part, you can organize questions using sections. This makes it easier to manage navigation rules (e.g., whether users can skip questions or go back).
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-2"&gt;</span>
+        Sections can also be used to:
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;ul className="text-lg space-y-2 mb-6 list-disc pl-6"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;Group items by topic or skill&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;Add section-level time limits or metadata&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;Randomize item order within the section&lt;/li&gt;</span>
+      &lt;/ul&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        A section does not contain question content directly—it references &amp;lt;assessmentItemRef&amp;gt; elements that point to the actual items.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;h2 className="text-2xl font-bold mt-8 mb-4"&gt;3. Assessment Item (&amp;lt;assessmentItem&amp;gt;)&lt;/h2&gt;</span>
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-4"&gt;</span>
+        This is where the question lives. An assessment item includes everything needed for a single question: the prompt, the interaction (e.g., multiple choice, essay), the correct answer(s), and how to score the response.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-2"&gt;</span>
+        Each item can include:
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;ul className="text-lg space-y-2 mb-6 list-disc pl-6"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;One or more interactions, like multiple choice, text input, matching&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;Stimulus materials, like passages, images, audio&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;Response declarations to define expected answers&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;Scoring logic using templates or custom rules&lt;/li&gt;</span>
+      &lt;/ul&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        Items are typically stored in their own XML files for reuse and modularity.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;h2 className="text-2xl font-bold mt-8 mb-4"&gt;4. Item Body (&amp;lt;itemBody&amp;gt;) and Interactions&lt;/h2&gt;</span>
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-4"&gt;</span>
+        The body of the item defines the actual content shown to the user. This includes the question text, formatting, and any embedded media. Most importantly, it contains the interaction type, which defines how the user can respond.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-2"&gt;</span>
+        Examples of interaction types:
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;ul className="text-lg space-y-2 mb-6 list-disc pl-6"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;&lt;code&gt;choiceInteraction&lt;/code&gt; for multiple-choice and single-answer&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;&lt;code&gt;textEntryInteraction&lt;/code&gt; for short-answer text input&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;&lt;code&gt;matchInteraction&lt;/code&gt; for drag-and-drop or pair-matching&lt;/li&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;li&gt;&lt;code&gt;extendedTextInteraction&lt;/code&gt; for essays or long answers&lt;/li&gt;</span>
+      &lt;/ul&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        Every interaction has an associated &lt;code&gt;responseIdentifier&lt;/code&gt;, which links it to the scoring logic in the response declaration.</span>
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;h2 className="text-2xl font-bold mt-8 mb-4"&gt;5. Response Declaration (&amp;lt;responseDeclaration&amp;gt;)&lt;/h2&gt;</span>
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        This defines what kind of response the system expects and what the correct answer is. It includes the cardinality (e.g., one answer, multiple answers) and the baseType (e.g., identifier, string, float).
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        It also contains the &amp;lt;correctResponse&amp;gt; tag, which provides the correct answer(s) and optionally a &amp;lt;mapping&amp;gt; for partial credit scoring.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;h2 className="text-2xl font-bold mt-8 mb-4"&gt;6. Response Processing (&amp;lt;responseProcessing&amp;gt;)&lt;/h2&gt;</span>
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-4"&gt;</span>
+        This tells the system how to score the user's response. QTI supports both simple scoring templates and detailed custom logic using &amp;lt;responseCondition&amp;gt; and branching structures.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-2"&gt;</span>
+        Built-in templates make it easy to define right/wrong scoring without needing to write complex XML. For example:
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;pre className="bg-gray-100 p-4 rounded-lg mb-6 overflow-x-auto text-xs sm:text-sm break-all whitespace-pre-wrap"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;code&gt;&amp;lt;responseProcessing template="http://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/&amp;gt;&lt;/code&gt;</span>
+      &lt;/pre&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed mb-6"&gt;</span>
+        Custom scoring logic is helpful for advanced scenarios such as multiple-correct answers, conditional feedback, or rubric-based scoring.
+      &lt;/p&gt;
+      
+<span class="cstat-no" title="statement not covered" >      &lt;p className="text-lg leading-relaxed"&gt;</span>
+        When you understand these six core elements, you can begin assembling assessments that are interoperable, scalable, and flexible. QTI encourages separating logic from content, which promotes better testing design and easier maintenance over time.
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+<span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-07-28T17:24:56.622Z
+            </div>
+        <script src="../../../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../../../sorter.js"></script>
+        <script src="../../../../../block-navigation.js"></script>
+    </body>
+</html>
+    
