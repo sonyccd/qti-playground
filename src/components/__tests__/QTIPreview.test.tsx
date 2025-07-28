@@ -64,6 +64,7 @@ vi.mock('@mui/material', () => ({
   Select: ({ children, value, onChange }: any) => <select value={value} onChange={onChange}>{children}</select>,
   MenuItem: ({ children, value }: any) => <option value={value}>{children}</option>,
   Tooltip: ({ children }: any) => <div>{children}</div>,
+  Grid: ({ children }: any) => <div>{children}</div>,
   useTheme: () => ({ palette: { background: { default: '#fff' }, grey: { 50: '#f5f5f5' } } })
 }));
 
@@ -76,7 +77,8 @@ vi.mock('@mui/icons-material', () => ({
   Add: () => <span>Add</span>,
   DataObject: () => <span>DataObject</span>,
   Lock: () => <span>Lock</span>,
-  Error: () => <span>Error</span>
+  Error: () => <span>Error</span>,
+  Refresh: () => <span>Refresh</span>
 }));
 
 vi.mock('@uiw/react-codemirror', () => ({
