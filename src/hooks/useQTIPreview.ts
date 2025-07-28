@@ -139,7 +139,7 @@ export function useQTIPreview() {
     } finally {
       updateState({ isLoading: false });
     }
-  }, [updateState, parseXMLContent, toast]);
+  }, [updateState, parseXMLContent, toast, state.selectedVersion]);
 
   const handleXmlChange = useCallback((value: string) => {
     updateState({ xmlContent: value });
@@ -349,7 +349,7 @@ export function useQTIPreview() {
   }, [state.xmlContent, updateState, parseXMLContent]);
 
   // Scoring-related functions
-  const handleItemResponse = useCallback((itemId: string, responseId: string, value: any) => {
+  const handleItemResponse = useCallback((itemId: string, responseId: string, value: string | string[] | number | boolean) => {
     console.log('handleItemResponse called:', { itemId, responseId, value });
     
     const response: ItemResponse = {

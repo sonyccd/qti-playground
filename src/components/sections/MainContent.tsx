@@ -20,7 +20,7 @@ interface MainContentProps {
   sensors: ReturnType<typeof useSensors>;
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
-  onResponseChange: (itemId: string, responseId: string, value: any) => void;
+  onResponseChange: (itemId: string, responseId: string, value: string | string[] | number | boolean) => void;
   onVersionChange: (version: QTIVersion) => void;
   onFormatChange: (format: ContentFormat) => void;
 }

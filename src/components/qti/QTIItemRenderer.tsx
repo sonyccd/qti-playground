@@ -13,7 +13,7 @@ interface QTIItemRendererProps {
   item: QTIItem;
   isNewlyAdded?: boolean;
   onCorrectResponseChange?: (itemId: string, correctResponse: string | string[] | number) => void;
-  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  onResponseChange?: (itemId: string, responseId: string, value: string | string[] | number | boolean) => void;
   itemScore?: ItemScore;
   scoringEnabled?: boolean;
 }

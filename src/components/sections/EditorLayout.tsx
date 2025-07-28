@@ -26,7 +26,7 @@ interface EditorLayoutProps {
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
   // Scoring props
-  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  onResponseChange?: (itemId: string, responseId: string, value: string | string[] | number | boolean) => void;
   itemScores?: Record<string, ItemScore>;
   totalScore?: {
     score: number;

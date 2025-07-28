@@ -1,4 +1,5 @@
 import React from 'react';
+import { SelectChangeEvent } from '@mui/material';
 import { 
   Box, 
   Card, 
@@ -47,7 +48,7 @@ const ContentFormatSelector: React.FC<ContentFormatSelectorProps> = ({
     }
   };
 
-  const handleFormatChange = (event: any) => {
+  const handleFormatChange = (event: SelectChangeEvent<ContentFormat>) => {
     const newFormat = event.target.value as ContentFormat;
     onFormatChange(newFormat);
   };

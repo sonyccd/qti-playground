@@ -49,7 +49,7 @@ export interface ScoringContext {
   responses: Record<string, ItemResponse>;
   correctResponses: Record<string, string | string[]>;
   mappings?: Record<string, Record<string, number>>;
-  outcomes?: Record<string, any>;
+  outcomes?: Record<string, unknown>;
 }
 
 export type ResponseProcessingTemplate = 

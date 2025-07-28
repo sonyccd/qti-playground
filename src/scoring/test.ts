@@ -69,5 +69,5 @@ export function testScoring() {
 
 // Run test if this file is executed directly
 if (typeof window !== 'undefined') {
-  (window as any).testScoring = testScoring;
+  (window as unknown as { testScoring: typeof testScoring }).testScoring = testScoring;
 }

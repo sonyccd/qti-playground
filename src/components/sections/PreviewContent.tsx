@@ -28,7 +28,7 @@ interface PreviewContentProps {
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
   // Scoring props
-  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  onResponseChange?: (itemId: string, responseId: string, value: string | string[] | number | boolean) => void;
   itemScores?: Record<string, ItemScore>;
   totalScore?: {
     score: number;
@@ -99,7 +99,7 @@ interface ItemsListProps {
   sensors: ReturnType<typeof useSensors>;
   getItemTypeLabel: (type: string) => string;
   getItemTypeColor: (type: string) => string;
-  onResponseChange?: (itemId: string, responseId: string, value: any) => void;
+  onResponseChange?: (itemId: string, responseId: string, value: string | string[] | number | boolean) => void;
   itemScores?: Record<string, ItemScore>;
   scoringEnabled?: boolean;
 }
