@@ -278,7 +278,7 @@ export function useQTIPreview() {
       
       setTimeout(() => {
         const parseResult = parser.parse(updatedXML);
-        if (parseResult.items[newItemIndex]) {
+        if (parseResult && parseResult.items && parseResult.items[newItemIndex]) {
           updateState({ newlyAddedItemId: parseResult.items[newItemIndex].id });
           
           setTimeout(() => {

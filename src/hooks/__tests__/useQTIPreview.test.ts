@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useQTIPreview } from '../useQTIPreview';
 
@@ -68,11 +68,17 @@ global.fetch = vi.fn();
 describe('useQTIPreview', () => {
 
   beforeEach(() => {
+    vi.useFakeTimers();
     vi.clearAllMocks();
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       text: () => Promise.resolve('<sample>xml</sample>')
     });
+  });
+
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   it('should initialize with default state', () => {
