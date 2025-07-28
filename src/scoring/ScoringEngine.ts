@@ -26,6 +26,13 @@ export class ScoringEngine {
     userResponse: ItemResponse
   ): ItemScore {
     try {
+      // Debug multi-select items specifically
+      if (item.type === 'multipleResponse' || (Array.isArray(item.correctResponse) && item.correctResponse.length > 1)) {
+        console.log('DEBUG Multi-select - item:', item.identifier, 'type:', item.type);
+        console.log('DEBUG Multi-select - correctResponse:', item.correctResponse);
+        console.log('DEBUG Multi-select - userResponse:', userResponse.value);
+      }
+      
       const responseProcessing = this.parseResponseProcessing(item);
       const scoreResult = this.executeResponseProcessing(
         responseProcessing, 
@@ -34,7 +41,7 @@ export class ScoringEngine {
       );
 
       return {
-        itemId: item.identifier,
+        itemId: item.id || item.identifier,
         score: scoreResult.score,
         maxScore: scoreResult.maxScore,
         feedback: scoreResult.feedback,
@@ -45,7 +52,7 @@ export class ScoringEngine {
     } catch (error) {
       console.error('Error calculating score for item:', item.identifier, error);
       return {
-        itemId: item.identifier,
+        itemId: item.id || item.identifier,
         score: 0,
         maxScore: this.getMaxScore(item),
         requiresManualScoring: true
@@ -83,9 +90,25 @@ export class ScoringEngine {
    * Parse response processing rules from QTI item
    */
   private parseResponseProcessing(item: QTIItem): ResponseProcessingRule {
+    // Debug multi-select items specifically 
+    if (item.type === 'multipleResponse' || (Array.isArray(item.correctResponse) && item.correctResponse.length > 1)) {
+      console.log('DEBUG Multi-select responseProcessing:', item.responseProcessing);
+    }
+    
     if (item.responseProcessing?.template) {
       return {
-        template: item.responseProcessing.template
+        template: item.responseProcessing.template,
+        customScore: this.parseCustomScore(item)
+      };
+    }
+    
+    // Check for custom logic in XML comments
+    if (item.responseProcessing?.customLogic) {
+      if (item.type === 'multipleResponse' || (Array.isArray(item.correctResponse) && item.correctResponse.length > 1)) {
+        console.log('DEBUG Multi-select using custom logic:', item.responseProcessing.customLogic);
+      }
+      return {
+        customLogic: item.responseProcessing.customLogic
       };
     }
     
@@ -96,6 +119,15 @@ export class ScoringEngine {
   }
 
   /**
+   * Parse custom score from response processing attributes
+   */
+  private parseCustomScore(item: QTIItem): number | undefined {
+    // Check for data-custom-score attribute in response processing
+    // This would come from JSON conversion
+    return undefined; // Will be enhanced later
+  }
+
+  /**
    * Execute response processing logic
    */
   private executeResponseProcessing(
@@ -103,12 +135,225 @@ export class ScoringEngine {
     item: QTIItem,
     userResponse: ItemResponse
   ): ScoreResult {
+    if (rule.customLogic) {
+      return this.executeCustomLogic(rule.customLogic, item, userResponse);
+    }
+    
     if (rule.template) {
       return this.executeTemplate(rule.template as ResponseProcessingTemplate, item, userResponse);
     }
     
     // Handle custom logic (future implementation)
     return this.executeMatchCorrect(item, userResponse);
+  }
+
+  /**
+   * Execute custom logic from JSON QTI
+   */
+  private executeCustomLogic(
+    customLogic: unknown,
+    item: QTIItem,
+    userResponse: ItemResponse
+  ): ScoreResult {
+    const maxScore = this.getMaxScore(item);
+    
+    try {
+      const logic = customLogic as Record<string, unknown>;
+      switch (logic.type) {
+        case 'conditional':
+          return this.executeConditionalLogic(logic, item, userResponse, maxScore);
+        case 'range_scoring':
+          return this.executeRangeScoring(logic, item, userResponse, maxScore);
+        case 'string_match':
+          return this.executeStringMatch(logic, item, userResponse, maxScore);
+        case 'length_based_scoring':
+          return this.executeLengthBasedScoring(logic, item, userResponse, maxScore);
+        default:
+          console.warn(`Unknown custom logic type: ${logic.type}`);
+          return this.executeMatchCorrect(item, userResponse);
+      }
+    } catch (error) {
+      console.error('Error executing custom logic:', error);
+      return {
+        score: 0,
+        maxScore,
+        isCorrect: false
+      };
+    }
+  }
+
+  /**
+   * Execute conditional logic (exact_match, partial_match)
+   */
+  private executeConditionalLogic(
+    logic: Record<string, unknown>,
+    item: QTIItem,
+    userResponse: ItemResponse,
+    maxScore: number
+  ): ScoreResult {
+    const userValue = Array.isArray(userResponse.value) ? userResponse.value : [userResponse.value];
+    const correctResponse = Array.isArray(item.correctResponse) ? item.correctResponse : [item.correctResponse];
+    
+    if (!logic.conditions || !Array.isArray(logic.conditions)) {
+      return { score: 0, maxScore, isCorrect: false };
+    }
+
+    // Convert to string arrays for comparison
+    const userStrings = userValue.map(v => String(v));
+    const correctStrings = correctResponse.map(v => String(v));
+    
+    // First check for exact match
+    const exactMatchCondition = (logic.conditions as Record<string, unknown>[]).find((c: Record<string, unknown>) => c.if === 'exact_match');
+    if (exactMatchCondition) {
+      const isExactMatch = this.compareMultipleResponses(userStrings, correctStrings);
+      if (isExactMatch) {
+        return {
+          score: (exactMatchCondition.score as number) || maxScore,
+          maxScore,
+          isCorrect: true,
+          partialCredit: false
+        };
+      }
+    }
+    
+    // Then check for partial match
+    const partialMatchCondition = (logic.conditions as Record<string, unknown>[]).find((c: Record<string, unknown>) => c.if === 'partial_match');
+    if (partialMatchCondition && partialMatchCondition.requirement) {
+      const requirements = partialMatchCondition.requirement as string[];
+      const hasRequiredItems = requirements.every((req: string) => 
+        userStrings.some(val => val.toLowerCase() === String(req).toLowerCase())
+      );
+      if (hasRequiredItems) {
+        return {
+          score: (partialMatchCondition.score as number) || maxScore / 2,
+          maxScore,
+          isCorrect: false,
+          partialCredit: true
+        };
+      }
+    }
+    
+    // Finally, use else condition or default to 0
+    const elseCondition = (logic.conditions as Record<string, unknown>[]).find((c: Record<string, unknown>) => c.else !== undefined);
+    if (elseCondition) {
+      return {
+        score: elseCondition.else as number,
+        maxScore,
+        isCorrect: false
+      };
+    }
+    
+    return { score: 0, maxScore, isCorrect: false };
+  }
+
+  /**
+   * Execute range-based scoring for sliders
+   */
+  private executeRangeScoring(
+    logic: Record<string, unknown>,
+    item: QTIItem,
+    userResponse: ItemResponse,
+    maxScore: number
+  ): ScoreResult {
+    const userValue = parseFloat(String(userResponse.value));
+    
+    if (isNaN(userValue) || !logic.score_ranges) {
+      return { score: 0, maxScore, isCorrect: false };
+    }
+    
+    for (const range of logic.score_ranges) {
+      if (range.condition === 'exact' && userValue === range.value) {
+        return {
+          score: range.score,
+          maxScore,
+          isCorrect: true,
+          partialCredit: false
+        };
+      } else if (range.condition === 'range' && userValue >= range.min && userValue <= range.max) {
+        return {
+          score: range.score,
+          maxScore,
+          isCorrect: range.score === maxScore,
+          partialCredit: range.score > 0 && range.score < maxScore
+        };
+      }
+    }
+    
+    // Default case
+    const defaultRange = logic.score_ranges.find((r: Record<string, unknown>) => r.condition === 'default');
+    return {
+      score: defaultRange?.score || 0,
+      maxScore,
+      isCorrect: false
+    };
+  }
+
+  /**
+   * Execute string matching logic
+   */
+  private executeStringMatch(
+    logic: Record<string, unknown>,
+    item: QTIItem,
+    userResponse: ItemResponse,
+    maxScore: number
+  ): ScoreResult {
+    const userValue = String(userResponse.value).trim();
+    const acceptableValues = logic.acceptable_values || [item.correctResponse];
+    const caseSensitive = logic.caseSensitive !== false; // Default to true
+    
+    for (const acceptable of acceptableValues) {
+      const acceptableStr = String(acceptable);
+      const matches = caseSensitive ? 
+        userValue === acceptableStr : 
+        userValue.toLowerCase() === acceptableStr.toLowerCase();
+      
+      if (matches) {
+        return {
+          score: logic.score || maxScore,
+          maxScore,
+          isCorrect: true,
+          partialCredit: false
+        };
+      }
+    }
+    
+    return { score: 0, maxScore, isCorrect: false };
+  }
+
+  /**
+   * Execute length-based scoring for essays
+   */
+  private executeLengthBasedScoring(
+    logic: Record<string, unknown>,
+    item: QTIItem,
+    userResponse: ItemResponse,
+    maxScore: number
+  ): ScoreResult {
+    const userText = String(userResponse.value).trim();
+    const wordCount = userText.split(/\s+/).filter(word => word.length > 0).length;
+    
+    if (!logic.score_ranges) {
+      return { score: 0, maxScore, isCorrect: false };
+    }
+    
+    for (const range of logic.score_ranges) {
+      if (range.condition === 'length_gte' && wordCount >= range.value) {
+        return {
+          score: range.score,
+          maxScore,
+          isCorrect: range.score === maxScore,
+          partialCredit: range.score > 0 && range.score < maxScore
+        };
+      }
+    }
+    
+    // Default case
+    const defaultRange = logic.score_ranges.find((r: Record<string, unknown>) => r.condition === 'default');
+    return {
+      score: defaultRange?.score || 0,
+      maxScore,
+      isCorrect: false
+    };
   }
 
   /**
@@ -224,7 +469,7 @@ export class ScoringEngine {
   /**
    * Compare user response with correct response
    */
-  private compareResponses(userValue: any, correctValue: any): boolean {
+  private compareResponses(userValue: unknown, correctValue: unknown): boolean {
     if (Array.isArray(correctValue)) {
       return Array.isArray(userValue) && 
              this.compareMultipleResponses(userValue, correctValue);
@@ -237,12 +482,16 @@ export class ScoringEngine {
    * Compare multiple responses (for multiple choice/select all)
    */
   private compareMultipleResponses(userValues: string[], correctValues: string[]): boolean {
-    if (userValues.length !== correctValues.length) {
+    // Filter out empty or null values
+    const filteredUserValues = userValues.filter(v => v && String(v).trim());
+    const filteredCorrectValues = correctValues.filter(v => v && String(v).trim());
+    
+    if (filteredUserValues.length !== filteredCorrectValues.length) {
       return false;
     }
     
-    const normalizedUser = userValues.map(v => v.toLowerCase().trim()).sort();
-    const normalizedCorrect = correctValues.map(v => v.toLowerCase().trim()).sort();
+    const normalizedUser = filteredUserValues.map(v => String(v).toLowerCase().trim()).sort();
+    const normalizedCorrect = filteredCorrectValues.map(v => String(v).toLowerCase().trim()).sort();
     
     return normalizedUser.every((value, index) => value === normalizedCorrect[index]);
   }
@@ -250,7 +499,7 @@ export class ScoringEngine {
   /**
    * Get mapped score from response mapping
    */
-  private getMappedScore(mapping: Record<string, number>, userValue: any): number {
+  private getMappedScore(mapping: Record<string, number>, userValue: unknown): number {
     if (Array.isArray(userValue)) {
       return userValue.reduce((total, value) => {
         return total + (mapping[value] || 0);

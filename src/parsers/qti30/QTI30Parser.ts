@@ -702,6 +702,23 @@ export class QTI30Parser implements QTIParserInterface {
       return { template };
     }
 
+    // Check for custom logic in XML comments (from JSON conversion)
+    const comments = this.getXMLComments(responseProcessing);
+    console.log('DEBUG: Found response processing comments:', comments);
+    for (const comment of comments) {
+      if (comment.includes('Custom Logic:')) {
+        try {
+          const jsonStr = comment.replace('Custom Logic: ', '').replace(/&quot;/g, '"');
+          console.log('DEBUG: Parsing custom logic JSON:', jsonStr);
+          const customLogic = JSON.parse(jsonStr);
+          console.log('DEBUG: Parsed custom logic:', customLogic);
+          return { customLogic };
+        } catch (error) {
+          console.warn('Failed to parse custom logic from comment:', error);
+        }
+      }
+    }
+
     // For custom logic, we could parse responseCondition elements
     // For now, we'll just indicate that custom logic exists
     const responseConditions = responseProcessing.querySelectorAll('responseCondition');
@@ -710,6 +727,27 @@ export class QTI30Parser implements QTIParserInterface {
     }
 
     return undefined;
+  }
+
+  /**
+   * Extract comments from XML element
+   */
+  private getXMLComments(element: Element): string[] {
+    const comments: string[] = [];
+    
+    // Use a more reliable method to get comments
+    const xmlStr = element.innerHTML;
+    console.log('DEBUG: Element innerHTML:', xmlStr);
+    
+    // Extract comments using regex
+    const commentRegex = /<!--\s*(.*?)\s*-->/g;
+    let match;
+    while ((match = commentRegex.exec(xmlStr)) !== null) {
+      comments.push(match[1].trim());
+    }
+    
+    console.log('DEBUG: Extracted comments:', comments);
+    return comments;
   }
 
   private scanForUnsupportedElements(xmlDoc: Document, unsupportedElements: Map<string, UnsupportedElement>) {

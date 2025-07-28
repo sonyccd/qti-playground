@@ -25,7 +25,8 @@ export interface ItemScore {
 
 export interface ResponseProcessingRule {
   template?: string;
-  customLogic?: ResponseCondition[];
+  customLogic?: unknown;
+  customScore?: number;
 }
 
 export interface ResponseCondition {

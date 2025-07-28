@@ -9,7 +9,7 @@ export interface QTIJsonItem {
   adaptive?: boolean;
   timeDependent?: boolean;
   responseDeclaration?: QTIJsonResponseDeclaration;
-  outcomeDeclaration?: QTIJsonOutcomeDeclaration[];
+  outcomeDeclaration?: QTIJsonOutcomeDeclaration | QTIJsonOutcomeDeclaration[];
   itemBody: QTIJsonItemBody;
   responseProcessing?: QTIJsonResponseProcessing;
 }
@@ -22,7 +22,12 @@ export interface QTIJsonResponseDeclaration {
     value: string | string[];
   };
   mapping?: {
-    mapEntry: Array<{
+    defaultValue?: number;
+    mapEntry?: Array<{
+      mapKey: string;
+      mappedValue: number;
+    }>;
+    mapEntries?: Array<{
       mapKey: string;
       mappedValue: number;
     }>;
@@ -46,12 +51,22 @@ export interface QTIJsonElement {
   '@type': string;
   text?: string;
   children?: QTIJsonElement[];
-  attributes?: Record<string, any>;
+  attributes?: Record<string, string | number | boolean>;
+  responseIdentifier?: string;
+  prompt?: string;
+  choices?: Array<{
+    identifier: string;
+    text: string;
+  }>;
+  content?: QTIJsonElement[];
+  identifier?: string;
 }
 
 export interface QTIJsonResponseProcessing {
   template?: string;
-  responseRules?: any[]; // For custom response processing
+  responseRules?: unknown[]; // For custom response processing
+  customLogic?: unknown;
+  score?: number;
 }
 
 export interface QTIJsonChoiceInteraction extends QTIJsonElement {
@@ -151,7 +166,7 @@ const convertXmlItemToJson = (itemElement: Element): QTIJsonItem => {
   if (responseDecl) {
     item.responseDeclaration = {
       identifier: responseDecl.getAttribute('identifier') || '',
-      cardinality: responseDecl.getAttribute('cardinality') as any || 'single',
+      cardinality: responseDecl.getAttribute('cardinality') as 'single' | 'multiple' | 'ordered' | 'record' || 'single',
       baseType: responseDecl.getAttribute('baseType') || 'identifier'
     };
 
@@ -170,7 +185,7 @@ const convertXmlItemToJson = (itemElement: Element): QTIJsonItem => {
   if (outcomeDecls.length > 0) {
     item.outcomeDeclaration = Array.from(outcomeDecls).map(outcomeDecl => ({
       identifier: outcomeDecl.getAttribute('identifier') || '',
-      cardinality: outcomeDecl.getAttribute('cardinality') as any || 'single',
+      cardinality: outcomeDecl.getAttribute('cardinality') as 'single' | 'multiple' | 'ordered' | 'record' || 'single',
       baseType: outcomeDecl.getAttribute('baseType') || 'float'
     }));
   }
@@ -288,16 +303,40 @@ const convertJsonItemToXml = (jsonItem: QTIJsonItem): string => {
       xml += `    </correctResponse>\n`;
     }
     
+    // Add mapping if present
+    if (jsonItem.responseDeclaration.mapping) {
+      xml += `    <mapping`;
+      if (jsonItem.responseDeclaration.mapping.defaultValue !== undefined) {
+        xml += ` defaultValue="${jsonItem.responseDeclaration.mapping.defaultValue}"`;
+      }
+      xml += `>\n`;
+      
+      // Handle both mapEntry and mapEntries
+      const mapEntries = jsonItem.responseDeclaration.mapping.mapEntries || jsonItem.responseDeclaration.mapping.mapEntry || [];
+      if (Array.isArray(mapEntries)) {
+        mapEntries.forEach(entry => {
+          xml += `      <mapEntry mapKey="${entry.mapKey}" mappedValue="${entry.mappedValue}"/>\n`;
+        });
+      }
+      
+      xml += `    </mapping>\n`;
+    }
+    
     xml += `  </responseDeclaration>\n\n`;
   }
 
   // Add outcome declarations
-  if (jsonItem.outcomeDeclaration && Array.isArray(jsonItem.outcomeDeclaration)) {
-    jsonItem.outcomeDeclaration.forEach(outcome => {
+  if (jsonItem.outcomeDeclaration) {
+    // Handle both single outcomeDeclaration and array of outcomeDeclarations
+    const outcomeDeclarations = Array.isArray(jsonItem.outcomeDeclaration) 
+      ? jsonItem.outcomeDeclaration 
+      : [jsonItem.outcomeDeclaration];
+    
+    outcomeDeclarations.forEach(outcome => {
       xml += `  <outcomeDeclaration identifier="${outcome.identifier}" cardinality="${outcome.cardinality}" baseType="${outcome.baseType}">\n`;
-      if (outcome.defaultValue) {
+      if (outcome.defaultValue !== undefined) {
         xml += `    <defaultValue>\n`;
-        xml += `      <value>${outcome.defaultValue.value}</value>\n`;
+        xml += `      <value>${outcome.defaultValue.value || outcome.defaultValue}</value>\n`;
         xml += `    </defaultValue>\n`;
       }
       xml += `  </outcomeDeclaration>\n\n`;
@@ -311,7 +350,34 @@ const convertJsonItemToXml = (jsonItem: QTIJsonItem): string => {
 
   // Add response processing
   if (jsonItem.responseProcessing?.template) {
-    xml += `  <responseProcessing template="${jsonItem.responseProcessing.template}"/>\n\n`;
+    xml += `  <responseProcessing template="${jsonItem.responseProcessing.template}"`;
+    if (jsonItem.responseProcessing.score) {
+      xml += ` data-custom-score="${jsonItem.responseProcessing.score}"`;
+    }
+    xml += `/>\n\n`;
+  } else if (jsonItem.responseProcessing?.customLogic) {
+    // Convert custom logic to QTI XML responseProcessing
+    const customLogicStr = JSON.stringify(jsonItem.responseProcessing.customLogic).replace(/"/g, '&quot;');
+    console.log('DEBUG: Converting JSON custom logic to XML:', jsonItem.responseProcessing.customLogic);
+    console.log('DEBUG: XML comment string:', customLogicStr);
+    xml += `  <responseProcessing>\n`;
+    xml += `    <!-- Custom Logic: ${customLogicStr} -->\n`;
+    xml += `    <responseCondition>\n`;
+    xml += `      <responseIf>\n`;
+    xml += `        <isNull>\n`;
+    xml += `          <variable identifier="RESPONSE"/>\n`;
+    xml += `        </isNull>\n`;
+    xml += `        <setOutcomeValue identifier="SCORE">\n`;
+    xml += `          <baseValue baseType="float">0</baseValue>\n`;
+    xml += `        </setOutcomeValue>\n`;
+    xml += `      </responseIf>\n`;
+    xml += `      <responseElse>\n`;
+    xml += `        <setOutcomeValue identifier="SCORE">\n`;
+    xml += `          <baseValue baseType="float">0</baseValue>\n`;
+    xml += `        </setOutcomeValue>\n`;
+    xml += `      </responseElse>\n`;
+    xml += `    </responseCondition>\n`;
+    xml += `  </responseProcessing>\n\n`;
   }
 
   xml += `</assessmentItem>`;
@@ -413,8 +479,62 @@ const convertJsonItemBodyToXml = (itemBody: QTIJsonItemBody, indent: number = 0)
       xml += `${spaces}</choiceInteraction>\n`;
     } else if (element['@type'] === 'paragraph') {
       xml += `${spaces}<p>${element.text}</p>\n`;
+    } else if (element['@type'] === 'textEntryInteraction') {
+      xml += `${spaces}<textEntryInteraction responseIdentifier="${element.responseIdentifier || 'RESPONSE'}"`;
+      if (element.attributes?.expectedLength) {
+        xml += ` expectedLength="${element.attributes.expectedLength}"`;
+      }
+      xml += `/>\n`;
+    } else if (element['@type'] === 'extendedTextInteraction') {
+      xml += `${spaces}<extendedTextInteraction responseIdentifier="${element.responseIdentifier || 'RESPONSE'}"`;
+      if (element.attributes?.expectedLength) {
+        xml += ` expectedLength="${element.attributes.expectedLength}"`;
+      }
+      xml += `/>\n`;
+    } else if (element['@type'] === 'sliderInteraction') {
+      xml += `${spaces}<sliderInteraction responseIdentifier="${element.responseIdentifier || 'RESPONSE'}"`;
+      if (element.attributes) {
+        if (element.attributes.lowerBound) xml += ` lowerBound="${element.attributes.lowerBound}"`;
+        if (element.attributes.upperBound) xml += ` upperBound="${element.attributes.upperBound}"`;
+        if (element.attributes.step) xml += ` step="${element.attributes.step}"`;
+        if (element.attributes.orientation) xml += ` orientation="${element.attributes.orientation}"`;
+      }
+      xml += `/>\n`;
+    } else if (element['@type'] === 'orderInteraction') {
+      xml += `${spaces}<orderInteraction responseIdentifier="${element.responseIdentifier || 'RESPONSE'}"`;
+      if (element.attributes?.shuffle) {
+        xml += ` shuffle="${element.attributes.shuffle}"`;
+      }
+      xml += `>\n`;
+      if (element.choices && Array.isArray(element.choices)) {
+        element.choices.forEach(simpleChoice => {
+          xml += `${spaces}  <simpleChoice identifier="${simpleChoice.identifier}">${simpleChoice.text}</simpleChoice>\n`;
+        });
+      }
+      xml += `${spaces}</orderInteraction>\n`;
+    } else if (element['@type'] === 'hottextInteraction') {
+      xml += `${spaces}<hottextInteraction responseIdentifier="${element.responseIdentifier || 'RESPONSE'}"`;
+      if (element.attributes?.maxChoices) {
+        xml += ` maxChoices="${element.attributes.maxChoices}"`;
+      }
+      xml += `>\n`;
+      // Process hottext content
+      if (element.content && Array.isArray(element.content)) {
+        element.content.forEach(contentItem => {
+          if (contentItem['@type'] === 'paragraph' && contentItem.children) {
+            contentItem.children.forEach((child: QTIJsonElement) => {
+              if (child['@type'] === 'hottext') {
+                xml += `${spaces}  <hottext identifier="${child.identifier}">${child.text}</hottext>\n`;
+              } else if (child['@type'] === 'text') {
+                xml += `${spaces}  ${child.text}\n`;
+              }
+            });
+          }
+        });
+      }
+      xml += `${spaces}</hottextInteraction>\n`;
     } else {
-      xml += `${spaces}<${element['@type']}>${element.text}</${element['@type']}>\n`;
+      xml += `${spaces}<${element['@type']}>${element.text || ''}</${element['@type']}>\n`;
     }
     });
   }
@@ -425,8 +545,8 @@ const convertJsonItemBodyToXml = (itemBody: QTIJsonItemBody, indent: number = 0)
 /**
  * Gets all attributes from an element
  */
-const getElementAttributes = (element: Element): Record<string, any> => {
-  const attributes: Record<string, any> = {};
+const getElementAttributes = (element: Element): Record<string, string> => {
+  const attributes: Record<string, string> = {};
   Array.from(element.attributes).forEach(attr => {
     attributes[attr.name] = attr.value;
   });
