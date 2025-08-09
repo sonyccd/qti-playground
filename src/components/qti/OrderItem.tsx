@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Chip } from '@mui/material';
 import { GripVertical, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface OrderItemProps {
@@ -98,9 +98,12 @@ export function OrderItem({ item }: OrderItemProps) {
                 }`}
               >
                 <div className="flex items-center gap-1">
-                  <Badge variant="outline" className="min-w-[2rem] justify-center">
-                    {index + 1}
-                  </Badge>
+                  <Chip 
+                    label={index + 1}
+                    variant="outlined"
+                    size="small"
+                    sx={{ minWidth: '2rem', justifyContent: 'center' }}
+                  />
                   <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab active:cursor-grabbing" />
                 </div>
                 
@@ -145,9 +148,13 @@ export function OrderItem({ item }: OrderItemProps) {
             <div className="text-sm font-medium mb-2">Current Order:</div>
             <div className="flex flex-wrap gap-1">
               {orderedChoices.map((choice, index) => (
-                <Badge key={choice.identifier} variant="secondary">
-                  {index + 1}. {choice.text}
-                </Badge>
+                <Chip 
+                  key={choice.identifier}
+                  label={`${index + 1}. ${choice.text}`}
+                  variant="filled"
+                  size="small"
+                  color="default"
+                />
               ))}
             </div>
           </div>

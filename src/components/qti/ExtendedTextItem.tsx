@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Chip } from '@mui/material';
 import { Edit3, Save, X } from 'lucide-react';
 
 interface ExtendedTextItemProps {
@@ -49,9 +49,12 @@ export function ExtendedTextItem({ item, onCorrectResponseChange }: ExtendedText
           </div>
           <div className="flex items-center gap-2">
             {sampleAnswer && (
-              <Badge variant="secondary" className="text-green-600">
-                Sample set
-              </Badge>
+              <Chip 
+                label="Sample set"
+                color="success"
+                size="small"
+                sx={{ color: 'green' }}
+              />
             )}
             {!isEditingCorrect ? (
               <Button
