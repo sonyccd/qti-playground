@@ -16,7 +16,8 @@
       "Bash(npm install:*)",
       "Bash(cp:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm start)"
+      "Bash(npm start)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": []
   }
