@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { QTIItem } from '@/types/qti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Chip } from '@mui/material';
 import { Button } from '@/components/ui/button';
 import { Edit3, Save, X } from 'lucide-react';
 
@@ -151,9 +151,12 @@ export function HottextItem({ item, onCorrectResponseChange }: HottextItemProps)
           </div>
           <div className="flex items-center gap-2">
             {correctAnswers.length > 0 && (
-              <Badge variant="secondary" className="text-green-600">
-                {correctAnswers.length} correct
-              </Badge>
+              <Chip 
+                label={`${correctAnswers.length} correct`}
+                color="success"
+                size="small"
+                sx={{ color: 'green' }}
+              />
             )}
             {!isEditingCorrect ? (
               <Button
@@ -197,9 +200,12 @@ export function HottextItem({ item, onCorrectResponseChange }: HottextItemProps)
                 {selectedHottexts.map(id => {
                   const choice = item.hottextChoices?.find(c => c.identifier === id);
                   return choice ? (
-                    <Badge key={id} variant="default">
-                      {choice.text}
-                    </Badge>
+                    <Chip 
+                      key={id} 
+                      label={choice.text}
+                      color="primary"
+                      size="small"
+                    />
                   ) : null;
                 })}
               </div>

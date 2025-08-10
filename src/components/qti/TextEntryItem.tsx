@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Chip } from '@mui/material';
 import { Edit3, Save, X } from 'lucide-react';
 
 interface TextEntryItemProps {
@@ -51,9 +51,12 @@ export function TextEntryItem({ item, onCorrectResponseChange }: TextEntryItemPr
           </div>
           <div className="flex items-center gap-2">
             {correctAnswer && (
-              <Badge variant="secondary" className="text-green-600">
-                Answer set
-              </Badge>
+              <Chip 
+                label="Answer set"
+                color="success"
+                size="small"
+                sx={{ color: 'green' }}
+              />
             )}
             {!isEditingCorrect ? (
               <Button

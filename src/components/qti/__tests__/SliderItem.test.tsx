@@ -537,7 +537,8 @@ describe('SliderItem', () => {
       render(<SliderItem item={mockSliderItem} onCorrectResponseChange={mockOnCorrectResponseChange} />);
       
       const badge = screen.getByText('Correct: 75');
-      expect(badge).toHaveClass('badge', 'secondary');
+      // Check that it's a MUI Chip component by checking for MuiChip class
+      expect(badge.closest('.MuiChip-root')).toBeInTheDocument();
     });
 
     it('should show blue background for edit section', async () => {

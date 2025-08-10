@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Chip } from '@mui/material';
 import { Input } from '@/components/ui/input';
 import { Edit3, Save, X } from 'lucide-react';
 
@@ -69,9 +69,12 @@ export function SliderItem({ item, onCorrectResponseChange }: SliderItemProps) {
           </div>
           <div className="flex items-center gap-2">
             {correctValue !== 0 && (
-              <Badge variant="secondary" className="text-green-600">
-                Correct: {correctValue}
-              </Badge>
+              <Chip 
+                label={`Correct: ${correctValue}`}
+                color="success"
+                size="small"
+                sx={{ color: 'green' }}
+              />
             )}
             {!isEditingCorrect ? (
               <Button
