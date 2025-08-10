@@ -40,7 +40,7 @@ vi.mock('firebase/auth', () => ({
 }));
 
 // Utility to simulate auth state changes
-export const simulateAuthStateChange = (user: any) => {
+export const simulateAuthStateChange = (user: unknown) => {
   const callback = mockOnAuthStateChanged.mock.calls[0]?.[1];
   if (callback) {
     callback(user);
