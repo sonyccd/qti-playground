@@ -6,8 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Development
 - `npm run dev` - Start development server on port 8080
-- `npm run build` - Production build with GitHub Pages configuration
+- `npm run build` - Production build for Firebase Hosting
 - `npm run preview` - Preview production build
+
+### Firebase Deployment
+- `npm run firebase:login` - Login to Firebase CLI
+- `npm run firebase:serve` - Serve the app locally using Firebase hosting emulator
+- `npm run firebase:deploy` - Build and deploy to Firebase Hosting
+- `npm run firebase:init` - Initialize Firebase hosting (run only once)
 
 ### Code Quality
 - `npm run lint` - Run ESLint
@@ -92,7 +98,7 @@ Tests use Vitest with React Testing Library. Key testing patterns:
 - TypeScript strict mode is partially relaxed (no-unused-vars and no-explicit-any disabled)
 - Tailwind CSS with custom theming in `tailwind.config.js`
 - GitHub Actions CI runs tests on Node 18.x and 20.x
-- Deployment target is GitHub Pages with base path configuration
+- **Deployment target**: Firebase Hosting with automatic GitHub Actions deployment
 
 ## Recent Refactoring (2025)
 
@@ -120,3 +126,30 @@ Created MUI adapter components maintaining API compatibility:
 - Core shadcn/ui components kept for LearnLayout (sidebar, sheet, skeleton, separator)
 - All 439 tests passing after migration
 - All existing functionality preserved with improved maintainability
+
+## Firebase Setup (2025)
+
+The application has been migrated from GitHub Pages to Firebase Hosting:
+
+### Initial Setup Required:
+1. **Create Firebase Project**: Go to [Firebase Console](https://console.firebase.google.com/) and create a new project
+2. **Update Project ID**: Replace `your-firebase-project-id` in `.firebaserc` with your actual Firebase project ID
+3. **Enable Hosting**: Enable Firebase Hosting in your Firebase project console
+4. **Login to Firebase**: Run `npm run firebase:login` to authenticate
+5. **Deploy**: Run `npm run firebase:deploy` to deploy the app
+
+### GitHub Actions Integration:
+The repository includes GitHub Actions workflows for automatic deployment:
+- **Main branch**: Automatically deploys to production on push to main
+- **Pull requests**: Creates preview deployments for PRs
+
+**Required GitHub Secrets:**
+- `FIREBASE_SERVICE_ACCOUNT_QTI_PLAYGROUND`: Service account key from Firebase Console
+  1. Go to Project Settings > Service Accounts
+  2. Generate new private key
+  3. Add the JSON content as a GitHub secret
+
+### Configuration Files:
+- `firebase.json`: Firebase Hosting configuration with SPA routing
+- `.firebaserc`: Firebase project configuration
+- `.github/workflows/`: GitHub Actions for CI/CD
