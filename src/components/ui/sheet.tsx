@@ -43,8 +43,9 @@ const getSheetClasses = (side: "top" | "bottom" | "left" | "right" = "right") =>
 }
 
 interface SheetContentProps
-  extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-  { side?: "top" | "bottom" | "left" | "right" } { }
+  extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content> {
+  side?: "top" | "bottom" | "left" | "right";
+}
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
