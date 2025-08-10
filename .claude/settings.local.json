@@ -18,7 +18,9 @@
       "Bash(npx tsc:*)",
       "Bash(npm start)",
       "Bash(npm uninstall:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(firebase --version)",
+      "Bash(npx firebase:*)"
     ],
     "deny": []
   }

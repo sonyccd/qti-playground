@@ -12,7 +12,11 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "firebase:serve": "firebase serve --only hosting",
+    "firebase:deploy": "npm run build && firebase deploy --only hosting",
+    "firebase:login": "firebase login",
+    "firebase:init": "firebase init hosting"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
@@ -62,6 +66,7 @@
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
+    "firebase-tools": "^13.15.4",
     "globals": "^15.9.0",
     "lovable-tagger": "^1.1.7",
     "postcss": "^8.4.47",
