@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/contexts/AuthContext";
 // Removed unused TanStack Query
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
@@ -26,9 +27,10 @@ const App = () => (
       <div className="min-h-screen flex flex-col">
         <Toaster />
         <BrowserRouter>
-          <AppLayout>
-            <div className="flex-1">
-              <Routes>
+          <AuthProvider>
+            <AppLayout>
+              <div className="flex-1">
+                <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/playground" element={<Playground />} />
                 <Route path="/learn" element={<LearnLayout />}>
@@ -51,6 +53,7 @@ const App = () => (
             </div>
             <Footer />
           </AppLayout>
+        </AuthProvider>
         </BrowserRouter>
       </div>
   </TooltipProvider>
