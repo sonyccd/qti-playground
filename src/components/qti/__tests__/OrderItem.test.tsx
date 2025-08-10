@@ -567,7 +567,8 @@ describe('OrderItem', () => {
       
       const numberBadges = screen.getAllByText(/^[1-4]$/);
       numberBadges.forEach(badge => {
-        expect(badge).toHaveClass('badge', 'outline');
+        // Check that it's a MUI Chip component by checking for MuiChip class
+        expect(badge.closest('.MuiChip-root')).toBeInTheDocument();
       });
     });
 
@@ -576,7 +577,8 @@ describe('OrderItem', () => {
       
       const orderBadges = screen.getAllByText(/^\d+\. /);
       orderBadges.forEach(badge => {
-        expect(badge).toHaveClass('badge', 'secondary');
+        // Check that it's a MUI Chip component by checking for MuiChip class
+        expect(badge.closest('.MuiChip-root')).toBeInTheDocument();
       });
     });
   });
