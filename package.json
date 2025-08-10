@@ -42,6 +42,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@uiw/react-codemirror": "^4.24.0",
     "clsx": "^2.1.1",
+    "firebase": "^12.1.0",
     "jsdom": "^26.1.0",
     "lucide-react": "^0.462.0",
     "posthog-js": "^1.257.0",
