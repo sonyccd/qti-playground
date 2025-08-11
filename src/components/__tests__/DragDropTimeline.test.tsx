@@ -45,7 +45,7 @@ const DragDropTimeline: React.FC<DragDropTimelineProps> = ({
   onEditBlock,
   onDeleteBlock,
 }) => {
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = React.useCallback((result: any) => {
     if (!result.destination) return;
     
     const sourceIndex = result.source.index;
@@ -64,12 +64,12 @@ const DragDropTimeline: React.FC<DragDropTimelineProps> = ({
     }));
     
     onBlocksChange(updatedBlocks);
-  };
+  }, [blocks, onBlocksChange]);
 
   // Set up drag end handler when component mounts
   React.useEffect(() => {
     mockDragEndHandler.mockImplementation(handleDragEnd);
-  }, [blocks, onBlocksChange]);
+  }, [handleDragEnd]);
 
   const renderBlockContent = (block: TimelineBlock) => {
     if (block.type === 'item') {
