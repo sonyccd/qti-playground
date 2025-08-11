@@ -13,6 +13,16 @@ const mockUseAuth = vi.mocked(useAuth);
 vi.mock('@/services/projectService');
 const mockProjectService = vi.mocked(projectService);
 
+// Mock useNavigate
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
 // Mock the AuthModal component
 vi.mock('@/components/auth/AuthModal', () => ({
   AuthModal: ({ open, onClose }: { open: boolean; onClose: () => void }) => {
@@ -157,7 +167,7 @@ describe('ProjectsPage', () => {
       const createButton = screen.getByRole('button', { name: /Create New Project/i });
       fireEvent.click(createButton);
 
-      expect(screen.getByText('Create New Project')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
       expect(screen.getByLabelText('Project Name')).toBeInTheDocument();
       expect(screen.getByLabelText('Description (optional)')).toBeInTheDocument();
     });
@@ -248,7 +258,7 @@ describe('ProjectsPage', () => {
       const createButton = screen.getByRole('button', { name: /Create New Project/i });
       fireEvent.click(createButton);
 
-      expect(screen.getByText('Create New Project')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
   });
 
@@ -362,12 +372,7 @@ describe('ProjectsPage', () => {
       expect(mockProjectService.deleteProject).not.toHaveBeenCalled();
     });
 
-    it('should handle clicking on a project card', async () => {
-      // Mock window.location.href since we now navigate directly
-      const originalLocation = window.location;
-      delete (window as any).location;
-      window.location = { ...originalLocation, href: '' };
-      
+    it('should handle clicking on a project card', async () => {      
       renderWithRouter(<ProjectsPage />);
 
       await waitFor(() => {
@@ -378,10 +383,7 @@ describe('ProjectsPage', () => {
       const projectCard = screen.getByText('Test Project 1').closest('[class*="MuiCard-root"]');
       fireEvent.click(projectCard!);
 
-      expect(window.location.href).toBe('/project/project-1');
-      
-      // Restore window.location
-      window.location = originalLocation;
+      expect(mockNavigate).toHaveBeenCalledWith('/project/project-1');
     });
 
     it('should show validation error when creating project without name', async () => {

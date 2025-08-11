@@ -177,7 +177,7 @@ export class ProjectService {
 
   // Convert temporary project to permanent (when user signs up/logs in)
   async convertTempProjectToPermanent(projectId: string, userId: string): Promise<Project> {
-    const project = await this.getProject(projectId);
+    const project = await this.getProject(projectId, userId);
     if (!project || !project.isTemporary) {
       throw new Error('Project not found or not temporary');
     }

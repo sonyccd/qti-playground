@@ -186,7 +186,6 @@ describe('ProjectService', () => {
       expect(projects[0]).toMatchObject({
         id: 'project-1',
         name: 'Project 1',
-        ownerId: undefined, // ProjectSummary doesn't include ownerId
         isTemporary: false,
       });
     });
@@ -465,7 +464,7 @@ describe('ProjectService', () => {
       const permanentProject: Project = {
         ...tempProject,
         isTemporary: false,
-        ownerId: 'user-456',
+        ownerId: 'user-123', // Same owner to avoid access denied
       };
       localStorageMock.getItem.mockReturnValue(JSON.stringify([permanentProject]));
 

@@ -33,6 +33,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { projectService } from '@/services/projectService';
 import { ProjectSummary, CreateProjectRequest } from '@/types/project';
+import { useNavigate } from 'react-router-dom';
 
 interface ProjectCardProps {
   project: ProjectSummary;
@@ -236,6 +237,7 @@ const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
 const ProjectsPage: React.FC = () => {
   const theme = useTheme();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -299,7 +301,7 @@ const ProjectsPage: React.FC = () => {
   };
 
   const handleOpenProject = (projectId: string) => {
-    window.location.href = `/project/${projectId}`;
+    navigate(`/project/${projectId}`);
   };
 
   const handleCreateNewProject = () => {

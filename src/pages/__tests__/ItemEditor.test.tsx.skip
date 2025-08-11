@@ -77,12 +77,20 @@ describe('ItemEditor', () => {
   });
 
   describe('Component Rendering', () => {
-    it('should render loading state initially', () => {
-      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+    it('should render loading state initially', async () => {
+      // Mock a delayed response to catch the loading state
+      vi.mocked(projectService.getProject).mockImplementation(() => 
+        new Promise(resolve => setTimeout(() => resolve(mockProject), 100))
+      );
       
       renderItemEditor('new=true');
       
       expect(screen.getByText('Loading item editor...')).toBeInTheDocument();
+      
+      // Wait for the loading to complete
+      await waitFor(() => {
+        expect(screen.queryByText('Loading item editor...')).not.toBeInTheDocument();
+      });
     });
 
     it('should render create new item header', async () => {
