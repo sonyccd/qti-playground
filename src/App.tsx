@@ -4,6 +4,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 // Removed unused TanStack Query
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
+import Projects from "./pages/Projects";
 import Playground from "./pages/Playground";
 import Learn from "./pages/Learn";
 import NotFound from "./pages/NotFound";
@@ -35,7 +36,8 @@ const App = () => (
               <div className="flex-1">
                 <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/playground" element={<Playground />} />
+                <Route path="/playground" element={<Projects />} />
+                <Route path="/playground-old" element={<Playground />} />
                 <Route path="/project/:projectId" element={<ProjectDetail />} />
                 <Route path="/project/:projectId/item-editor" element={<ItemEditor />} />
                 <Route path="/project/:projectId/assessment-editor" element={<AssessmentEditor />} />

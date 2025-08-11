@@ -1,404 +1,169 @@
-import React from 'react';
-import { Button, Card, CardContent, Typography, Box, Container, Avatar, useTheme, SxProps, Theme } from '@mui/material';
-import { MenuBook, Description, Code, Lightbulb, BeachAccess, Toys, GitHub } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { BookOpen, Play, FileText, Code, Lightbulb, ArrowRight, Github, Book, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 
-// Types
-interface FeatureCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  color: string;
-}
-
-interface QTIFeature {
-  name: string;
-  description: string;
-}
-
-interface CTACardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  buttonText: string;
-  to: string;
-  bgColor: string;
-}
-
-// Constants
-const QTI_FEATURES: QTIFeature[] = [
-  { name: 'Single Choice', description: 'Multiple choice questions with one correct answer' },
-  { name: 'Multiple Response', description: 'Questions allowing multiple selections' },
-  { name: 'Text Entry', description: 'Short text input questions' },
-  { name: 'Extended Text', description: 'Long-form text response questions' },
-  { name: 'Hottext', description: 'Select specific words or phrases in text' },
-  { name: 'Slider', description: 'Select values on a continuous scale' },
-  { name: 'Order Interaction', description: 'Arrange items in the correct sequence' },
-];
-
-const COMING_SOON_FEATURES = [
-  'Associate Interaction', 'Match Interaction', 'Gap Match', 
-  'Inline Choice', 'Hotspot', 'Graphic Interactions', 'File Upload'
-];
-
-// Shared Styles
-const createHoverCardStyle = (theme: Theme): SxProps<Theme> => ({
-  height: '100%',
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transform: 'translateY(-8px)',
-    boxShadow: theme.shadows[8]
-  }
-});
-
-const createAvatarStyle = (size: number, bgColor: string): SxProps<Theme> => ({
-  width: size,
-  height: size,
-  bgcolor: bgColor,
-  mx: 'auto',
-  mb: 2
-});
-
-const createIconStyle = (size: number) => ({
-  fontSize: size,
-  color: 'white'
-});
-
-// Sub-components
-
-const HeroSection: React.FC = () => {
-  const theme = useTheme();
-  
+const LandingPage = () => {
   return (
-    <Box textAlign="center" mb={8} className="animate-fade-in">
-      
-      <Avatar sx={createAvatarStyle(80, theme.palette.primary.light)}>
-        <BeachAccess sx={createIconStyle(40)} />
-      </Avatar>
-      
-      <Typography 
-        variant="h2" 
-        component="h1" 
-        gutterBottom 
-        sx={{
-          fontWeight: 'bold',
-          background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-          backgroundClip: 'text',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          fontSize: { xs: '2.5rem', md: '4rem' }
-        }}
-      >
-        QTI Playground
-      </Typography>
-      
-      <Typography 
-        variant="h5" 
-        color="text.secondary" 
-        sx={{ maxWidth: '600px', mx: 'auto' }}
-      >
-        Explore, create, and test QTI (Question & Test Interoperability) 3.0 content with our interactive playground
-      </Typography>
-    </Box>
-  );
-};
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20" />
+        <div className="relative container mx-auto px-4 py-24 sm:py-32">
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-8 shadow-lg">
+              <FileText className="w-10 h-10 text-white" />
+            </div>
+            
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-8 pb-2 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent leading-tight">
+              QTI Playground
+            </h1>
+            
+            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-12 leading-relaxed">
+              The interactive environment for exploring, creating, and testing{" "}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                Question & Test Interoperability
+              </span>{" "}
+              content
+            </p>
 
-const CTACard: React.FC<CTACardProps> = ({ icon, title, description, buttonText, to, bgColor }) => {
-  const theme = useTheme();
-  
-  return (
-    <Card sx={createHoverCardStyle(theme)}>
-      <CardContent sx={{ textAlign: 'center', p: 4 }}>
-        <Avatar sx={createAvatarStyle(60, bgColor)}>
-          {icon}
-        </Avatar>
-        <Typography variant="h4" component="h2" gutterBottom fontWeight="bold">
-          {title}
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-          {description}
-        </Typography>
-        <Button 
-          component={Link} 
-          to={to} 
-          variant="contained" 
-          size="large" 
-          fullWidth 
-          sx={{ py: 1.5 }}
-        >
-          {buttonText}
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/playground">
+                <Button 
+                  size="lg" 
+                  className="group bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-6 text-lg"
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                  Start Playing
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              
+              <Link to="/learn">
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="border-2 hover:bg-gray-50 dark:hover:bg-gray-800 px-8 py-6 text-lg"
+                >
+                  <Book className="w-5 h-5 mr-2" />
+                  Learn QTI
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, color }) => (
-  <Box textAlign="center" p={3}>
-    <Avatar sx={createAvatarStyle(60, color)}>
-      {icon}
-    </Avatar>
-    <Typography variant="h6" component="h3" gutterBottom fontWeight="bold">
-      {title}
-    </Typography>
-    <Typography variant="body2" color="text.secondary">
-      {description}
-    </Typography>
-  </Box>
-);
+      {/* Features Grid */}
+      <section className="py-20 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+              Everything you need for QTI development
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              A comprehensive toolkit for working with QTI assessments
+            </p>
+          </div>
 
-const QTIFeatureItem: React.FC<{ feature: QTIFeature }> = ({ feature }) => (
-  <Box component="li" sx={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: 1,
-    py: 1
-  }}>
-    <Box sx={{
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      bgcolor: 'success.main'
-    }} />
-    <Typography variant="body1">
-      <strong>{feature.name}:</strong> {feature.description}
-    </Typography>
-  </Box>
-);
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-xl mb-6 group-hover:scale-110 transition-transform">
+                <Code className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+                Live XML Editor
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Write and edit QTI XML with syntax highlighting, auto-completion, and real-time validation
+              </p>
+            </div>
 
-const QTIFeaturesSection: React.FC = () => (
-  <Box sx={{
-    maxWidth: '1000px',
-    mx: 'auto',
-    mb: 8,
-    animationDelay: '0.6s'
-  }} className="animate-fade-in">
-    <Typography 
-      variant="h3" 
-      component="h2" 
-      textAlign="center" 
-      gutterBottom 
-      fontWeight="bold" 
-      sx={{ mb: 4 }}
-    >
-      Currently Supported QTI 3.0 Features
-    </Typography>
-    
-    <Box sx={{
-      display: 'grid',
-      gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-      gap: 4,
-      mb: 4
-    }}>
-      <Card sx={{
-        height: 'fit-content',
-        gridColumn: { xs: '1', md: '1 / -1' },
-        maxWidth: '500px',
-        mx: 'auto'
-      }}>
-        <CardContent sx={{ p: 4 }}>
-          <Typography variant="h5" component="h3" gutterBottom fontWeight="bold" color="primary.main">
-            Item Types
-          </Typography>
-          <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
-            {QTI_FEATURES.map((feature, index) => (
-              <QTIFeatureItem key={index} feature={feature} />
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
-    </Box>
+            <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-green-100 dark:bg-green-900/50 rounded-xl mb-6 group-hover:scale-110 transition-transform">
+                <Zap className="w-7 h-7 text-green-600 dark:text-green-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+                Instant Preview
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                See your QTI content render in real-time as you type with full interactivity
+              </p>
+            </div>
 
-    <Card sx={{
-      bgcolor: 'grey.50',
-      border: '2px dashed',
-      borderColor: 'grey.300'
-    }}>
-      <CardContent sx={{ p: 4, textAlign: 'center' }}>
-        <Typography variant="h5" component="h3" gutterBottom fontWeight="bold" color="text.secondary">
-          Coming Soon
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-          We're continuously expanding QTI 3.0 support. Future releases will include:
-        </Typography>
-        <Box sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 1,
-          justifyContent: 'center'
-        }}>
-          {COMING_SOON_FEATURES.map(feature => (
-            <Box key={feature} sx={{
-              px: 2,
-              py: 0.5,
-              bgcolor: 'white',
-              border: '1px solid',
-              borderColor: 'grey.300',
-              borderRadius: 1,
-              fontSize: '0.875rem'
-            }}>
-              {feature}
-            </Box>
-          ))}
-        </Box>
-      </CardContent>
-    </Card>
-  </Box>
-);
+            <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-purple-100 dark:bg-purple-900/50 rounded-xl mb-6 group-hover:scale-110 transition-transform">
+                <FileText className="w-7 h-7 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+                QTI 2.1 & 3.0
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Full support for both QTI 2.1 and 3.0 specifications with automatic version detection
+              </p>
+            </div>
 
-const GitHubCTA: React.FC = () => {
-  const theme = useTheme();
-  
-  return (
-    <Box sx={{
-      maxWidth: '800px',
-      mx: 'auto',
-      textAlign: 'center',
-      animationDelay: '0.8s'
-    }} className="animate-fade-in">
-      <Card sx={{
-        bgcolor: 'primary.main',
-        color: 'primary.contrastText',
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: theme.shadows[12]
-        }
-      }}>
-        <CardContent sx={{ p: 6 }}>
-          <Avatar sx={{
-            width: 80,
-            height: 80,
-            bgcolor: 'rgba(255, 255, 255, 0.1)',
-            mx: 'auto',
-            mb: 3
-          }}>
-            <GitHub sx={createIconStyle(40)} />
-          </Avatar>
-          <Typography variant="h3" component="h2" gutterBottom fontWeight="bold" sx={{
-            color: 'primary.contrastText'
-          }}>
-            Open Source & Community Driven
-          </Typography>
-          <Typography variant="h6" sx={{
-            mb: 4,
-            opacity: 0.9,
-            maxWidth: '600px',
-            mx: 'auto'
-          }}>
-            QTI Playground is completely open source. Join our community, contribute features, 
-            report issues, or help improve QTI 3.0 support for everyone.
-          </Typography>
-          <Button 
-            variant="contained" 
-            size="large" 
-            sx={{
-              bgcolor: 'white',
-              color: 'primary.main',
-              fontWeight: 'bold',
-              px: 4,
-              py: 1.5,
-              fontSize: '1.1rem',
-              '&:hover': {
-                bgcolor: 'grey.100',
-                transform: 'scale(1.05)'
-              }
-            }} 
-            onClick={() => window.open('https://github.com/sonyccd/qti-playground', '_blank')}
-          >
-            View on GitHub
-          </Button>
-        </CardContent>
-      </Card>
-    </Box>
-  );
-};
+            <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-orange-100 dark:bg-orange-900/50 rounded-xl mb-6 group-hover:scale-110 transition-transform">
+                <Lightbulb className="w-7 h-7 text-orange-600 dark:text-orange-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+                Example Library
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Ready-to-use templates and examples for all question types to get started quickly
+              </p>
+            </div>
 
-const LandingPage: React.FC = () => {
-  const theme = useTheme();
-  const ctaCards: CTACardProps[] = [
-    {
-      icon: <Toys sx={createIconStyle(30)} />,
-      title: 'Start Playing',
-      description: 'Jump right into the playground and start experimenting with QTI 3.0 content',
-      buttonText: 'Go to Playground',
-      to: '/playground',
-      bgColor: theme.palette.primary.light
-    },
-    {
-      icon: <MenuBook sx={createIconStyle(30)} />,
-      title: 'Learn QTI 3.0',
-      description: 'New to QTI 3.0? Learn the basics and discover what\'s possible',
-      buttonText: 'Start Learning',
-      to: '/learn',
-      bgColor: theme.palette.secondary.light
-    }
-  ];
+            <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl mb-6 group-hover:scale-110 transition-transform">
+                <BookOpen className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+                Interactive Docs
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Comprehensive documentation with live examples you can edit and test
+              </p>
+            </div>
 
-  const features: FeatureCardProps[] = [
-    {
-      icon: <Code sx={createIconStyle(30)} />,
-      title: 'Live Editor',
-      description: 'Write and edit QTI 3.0 XML with syntax highlighting and real-time preview',
-      color: theme.palette.info.light
-    },
-    {
-      icon: <Description sx={createIconStyle(30)} />,
-      title: 'Interactive Preview',
-      description: 'See how your QTI 3.0 content will render and behave in real-time',
-      color: theme.palette.success.light
-    },
-    {
-      icon: <Lightbulb sx={createIconStyle(30)} />,
-      title: 'Examples & Samples',
-      description: 'Start with built-in examples or upload your own QTI 3.0 files',
-      color: theme.palette.warning.light
-    }
-  ];
+            <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-pink-100 dark:bg-pink-900/50 rounded-xl mb-6 group-hover:scale-110 transition-transform">
+                <Github className="w-7 h-7 text-pink-600 dark:text-pink-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+                Open Source
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Free and open source with an active community contributing improvements
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  return (
-    <Box sx={{
-      minHeight: '100vh',
-      background: `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.grey[50]} 100%)`,
-      py: 8
-    }}>
-      <Container maxWidth="lg">
-        <HeroSection />
-        
-        {/* Main CTAs */}
-        <Box sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-          gap: 4,
-          mb: 8,
-          maxWidth: '800px',
-          mx: 'auto',
-          animationDelay: '0.2s'
-        }} className="animate-fade-in">
-          {ctaCards.map((card, index) => (
-            <CTACard key={index} {...card} />
-          ))}
-        </Box>
-
-        {/* Features */}
-        <Box sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-          gap: 4,
-          maxWidth: '1000px',
-          mx: 'auto',
-          mb: 8,
-          animationDelay: '0.4s'
-        }} className="animate-fade-in">
-          {features.map((feature, index) => (
-            <FeatureCard key={index} {...feature} />
-          ))}
-        </Box>
-
-        <QTIFeaturesSection />
-        <GitHubCTA />
-      </Container>
-    </Box>
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-white">
+            Ready to create your first QTI assessment?
+          </h2>
+          <p className="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
+            Join developers and educators using QTI Playground to build interactive assessments
+          </p>
+          <Link to="/playground">
+            <Button 
+              size="lg"
+              variant="secondary"
+              className="bg-white hover:bg-gray-100 text-blue-600 shadow-xl hover:shadow-2xl transition-all duration-200 px-8 py-6 text-lg font-semibold"
+            >
+              <Play className="w-5 h-5 mr-2" />
+              Launch Playground
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 };
 
