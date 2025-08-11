@@ -363,7 +363,10 @@ describe('ProjectsPage', () => {
     });
 
     it('should handle clicking on a project card', async () => {
-      const consoleLogSpy = vi.spyOn(console, 'log');
+      // Mock window.location.href since we now navigate directly
+      const originalLocation = window.location;
+      delete (window as any).location;
+      window.location = { ...originalLocation, href: '' };
       
       renderWithRouter(<ProjectsPage />);
 
@@ -375,7 +378,10 @@ describe('ProjectsPage', () => {
       const projectCard = screen.getByText('Test Project 1').closest('[class*="MuiCard-root"]');
       fireEvent.click(projectCard!);
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('Opening project:', 'project-1');
+      expect(window.location.href).toBe('/project/project-1');
+      
+      // Restore window.location
+      window.location = originalLocation;
     });
 
     it('should show validation error when creating project without name', async () => {

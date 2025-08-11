@@ -7,6 +7,9 @@ import Index from "./pages/Index";
 import Playground from "./pages/Playground";
 import Learn from "./pages/Learn";
 import NotFound from "./pages/NotFound";
+import ProjectDetail from "./pages/ProjectDetail";
+import ItemEditor from "./pages/ItemEditor";
+import AssessmentEditor from "./pages/AssessmentEditor";
 import LearnLayout from "./components/learn/LearnLayout";
 import Introduction from "./components/learn/sections/Introduction";
 import Structure from "./components/learn/sections/Structure";
@@ -33,6 +36,9 @@ const App = () => (
                 <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/playground" element={<Playground />} />
+                <Route path="/project/:projectId" element={<ProjectDetail />} />
+                <Route path="/project/:projectId/item-editor" element={<ItemEditor />} />
+                <Route path="/project/:projectId/assessment-editor" element={<AssessmentEditor />} />
                 <Route path="/learn" element={<LearnLayout />}>
                   <Route index element={<Introduction />} />
                   <Route path="introduction" element={<Introduction />} />

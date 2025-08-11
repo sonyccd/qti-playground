@@ -299,8 +299,7 @@ const ProjectsPage: React.FC = () => {
   };
 
   const handleOpenProject = (projectId: string) => {
-    // TODO: Navigate to project workspace
-    console.log('Opening project:', projectId);
+    window.location.href = `/project/${projectId}`;
   };
 
   const handleCreateNewProject = () => {
