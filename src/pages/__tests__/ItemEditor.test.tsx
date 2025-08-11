@@ -1,0 +1,616 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
+import ItemEditor from '../ItemEditor';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { projectService } from '@/services/projectService';
+import type { Project, QTIItem } from '@/types/project';
+
+// Mock the project service
+vi.mock('@/services/projectService', () => ({
+  projectService: {
+    getProject: vi.fn(),
+    updateProject: vi.fn(),
+  },
+}));
+
+// Mock URL search params
+let mockSearchParams = new URLSearchParams();
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useParams: () => ({ projectId: 'test-project-id' }),
+    useSearchParams: () => [mockSearchParams],
+  };
+});
+
+const mockProject: Project = {
+  id: 'test-project-id',
+  name: 'Test Project',
+  items: [
+    {
+      id: 'existing-item-1',
+      title: 'Existing Choice Item',
+      content: '<assessmentItem>...</assessmentItem>',
+      qtiVersion: '2.1',
+      itemType: 'choice',
+      groups: ['math', 'algebra', 'easy'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 'existing-item-2',
+      title: 'Existing Text Entry Item',
+      content: '<assessmentItem>...</assessmentItem>',
+      qtiVersion: '2.1',
+      itemType: 'text-entry',
+      groups: ['science', 'chemistry'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ],
+  assessments: [],
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+const renderItemEditor = (searchParams = '') => {
+  if (searchParams) {
+    mockSearchParams = new URLSearchParams(searchParams);
+  }
+
+  return render(
+    <BrowserRouter>
+      <AuthProvider>
+        <ItemEditor />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+};
+
+describe('ItemEditor', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockSearchParams = new URLSearchParams();
+  });
+
+  describe('Component Rendering', () => {
+    it('should render loading state initially', () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      
+      renderItemEditor('new=true');
+      
+      expect(screen.getByText('Loading item editor...')).toBeInTheDocument();
+    });
+
+    it('should render create new item header', async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Create New Item')).toBeInTheDocument();
+      });
+    });
+
+    it('should render edit item header', async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      
+      renderItemEditor('itemId=existing-item-1');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Edit Item: Existing Choice Item')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Item Type Selection', () => {
+    beforeEach(async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Create New Item')).toBeInTheDocument();
+      });
+    });
+
+    it('should display all available item types', () => {
+      expect(screen.getByText('Multiple Choice')).toBeInTheDocument();
+      expect(screen.getByText('Text Entry')).toBeInTheDocument();
+      expect(screen.getByText('Essay')).toBeInTheDocument();
+      expect(screen.getByText('Drag & Drop')).toBeInTheDocument();
+      expect(screen.getByText('Hotspot')).toBeInTheDocument();
+      expect(screen.getByText('Ordering')).toBeInTheDocument();
+    });
+
+    it('should allow selecting different item types', async () => {
+      const user = userEvent.setup();
+      
+      const textEntryCard = screen.getByText('Text Entry').closest('[role="button"]');
+      expect(textEntryCard).toBeInTheDocument();
+      
+      await user.click(textEntryCard!);
+      
+      // Should proceed to next step after selection
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+    });
+
+    it('should show item type descriptions', () => {
+      expect(screen.getByText('Single or multiple selection from options')).toBeInTheDocument();
+      expect(screen.getByText('Short text or numeric input')).toBeInTheDocument();
+      expect(screen.getByText('Extended written response')).toBeInTheDocument();
+    });
+  });
+
+  describe('Item Groups and Tagging', () => {
+    beforeEach(async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      renderItemEditor('itemId=existing-item-1');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Edit Item: Existing Choice Item')).toBeInTheDocument();
+      });
+
+      // Navigate to design step
+      const user = userEvent.setup();
+      const nextButton = screen.getByRole('button', { name: /next/i });
+      await user.click(nextButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+    });
+
+    it('should display existing item groups as chips', async () => {
+      expect(screen.getByText('math')).toBeInTheDocument();
+      expect(screen.getByText('algebra')).toBeInTheDocument();
+      expect(screen.getByText('easy')).toBeInTheDocument();
+    });
+
+    it('should allow adding new groups', async () => {
+      const user = userEvent.setup();
+      
+      const groupInput = screen.getByPlaceholderText('Add groups (comma-separated)');
+      await user.type(groupInput, 'geometry, advanced');
+      await user.keyboard('{Enter}');
+      
+      await waitFor(() => {
+        expect(screen.getByText('geometry')).toBeInTheDocument();
+        expect(screen.getByText('advanced')).toBeInTheDocument();
+      });
+    });
+
+    it('should allow removing existing groups', async () => {
+      const user = userEvent.setup();
+      
+      // Find and click the delete button for 'easy' group
+      const easyChip = screen.getByText('easy').closest('[data-testid^="group-chip-"]');
+      const deleteButton = easyChip?.querySelector('[data-testid^="delete-group-"]');
+      
+      if (deleteButton) {
+        await user.click(deleteButton);
+        
+        await waitFor(() => {
+          expect(screen.queryByText('easy')).not.toBeInTheDocument();
+        });
+      }
+    });
+
+    it('should suggest groups from other items in project', async () => {
+      const user = userEvent.setup();
+      
+      const groupInput = screen.getByPlaceholderText('Add groups (comma-separated)');
+      await user.type(groupInput, 'sci');
+      
+      // Should show suggestions from existing items
+      await waitFor(() => {
+        expect(screen.getByText('science')).toBeInTheDocument();
+      });
+    });
+
+    it('should handle duplicate group addition gracefully', async () => {
+      const user = userEvent.setup();
+      
+      const groupInput = screen.getByPlaceholderText('Add groups (comma-separated)');
+      await user.type(groupInput, 'math'); // Already exists
+      await user.keyboard('{Enter}');
+      
+      // Should not duplicate existing groups
+      const mathChips = screen.getAllByText('math');
+      expect(mathChips).toHaveLength(1);
+    });
+
+    it('should validate group names', async () => {
+      const user = userEvent.setup();
+      
+      const groupInput = screen.getByPlaceholderText('Add groups (comma-separated)');
+      
+      // Test empty group
+      await user.type(groupInput, ', ,');
+      await user.keyboard('{Enter}');
+      
+      // Should not add empty groups
+      const emptyGroups = screen.queryAllByText('');
+      expect(emptyGroups.filter(el => 
+        el.closest('[data-testid^="group-chip-"]')
+      )).toHaveLength(0);
+    });
+
+    it('should trim whitespace from group names', async () => {
+      const user = userEvent.setup();
+      
+      const groupInput = screen.getByPlaceholderText('Add groups (comma-separated)');
+      await user.type(groupInput, '  trigonometry  ');
+      await user.keyboard('{Enter}');
+      
+      await waitFor(() => {
+        expect(screen.getByText('trigonometry')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('QTI Preview and Generation', () => {
+    beforeEach(async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Create New Item')).toBeInTheDocument();
+      });
+
+      // Navigate through steps
+      const user = userEvent.setup();
+      
+      // Select item type
+      const choiceCard = screen.getByText('Multiple Choice').closest('[role="button"]');
+      await user.click(choiceCard!);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+
+      // Navigate to preview
+      const previewButton = screen.getByRole('button', { name: /preview/i });
+      await user.click(previewButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Preview & Save')).toBeInTheDocument();
+      });
+    });
+
+    it('should display QTI XML preview', () => {
+      expect(screen.getByText('QTI XML Preview')).toBeInTheDocument();
+      expect(screen.getByRole('textbox', { name: /qti xml/i })).toBeInTheDocument();
+    });
+
+    it('should generate valid QTI 2.1 XML', () => {
+      const xmlPreview = screen.getByRole('textbox', { name: /qti xml/i });
+      const xmlContent = (xmlPreview as HTMLTextAreaElement).value;
+      
+      expect(xmlContent).toContain('<assessmentItem');
+      expect(xmlContent).toContain('xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"');
+      expect(xmlContent).toContain('<responseDeclaration');
+      expect(xmlContent).toContain('<itemBody>');
+    });
+
+    it('should show item preview with proper rendering', () => {
+      expect(screen.getByText('Item Preview')).toBeInTheDocument();
+      // The actual preview content depends on the QTI content generated
+    });
+
+    it('should validate required fields before showing preview', async () => {
+      // Go back to design step
+      const user = userEvent.setup();
+      const backButton = screen.getByRole('button', { name: /back/i });
+      await user.click(backButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+
+      // Clear title
+      const titleInput = screen.getByLabelText(/item title/i);
+      await user.clear(titleInput);
+      
+      // Try to go to preview
+      const previewButton = screen.getByRole('button', { name: /preview/i });
+      await user.click(previewButton);
+      
+      // Should show validation error
+      expect(screen.getByText('Title is required')).toBeInTheDocument();
+    });
+  });
+
+  describe('Save and Cancel Functionality', () => {
+    it('should save new item with groups', async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      vi.mocked(projectService.updateProject).mockResolvedValue(mockProject);
+      
+      const user = userEvent.setup();
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Create New Item')).toBeInTheDocument();
+      });
+
+      // Complete workflow
+      const choiceCard = screen.getByText('Multiple Choice').closest('[role="button"]');
+      await user.click(choiceCard!);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+
+      // Add title
+      const titleInput = screen.getByLabelText(/item title/i);
+      await user.type(titleInput, 'New Multiple Choice Item');
+
+      // Add groups
+      const groupInput = screen.getByPlaceholderText('Add groups (comma-separated)');
+      await user.type(groupInput, 'physics, mechanics, medium');
+      await user.keyboard('{Enter}');
+
+      // Go to preview
+      const previewButton = screen.getByRole('button', { name: /preview/i });
+      await user.click(previewButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Preview & Save')).toBeInTheDocument();
+      });
+
+      // Save item
+      const saveButton = screen.getByRole('button', { name: /save item/i });
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(projectService.updateProject).toHaveBeenCalled();
+      });
+
+      // Verify the saved item has correct properties
+      const updateCall = vi.mocked(projectService.updateProject).mock.calls[0];
+      const updatedProject = updateCall[1] as Partial<Project>;
+      const newItem = updatedProject.items?.[updatedProject.items.length - 1];
+      
+      expect(newItem?.title).toBe('New Multiple Choice Item');
+      expect(newItem?.itemType).toBe('choice');
+      expect(newItem?.groups).toEqual(['physics', 'mechanics', 'medium']);
+    });
+
+    it('should update existing item while preserving other properties', async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      vi.mocked(projectService.updateProject).mockResolvedValue(mockProject);
+      
+      const user = userEvent.setup();
+      renderItemEditor('itemId=existing-item-1');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Edit Item: Existing Choice Item')).toBeInTheDocument();
+      });
+
+      // Navigate to design step
+      const nextButton = screen.getByRole('button', { name: /next/i });
+      await user.click(nextButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+
+      // Modify title
+      const titleInput = screen.getByLabelText(/item title/i);
+      await user.clear(titleInput);
+      await user.type(titleInput, 'Updated Choice Item');
+
+      // Add a new group
+      const groupInput = screen.getByPlaceholderText('Add groups (comma-separated)');
+      await user.type(groupInput, 'advanced');
+      await user.keyboard('{Enter}');
+
+      // Save
+      const previewButton = screen.getByRole('button', { name: /preview/i });
+      await user.click(previewButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Preview & Save')).toBeInTheDocument();
+      });
+
+      const saveButton = screen.getByRole('button', { name: /save item/i });
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(projectService.updateProject).toHaveBeenCalled();
+      });
+
+      // Verify update preserves ID and timestamps, updates other properties
+      const updateCall = vi.mocked(projectService.updateProject).mock.calls[0];
+      const updatedProject = updateCall[1] as Partial<Project>;
+      const updatedItem = updatedProject.items?.find(item => item.id === 'existing-item-1');
+      
+      expect(updatedItem?.id).toBe('existing-item-1');
+      expect(updatedItem?.title).toBe('Updated Choice Item');
+      expect(updatedItem?.groups).toContain('advanced');
+      expect(updatedItem?.createdAt).toEqual(mockProject.items[0].createdAt); // Preserved
+    });
+
+    it('should show unsaved changes warning when canceling', async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      
+      const user = userEvent.setup();
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Create New Item')).toBeInTheDocument();
+      });
+
+      // Select type and make changes
+      const choiceCard = screen.getByText('Multiple Choice').closest('[role="button"]');
+      await user.click(choiceCard!);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+
+      const titleInput = screen.getByLabelText(/item title/i);
+      await user.type(titleInput, 'Modified Item');
+
+      // Try to cancel
+      const cancelButton = screen.getByRole('button', { name: /cancel/i });
+      await user.click(cancelButton);
+
+      // Should show warning dialog
+      expect(screen.getByText('Unsaved Changes')).toBeInTheDocument();
+      expect(screen.getByText('You have unsaved changes. If you cancel now, all changes will be lost.')).toBeInTheDocument();
+    });
+
+    it('should not show warning when canceling without changes', async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      
+      const user = userEvent.setup();
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Create New Item')).toBeInTheDocument();
+      });
+
+      // Cancel without making changes
+      const cancelButton = screen.getByRole('button', { name: /cancel/i });
+      await user.click(cancelButton);
+
+      // Should not show warning dialog (immediate cancel)
+      expect(screen.queryByText('Unsaved Changes')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Stepper Navigation', () => {
+    beforeEach(async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Create New Item')).toBeInTheDocument();
+      });
+    });
+
+    it('should show correct step indicators', () => {
+      expect(screen.getByText('Select Type')).toBeInTheDocument();
+      expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      expect(screen.getByText('Preview & Save')).toBeInTheDocument();
+    });
+
+    it('should enable navigation between completed steps', async () => {
+      const user = userEvent.setup();
+      
+      // Complete first step
+      const choiceCard = screen.getByText('Multiple Choice').closest('[role="button"]');
+      await user.click(choiceCard!);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+
+      // Should be able to go back to previous step
+      const backButton = screen.getByRole('button', { name: /back/i });
+      await user.click(backButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Select Type')).toBeInTheDocument();
+      });
+
+      // And forward again
+      const nextButton = screen.getByRole('button', { name: /next/i });
+      await user.click(nextButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+    });
+
+    it('should disable next button when step is incomplete', async () => {
+      const user = userEvent.setup();
+      
+      // Select type
+      const choiceCard = screen.getByText('Multiple Choice').closest('[role="button"]');
+      await user.click(choiceCard!);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+
+      // Without title, preview button should be disabled
+      const previewButton = screen.getByRole('button', { name: /preview/i });
+      expect(previewButton).toBeDisabled();
+
+      // Add title
+      const titleInput = screen.getByLabelText(/item title/i);
+      await user.type(titleInput, 'Test Item');
+
+      // Now preview should be enabled
+      await waitFor(() => {
+        expect(previewButton).not.toBeDisabled();
+      });
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should display error when project fails to load', async () => {
+      vi.mocked(projectService.getProject).mockRejectedValue(new Error('Failed to load'));
+      
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Failed to load project')).toBeInTheDocument();
+      });
+    });
+
+    it('should display error when item not found', async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      
+      renderItemEditor('itemId=non-existent-id');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Item not found')).toBeInTheDocument();
+      });
+    });
+
+    it('should handle save errors gracefully', async () => {
+      vi.mocked(projectService.getProject).mockResolvedValue(mockProject);
+      vi.mocked(projectService.updateProject).mockRejectedValue(new Error('Save failed'));
+      
+      const user = userEvent.setup();
+      renderItemEditor('new=true');
+      
+      await waitFor(() => {
+        expect(screen.getByText('Create New Item')).toBeInTheDocument();
+      });
+
+      // Complete workflow quickly
+      const choiceCard = screen.getByText('Multiple Choice').closest('[role="button"]');
+      await user.click(choiceCard!);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Design & Edit')).toBeInTheDocument();
+      });
+
+      const titleInput = screen.getByLabelText(/item title/i);
+      await user.type(titleInput, 'Test Item');
+
+      const previewButton = screen.getByRole('button', { name: /preview/i });
+      await user.click(previewButton);
+      
+      await waitFor(() => {
+        expect(screen.getByText('Preview & Save')).toBeInTheDocument();
+      });
+
+      const saveButton = screen.getByRole('button', { name: /save item/i });
+      await user.click(saveButton);
+
+      // Should show error message
+      await waitFor(() => {
+        expect(screen.getByText('Failed to save item')).toBeInTheDocument();
+      });
+    });
+  });
+});
