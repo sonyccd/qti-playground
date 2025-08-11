@@ -29,6 +29,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@hello-pangea/dnd": "^18.0.1",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
     "@radix-ui/react-dialog": "^1.1.2",
